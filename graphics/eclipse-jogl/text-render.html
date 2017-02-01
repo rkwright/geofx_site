@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Digital Publishing, EPUB, Graphics, GIS Consulting</title>
+<link href="../../styles.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="../../images/favicon.png" type="image/png" />
+</head>
+<body>
+	<!--#include virtual="../../includes/banner_nav.shtml" -->
+    <div  class="text_div">
+<h2>TextRenderer3D</h2>
+
+<p class="warning">Just a warning:  This is very old.  I provide it only for legacy's sake.  These  days, please look into <a href="https://www.khronos.org/webgl/">WebGL</a> and <a href="http://threejs.org/">Three.js.</a></p>
+
+
+<h3>Introduction</h3>
+<p>The JOGL implementation of OpenGL for Java is an excellent in most respects. The addition of support for &quot;2D&quot; text rendering by the TextRenderer object was an excellent addition. However, this did not provide any true 3D text support, a la the wglUseFontOutline support that is available in the C++ implementation on Windows, for example. I was experimenting with overiding the TextRenderer code to walk the glyphs and generate the 3D rendering when I poking around in the jogl-utils sources I ran across the FontDrawer code.</p>
+<p>The FontDrawer code (written by Erik Tollerud and Davide Raccagni of Sun Microsystems, Inc.) was an incomplete implementation of what I was experimenting with. I therefore took the FontDrawer code, renamed it TextRenderer3D and did some fairly singificant refactoring and bug fixing. The result is an object that allows one to draw arbitrary strings in 3D. one can specify the depth of the extrusion and some other (relatively unnecessary) attributes. It also provides the ability to generate display-lists very easily. This article details how it is done and some examples of its usage.</p>
+<p>The complete sources are here.</p>
+<p>Note: The TextRenderer3D class uses some objects from the vecmath package of Java3D so you will need to install Java3D to use this class. You can get it <a href="http://java.sun.com/javase/technologies/desktop/java3d/">here</a>. The Eclipse plugin version of Java3D can be obtained <a href="http://java3d-eclipse.sourceforge.net/">here</a>.</p>
+<div><p><img src="images/BouncingText3D.jpg" alt="Screen shot of BouncingText3D" width="801" height="600" /></p>
+</div>
+<h2 >Acknowledgements</h2>
+<p class="warning"><b>Helping Out:</b> If (when!) you see any errors, omissions, or misleading info, please let me know. I am always willing to learn and want to make these tutorials as accurate and helpful as possible. <a href="mailto:rkwright@geofx.com?subject=Comments on OpenGL with JOGL">rkwright@geofx.com</a>. TIA.</p>
+<h2 >The Basic Algorithm</h2>
+<p >THe basic approach is that one instantiates a normal AWT Font then gets the path for the set of glyphs by obtaining the PathIterator from the font's GlyphVector:</p>
+<pre class="code-example"cellpadding="10">GlyphVector  gv = font.createGlyphVector(new FontRenderContext(new AffineTransform(), true, true),  <br />                                           new StringCharacterIterator(str));<br /><br />GeneralPath  gp = (GeneralPath) gv.getOutline();<br />PathIterator pi = gp.getPathIterator(AffineTransform.getScaleInstance(1.0, -1.0), flatness);</pre>
+
+<p>Note that the transform passed to the path Iterator has the why scale set to -1. This is because SWT has the old style coordinate system where the origin in Y is at the top of the screen. So we need to invert that to match OpenGL's coordinate system (otherwise all the text would be inverted :-). </p>
+<p>Also note the flatness parameter. The glyphs are composed of points, lines and quadratic beziers. The beziers need to be flattened. This isn't hard, but fortunately the PathIterator will do it for us. Setting a large value such as 1.0 will result in a very blocky shape as the iterator will simply conclude that the set of points that comprise the control points are &quot;flat enough&quot;. If you set an extremely small value the iterator will simply clamp it to a reasonable value. A little experimentation demonstrated that the flattening is very fast so unless you have some need for blocky text or want to keep the resulting display lists simple, set it to a small value like 0.001.</p>
+<p>Then the resulting PathIterator is passed to a tesselation routine, which tesselates the path using </p>
+<pre class="code-example">GLUtessellatorCallback aCallback = new GLUtesselatorCallbackImpl(gl);<br />GLUtessellator tess = glu.gluNewTess();<br /><br />glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN, aCallback);<br />glu.gluTessCallback(tess, GLU.GLU_TESS_END, aCallback);<br />glu.gluTessCallback(tess, GLU.GLU_TESS_ERROR, aCallback);<br />glu.gluTessCallback(tess, GLU.GLU_TESS_VERTEX, aCallback);<br />glu.gluTessCallback(tess, GLU.GLU_TESS_COMBINE, aCallback);
+</pre>
+<p>The aCallback method is a simple method in a private class that extends the GLUtessellatorCallbackAdapter class. The class overrides three methods:</p>
+<pre class="code-example">public void begin(int type)
+{
+    gl.glBegin(type);
+}<br /><br />public void vertex(java.lang.Object vertexData)
+{
+    double[] coords = (double[]) vertexData;<br />    gl.glVertex3dv(coords, 0);
+}<br /><br />public void end()
+{
+   gl.glEnd();
+}</pre>
+<p>As you can see it just maps these to the appropriate GL calls to start and end a vertex list and maps the vertex data into a glVertex3d. Then the glyphs are tesselated by walking each glyph:</p>
+<pre class="code-example">glu.gluTessBeginPolygon(tess, (double[]) null);<br /><br />while (!pi.isDone())
+{
+   double[] coords = new double[3];
+   coords[2] = tessZ;
+   switch (pi.currentSegment(coords))
+   {
+       case PathIterator.SEG_MOVETO:
+       glu.gluTessBeginContour(tess);
+       break;<br /><br />       case PathIterator.SEG_LINETO:
+       glu.gluTessVertex(tess, coords, 0, coords);
+       break;<br /><br />       case PathIterator.SEG_CLOSE:
+       glu.gluTessEndContour(tess);
+       break;
+   }
+   
+   pi.next();
+}<br />
+glu.gluTessEndPolygon(tess);</pre>
+<p>Note that all the glyphs are walked as one complex face, not on a glyph by glyph basis. Note that the z-coordinate is set to tessZ. This is the depth of the font's extrusion. The tesselateFace Once the glyphs have been tesselated at depth zero, the process is repeated at the extrusion depth. The result is two complex polygonal faces that are parallel, separated by the extrusion depth. To complete the job, we have to build the sides.</p>
+<p>The sides are built by walking the pathIterator one more time, this time generating four vertexes for each step:</p>
+<ul>
+  <li>The current vertex at depth 0</li>
+  <li>The current vertex at the extrusion depth </li>
+  <li>The previous vertex at the extrusion depth</li>
+  <li>The previous vertex at depth 0</li>
+</ul>
+<p>Then the normal is generated for this new rectangle. This is done for all the edges of all the glyphs. And then we're done!</p>
+<h2>The Methods</h2>
+<p>The class is constructed quite simply:</p>
+<pre class="code-example">public TextRenderer3D(Font font, float depth) <br /></pre>
+<p>The font is a normal AWT font. Note that it must be a built-in AWT font or a TrueType font. The AWT PathIterator apparently cannot handle the CFF glyphs of an OpenType font. If you choose an OpenType font the iterator will fall back (silently) to a built-in font. The depth is simply the extrusion depth of the font.</p>
+<p>There are a number of methods available on the class, but only 3 are really of any great interest:</p>
+<pre class="code-example">public void draw( String str, float xOff, float yOff, float zOff, float scaleFactor )<br />public int compile( String str, float xOff, float yOff, float zOff, float scaleFactor )<br />public void call( int index )
+</pre>
+<p>The draw method simply creates all the vertexes and renders the text immediately. Note the scalefactor argument. This simply scales the font by calling <span class="Code">glScalef(scaleFactor, scaleFactor, scaleFactor)</span>.</p>
+<p>The compile method is identical to the draw method except that it compiles the glyphs into a GL display list and returns the index of the resulting list. This value can then be stored away and used directly by calling glCallList or by using the convenience method call which does the same thing.</p>
+<p>Finally, there are also methods to get the bounding box in X and Y (you can get Z from getDepth()).</p>
+<pre class="code-example">Rectangle2D getBounds( String str )<br />Rectangle2D getBounds( String str, float scaleFactor )
+</pre>
+<h2>Usage</h2>
+<p>Using the class couldn't be much easier. Here is how to render a single simple string:</p>
+<pre class="code-example">TextRenderer3D  tr3 = new TextRenderer3D(new Font(&quot;Times New Roman&quot;, Font.TRUETYPE_FONT, 3), 0.25f);<br />tr3.draw(str, -offX, offY, -offZ, 1.0f); 
+</pre>
+
+<p>Using the compile method is just as easy:</p>
+<pre class="code-example">TextRenderer3D  tr3 = new TextRenderer3D(new Font(&quot;Times New Roman&quot;, Font.TRUETYPE_FONT, 3), 0.25f); <br />int index = tr3.compile(str, X, Y, Z, 1.0f);<br />tr3.call(index);</pre>
+<p>I created two simple demo programs TestRenderer3D and BouncingText3D. The former is a Hello World usage of the draw method. The latter is more complex and uses the compile method to bounce dozens of text strings around in 3D space. The sources for both as well as the TextRenderer3D class are <a href="TextRenderer3D.zip">here</a>.</p>
+
+   <!--#include virtual="/includes/footer.shtml" -->
+</div>
+
+</body>
+</html>

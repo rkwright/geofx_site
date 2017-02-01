@@ -1,0 +1,456 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Digital Publishing, EPUB, Graphics, GIS Consulting</title>
+<link href="../../styles.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="../../images/favicon.png" type="image/png" />
+</head>
+<body>
+	<!--#include virtual="../../includes/banner_nav.shtml" -->
+
+<div  class="text_div">
+<h2>Eclipse, JOGL and a Simple Scene</h2>
+
+<p class="warning">Just a warning:  This is very old.  I provide it only for legacy's sake.  These  days, please look into <a href="https://www.khronos.org/webgl/">WebGL</a> and <a href="http://threejs.org/">Three.js.</a></p>
+
+<p>In the <a href="intro-JOGL.html">first tutorial</a>, I covered my initial exploration of JOGL in Eclipse. The example doesn't do much (a cube and a triangle - woohoo!) but did show how to set up JOGL itself, configure a project and the basic instantiation of the GLCanvas and the implementation of the methods of the GLEventListener interface.</p>
+<p>That was useful, doesn't provide much of an extensible framework for exploring JOGL - which was part of the intent. The intent of this second installment is to present a much more complete framework. The overall goal was to develop a framework that:</p>
+<ul>
+  <li>provided an easy-to-use framework for exploring the various aspects of JOGL, especially as they apply to using it within Eclipse</li>
+  <li>can support many different examples within a single Eclipse project. Ideally, all the 50-odd examples in NeHe for example</li>
+  <li>Has a single base class that provides all the underpinnings and useful base methods so each of the examples are as simple as possible</li>
+  <li>Uses Java and JOGL (and Eclipse) as cleanly as possible, i.e. not requiring or using odd utilities from various sources. No re-inventing the wheel!</li>
+</ul>
+<p>With a little work, I believe that I have achieved most if to all of these aims. The rest of this article details how this was done. It doesn't really cover the examples themselves, focusing more on the framework itself. </p>
+<p>The complete sources are <a href="geofx_opengl_view_20080606.zip">here</a>.</p>
+<p class="warning">One warning: This code does NOT run on Eclipse 3.3. Works fine in Eclipse 3.2, but cannot load the OpenGLView class in 3.3. If you walk down into the bowels, you will see that in ClassPathManager.java:findLocalClassImpl, it says the classloader cannot find the class. They <a href="http://help.eclipse.org/stable/index.jsp?topic=/org.eclipse.platform.doc.isv/porting/3.3/incompatibilities.html">changed the behaviour </a>of the classloader in 3.3, but I cannot figure out what is wrong with my manifest or bundle info or whatever. If some classloading maven can explain this, I would be appreciative. TIA. You can email me at  <a href="mailto:rkwright@geofx.com?subject=Classloading issue with Eclipse 3.3">rkwright@geofx.com</a>.</p>
+<h2 >Acknowledgements</h2>
+<p >I'd like to thank several people who gave me good advice along the way, including Bo Majewski (now of Google), Laurent M. and Ken Russell (Sun), who is currently the keeper of the JOGL flame. I also learned a fair amount from  scoping out the fine work by <a href="http://pepijn.fab4.be/software/nehe-java-ports/">Pepijn Van Eeckhoudt</a> and from the excellent work by all the contributors at <a href="http://nehe.gamedev.net/">NeHe</a>. Many thanks to all these folks and others who have published tutorials and comments on the web. Any errors are of course my own.</p>
+
+<p class="warning" ><b>Helping Out:</b> If (when!) you see any errors, omissions, or misleading info, please let me know. I am always willing to learn and want to make these tutorials as accurate and helpful as possible. <a href="mailto:rkwright@geofx.com?subject=Comments on OpenGL with JOGL">rkwright@geofx.com</a>. TIA.</p>
+<h2>The Container</h2>
+<p>Like the first tutorial, this one is based on simple Eclipse plugin with a view (implemented as a ViewPart). As before, there are two key classes in the main package (com.geofx.opengl.view), the view (OpenGLView) and the plugin activator (Activator). There is also a class that contains all the static constants used throughout the plugin.</p>
+<p>The Activator class is a bit more complex than before, but we'll cover the extensions in a little more detail below. The View is actually a little simpler than before as it no longer implements GLEventListener or instantiates the GLCanvas. Instead, those implementations are delegated to the GLScene class (which is covered in detail below).</p>
+<p>So the view class is really pretty simple:</p>
+<p class="code-example">public void createPartControl( Composite parent )<br />
+  { <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;sceneName = Activator.getSceneName(); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;composite = new Composite(parent, SWT.EMBEDDED); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;composite.setLayout( new FillLayout() ); <br />
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;glFrame = SWT_AWT.new_Frame(composite); <br />
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;this.scene = Activator.constructScene(sceneName, composite, glFrame); <br />
+  }</p>
+<p>Note that the last call is to constructScene. This is where it gets  interesting.</p>
+<h2>The Base  Scene Class</h2>
+<p>As noted above, one of the goals is to have the examples based on a single base class that takes care of all the housekeeping and non-example specific code. The class that implements this is GLScene in the package com.geofx.opengl.scene. The class owns the GLCanvas and implements GLEventListener. It also has some other interesting methods that we will cover below. GLScene's implementation of the GLEventListener interface methods covers the basics, but each of the derived classes can override these to implement the functionality that is specific to the example.</p>
+<p>The constructor for the class is pretty simple:</p>
+<p class="code-example">public GLScene(Composite parent, java.awt.Frame frame ) <br />
+  {<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;glCapabilities = new GLCapabilities(); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;glCapabilities.setDoubleBuffered(true); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;glCapabilities.setHardwareAccelerated(true); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;this.canvas = new GLCanvas( glCapabilities ); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;this.canvas.addGLEventListener( this );
+  
+  this.glFrame = frame; <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;this.glFrame.add( this.canvas ); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;Rectangle clientArea = parent.getClientArea(); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;this.canvas.setSize(clientArea.width, clientArea.height); <br />
+  }&nbsp;</p>
+<p>Note that we pass into the constructor the handle to the containing parent (actually the child of the parent with the SWT.EMBEDDED flag) and the AWT frame. These resources are independent of the example classes, which get created and destroyed as one switches examples. Note that there is also a trivial constructor for each example scene class as well. This is a convenience so we don't have to do any heavy lifting when we instantiate the class in order to get the label and description.</p>
+<p>But by itself, GLScene doesn't render anything whatsoever. Moreover, GLScene has a couple of abstract methods (getLabel and getDescription) so it cannot be instantiated on its own. Instantiating the scenes is rather cool as it uses some neat tricks in Java to instantiate the current example class-object on the fly. This is done by using Eclipse's bundles and Java reflection.</p>
+<h2>Instantiating the Scene</h2>
+<h3>Enumerating the Example Classes</h3>
+<p>The plugin figures out what to instantiate by enumerating the classes in the bundle at startup. It does this in the Activator class. Once the plugin is initialized, there is a call to Activator.start() which is passed the initialized bundle. This method calls enumClasses(), which walks the bundle and finds all the classes in the com.geofx.opengl.examples package that aren't subclasses. Here's the code:</p>
+<p class="code-example">public void enumClasses()<br />
+  {<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;try<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enumeration entries = Platform.getBundle(PluginConstants.PLUGIN_ID).findEntries(&quot;/&quot;, &quot;*&quot; + &quot;.class&quot;, true);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (entries.hasMoreElements())<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;URL entry = (URL) entries.nextElement();<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Change the URLs to have Java class names<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String path = entry.getPath().replace('/', '.');<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// see if the class is in the package we are interested in and isn't a subclass<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int start = path.indexOf(PluginConstants.EXAMPLES_PACKAGE);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int subClass = path.indexOf(&quot;$&quot;);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (start &gt;= 0 &amp;&amp; subClass == -1 )<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// strip off the class suffix and we have what we need<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String name = path.substring(start, path.length() - &quot;.class&quot;.length());<br />
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// now construct the object and get the label and description and save them<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLScene	scene = constructScene( name, null, null ); <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classInfo.add( getClassInfo(name, scene) );<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;catch (Exception e)<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+  }&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>For each class-name it gets, it actually instantiates the class and then calls the new object to get the example's label and description. These strings, along with the name of the class, are stored in a small object (ClassInfo) and added to a list for later use.</p>
+<h3>Dynamically Constructing a Scene</h3>
+<p>So how does one dynamically construct a scene? The answer is ... easily. Seriously, it turns out to be pretty easy, if you know how. Basically, Java does it all the time under the covers, we just need to do it the same way.</p>
+<p>As we saw above, we walked through the classes in the example package and got all the class names. In order to construct the class all we need is that name and arguments (and their) types we need to pass to the constructor. Here's how it is done:</p>
+<p class="code-example">public static GLScene constructScene( String 			name,
+  Composite 		composite,
+  java.awt.Frame 	frame )<br />
+  {<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;GLScene	newScene = null;<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;Object[] args = {};<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;Class[] types = {};<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;Class&lt;?&gt; classe;<br />
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;try<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classe = Class.forName(name);<br />
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (composite != null &amp;&amp; frame != null)<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args = new Object[2];<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args[0] = composite;<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args[1] = frame;<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;types = new Class[2];<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;types[0] = Composite.class;<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;types[1] = java.awt.Frame.class;<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newScene = (GLScene) classe.getConstructor(types).newInstance(args);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newScene = (GLScene) classe.getConstructor(types).newInstance();<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;catch (Exception e)<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;// bunch more catches here but omitted for brevity<br />
+  }</p>
+<p>The real key is the call to </p>
+<p class="code-example">newScene = (GLScene) classe.getConstructor(types).newInstance(args);</p>
+<p>which takes the argument <i>types</i>, the arguments themselves and invokes the classloader to actually construct the Scene object. Note that we actually have two versions, one for the trivial constructor and one for the real Scene construction when we pass in the the Composite and AWT Frame. </p>
+<p>And that's it! This method is in the Activator class and acts as a kind of factory for the generation of the scenes. The trivial version is called from the Activator class itself to build the ClassInfo list as described previously. The real GLScene version is called from the OpenGLView object to construct the example classes as needed.</p>
+<h3>A Simple Example Class</h3>
+<p>So let's see how this works in practice with a single simple class. We'll use the nearly trivial SolidObjects Scene. We extend the base class, so we don't have to explicitly implement the GLEventListener - we'll get the events anyway and can handle them if we wish. Usually, we want to override init, display and possibly reshape. There is rarely any need to override dispose and never any need to override displayChanged. The JOGL documents note that even the reference implementation doesn't implement displayChanged.</p>
+<p>The constructor is essentially trivial as we just leave the defaults from the base class, GLScene. Similarly the init doesn't require anything beyond the defaults set in the base class. In each case, we just call the base class' implementation. </p>
+<p class="code-example"> public class SolidObjectsScene extends GLScene <br />
+  { <br />
+  &nbsp;&nbsp;&nbsp;  public SolidObjectsScene(Composite parent, java.awt.Frame glFrame ) <br />
+  &nbsp;&nbsp;&nbsp;  { <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  super(parent, glFrame); <br />
+  &nbsp;&nbsp;&nbsp; } <br />
+  <br />
+  &nbsp;&nbsp;&nbsp; // a default constructor used by the ClassInfo enumerator <br />
+  &nbsp;&nbsp;&nbsp; public SolidObjectsScene() <br />
+  &nbsp;&nbsp;&nbsp; { <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  super(); <br />
+  &nbsp;&nbsp;&nbsp; } <br />
+  <br />
+  &nbsp;&nbsp;&nbsp; public void init ( GLAutoDrawable drawable ) <br />
+  &nbsp;&nbsp;&nbsp; { <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  super.init(drawable); <br />
+  &nbsp;&nbsp;&nbsp; }
+  &nbsp;&nbsp;</p>
+<p>There isn't much to the display method either. We just fetch the GL object from the drawable, move the view slightly and call the same pyramid and cube routines from the simple view.</p>
+<p class="code-example"> public void display(GLAutoDrawable drawable) <br />
+  { <br />
+  &nbsp;&nbsp;&nbsp;  super.display(drawable); <br />
+  &nbsp;&nbsp;&nbsp;  GL gl = drawable.getGL(); <br />
+  <br />
+  &nbsp;&nbsp;&nbsp;  gl.glTranslatef(-1.5f,-8.0f,-3.0f); <br />
+  &nbsp;&nbsp;&nbsp;  drawPyramid(gl); <br />
+  <br />
+  &nbsp;&nbsp;&nbsp;  gl.glTranslatef(1.5f,0.0f,-7.0f); <br />
+  &nbsp;&nbsp;&nbsp;  drawCube(gl); <br />
+  }&nbsp;</p>
+<p>Finally, we implement the two abstract methods in GLScene to provide a label for the selection dialog and a description.</p>
+<p class="code-example">public String getDescription() <br />
+  { <br />
+  &nbsp;&nbsp;&nbsp;  return "A set of simple solid 3D objects"; <br />
+  } <br />
+</p>
+<p class="code-example"> public String getLabel() <br />
+  { <br />
+  &nbsp;&nbsp;&nbsp;  return "Solid Objects"; <br />
+  }<br />
+</p>
+
+<p>And that's pretty much it. Of course, a real example class has a lot more in it, but this illustrates the basics. Now, to add a new example, we just clone this simple class and modify it as we need. As long as we put it in the example package, it will be automatically added to the list. The user can select which example to view from the selection dialog.</p>
+<h3>The Selection Dialog</h3>
+<p>The selection dialog is pretty simple. We set up the action in the plugin's plugin.xml:</p>
+<p class="code-example">
+
+  &lt;extension
+         point="org.eclipse.ui.actionSets"&gt;
+         <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;actionSet&nbsp;id="com.geofx.opengl.view.actionSet" label="Select Scene"  visible="true"&gt;
+            <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;menu  id="sceneSelect"  label="&amp;OpenGL"&gt; <br />
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;separator name="selectGroup"/&gt; <br />
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/menu&gt;<br />
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;action
+               <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  class="com.geofx.opengl.scene.SceneSelect"
+               <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  icon="icons/ogl_sm_square.gif"
+               <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  id="com.geofx.opengl.view.actions.SelectScene"
+               <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  label="&amp;Select Scene"
+               <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  menubarPath="sceneSelect/selectGroup"
+               <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  toolbarPath="selectGroup"
+               <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  tooltip="Select Scene" /&gt;
+               <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/actionSet&gt;
+  <br />
+&lt;/extension&gt;</p>
+<p>The dialog is pretty straightforward. We implement the IWorkBenchActionDelegate interface. Then we handle the run() event:</p>
+<p class="code-example">public void run(IAction action)
+	  <br />
+  {
+	<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;ArrayList classList = Activator.getClassInfo();  
+		
+	<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;ListDialog dialog = new ListDialog(window.getShell());
+	<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;dialog.setTitle("Select Scene");
+		<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;dialog.setMessage("Choose a scene from the list...");
+		<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;dialog.setContentProvider(new ListContentProvider(classList));
+		
+		<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;dialog.setLabelProvider( new ListLabelProvider() );
+		
+		<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;dialog.setInput(classList);
+		<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;dialog.setInitialSelections(new Object[] {Activator.getSceneName()});<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;if ( dialog.open() == Window.OK)
+		<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;{
+			<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object[] results = dialog.getResult();
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (results.length > 0 && results[0] instanceof ClassInfo)
+			<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+	  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ClassInfo info = (ClassInfo)results[0];
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Activator.setSceneName( info.name );
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Activator.getGLView().updateView();
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;}
+  <br />
+  }<br />
+</p>
+<p>The interesting part of this first line, where we call the Activator to the list of the ClassInfo we obtained at startup. We then set this as the input to the simple LabelProvider we create. The LabelProvider just fetches the label from the current ClassInfo object to display in the dialog. Then when the user selects an item and presses OK, we get back a reference to that ClassInfo object. We call back to the Activator to set the classname for that object as the current scene and tell the view to update itself. It then destroys the current view and creates a new one:</p>
+<p class="code-example">  public void updateView()<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;if (!sceneName.equals(Activator.getSceneName()))<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sceneName = Activator.getSceneName();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.scene.dispose();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.scene = Activator.constructScene(sceneName, composite, glFrame);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// we need to explicitly request the focus or we never get it<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.glFrame.requestFocus(); <br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;this.scene.render();<br />
+}<br />
+</p>
+<p>We just call constructScene() again, passing the new scene-name, container and frame. Note the comment at the end - if you don't explicitly request that the frame be given the focus it never gets it.</p>
+<h2>Interactivity</h2>
+<p>Now that we have a functioning base class and a simple example, let's explore how we can interact with the examples. First off, we have a 3D scene so it would be great if we could see it from any angle we choose, We achieve this with the &quot;Scene Grip&quot; (written originally by Bo Majewsky and ported to JOGL, modified somewhat and extended by me).</p>
+<h3>The Scene Grip</h3>
+<p>The scene grip basically handles the mouse movements and keyboard entries and translates those to changes to the translation and rotation of the scene. The mouse events are captured by implementing the MouseListener and MouseMovementListeners of AWT. We have to use AWT because that is the frame that hosts the GLCanvas. </p>
+<p>With the left mouse button pressed, the movements are used to adjust the X and Y offsets. If the right mouse button is pressed while dragging, the movements control the X and Y rotation of the scene. There is presently no way to control the Z offset or rotation with the mouse.</p>
+<p><b>IMPORTANT</b>: JOGL is effectively single-threaded so the GLCanvas can only be updated from its own thread - not the UI (keyboard and mouse) thread. So once inputs are captured, updates to the view can only be triggered by calling the render() method on the GLCanvas, which in turn calls the display method from within the GLCanvas thread.</p>
+<h3>Handling Mouse and Keyboard Events</h3>
+<p>The scene grip class is also used to trap the key events as well.This is done by implementing the KeyListener interface. The keys allow one to control the geometry via the leyboard. The mappings are as follows:</p>
+<table width="70%" border="1" cellpadding="4" cellspacing="0">
+  <tr>
+    <th scope="col">Key</th>
+    <th scope="col">Unmodified</th>
+    <th scope="col">Ctrl Pressed</th>
+  </tr>
+  <tr>
+    <td><div align="center">Right Arrow</div></td>
+    <td><div align="center">+X Shift</div></td>
+    <td><div align="center">+X rotation</div></td>
+  </tr>
+  <tr>
+    <td><div align="center">Left Arrow</div></td>
+    <td><div align="center">-X Shift</div></td>
+    <td><div align="center">-X rotation</div></td>
+  </tr>
+  <tr>
+    <td><div align="center">Up Arrow</div></td>
+    <td><div align="center">+Y shift</div></td>
+    <td><div align="center">+Y rotation</div></td>
+  </tr>
+  <tr>
+    <td><div align="center">Down Arrow</div></td>
+    <td><div align="center">-Y Shift</div></td>
+    <td><div align="center">-Y rotation</div></td>
+  </tr>
+  <tr>
+    <td><div align="center">Page Up</div></td>
+    <td><div align="center">+Z Shift</div></td>
+    <td><div align="center">+Z rotation</div></td>
+  </tr>
+  <tr>
+    <td><div align="center">Page Down</div></td>
+    <td><div align="center">-Z shift</div></td>
+    <td><div align="center">-Z rotation</div></td>
+  </tr>
+</table>
+<p>Note that before actually handling a key event, the keyboard handler calls a method on the GLScene class, handleKeyEvent(). By default, this does nothing and returns false. But any of the example classes derived from GLScene can override this and handle any and all key events. If the handleKeyEvent method returns true, the keyhandler in SceneGrip will just force an update of the scene and return.</p>
+<h3>Lighting and Blending Control</h3>
+<p>The base class, GLScene, also has methods (and member variables) to toggle lighting and blending enablement. By pressing the L or B keys, lighting or blending (respectively) are toggled, which also triggers and automatic update of the scene.</p>
+<p>As an aside, if you look at my examples which have lighting you will note that the lighting is enabled at the beginning of the display method. When I first ported them, I was puzzled for a little while why my lights wouldn't work. Turns out that most of the examples on NeHe and elsewhere enable the lights at the end of the display method (or equivalent). This has no effect since the scene has already been rendered. It only has an effect the <i><b>next</b></i> time the scene is rendered. But most people have their scenes animated - whether they need it or not. I don't like wasting CPU cycles so I never draw anything more than once unless I have to. In any case, you need to enable lights and blending and filtering BEFORE you draw the scene.</p>
+<p>The base class also implements a toggle for the filter. But the default implementation does nothing. Derived classes need to implement it if they need it.</p>
+<h3>Animation</h3>
+<p>The GLScene class also instantiates an animator, using the scene's canvas. The scene instantiates the animator and immediately turns it off. The user can toggle the animator on and off with the 'A' key. It is up to the example class to actually do something for each animation step.</p>
+<h2>Textures and Resources</h2>
+<p>One of the many cool features of OpenGL is the support for texture mapping. This is of course supported by JOGL. In the C-language implementation, using textures requires a  dozen calls of various types to load the texture, set up the mapping and so on. JOGL is pretty much the same. However, the group at Sun has added some utilities that make it much simpler.</p>
+<p>First, you have to load the texture. I struggled with this a bit at the beginning because Eclipse's management of resources is a bit arcane (and poorly documented). However, I finally figured out the right way to do it. </p>
+<p>Resources need to be stored in a folder that is a child of the project's base resource folder, typically named 'src'. The resources can also be stored as a child of the output folder, typically named 'bin' but this is less convenient since the bin folder is not normally reflected in the source-code control system (e.g. CVS or subversion, etc.). </p>
+<p>So just put your image files (or any other resources you need) in that folder, which I imaginatively name 'resource') . Then, be sure to refresh your project - otherwise Eclipse won't know about the folder or its contents. The to load your file, get the classloader to do the work for you:</p>
+<p class="code-example">GLScene.class.getClassLoader().getResource(filename)<br />
+</p>
+<p>This returns a URL, which you can pass directly to the Texture creation utility. The GLScene class implements a method, createTexture that makes this all simple.</p>
+<p class="code-example"> protected Texture createTexture( String filename, int filterParm, boolean mipmap )<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;Texture t = null;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;try<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t = TextureIO.newTexture(GLScene.class.getClassLoader().getResource(filename), mipmap, null);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, filterParm);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, filterParm);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;catch (IOException e)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println(&quot;Error loading &quot; + filename);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;catch (Exception e)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println(&quot;Exception while loading &quot; + filename);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;return t;<br />
+}<br />
+</p>
+<p>The filterParm is the value normally passed to glTexParameteri(), e.g. GL_NEAREST, GL_LINEAR or GL_LINEAR_MIPMAP_NEAREST. If mipmap is true, then the texture is mipmapped. Note that Texture supports GIF, JPEG, PNG and TIFF (and some of the funky old SGI formats) but not Microsoft's BMP. But Texture does have a TextureProvider subclass which you can implement easily enough if you don't want to convert your images themselves.</p>
+<p>Using the texture is pretty straightforward. To map the texture onto a cube face, for example:</p>
+<p class="code-example">TextureCoords tc = texture.getImageTexCoords();
+		<br />
+  float tx1 = tc.left();
+		<br />
+  float ty1 = tc.top();
+		<br />
+  float tx2 = tc.right();
+		<br />
+  float ty2 = tc.bottom();
+
+		<br />
+		<br />
+  int imgw = texture.getImageWidth();
+		<br />
+  int imgh = texture.getImageHeight();
+		<br />
+		<br />
+  float 	h = 1.0f;
+		<br />
+  float   w = 1.0f;
+		<br />
+  if (imgw > imgh)
+		<br />
+  h = ((float) imgh) / imgw;
+  <br />
+  
+else
+  <br />
+  w = ((float) imgw) / imgh;
+  <br />
+  <br />
+  texture.enable();
+  <br />
+  texture.bind();
+		
+  <br />
+  <br />
+  gl.glBegin(GL.GL_QUADS);<br />
+  <br />
+  gl.glTexCoord2f(tx1, ty1);
+  <br />
+  gl.glVertex3f(-w, h, 0f);<br />
+  <br />
+  gl.glTexCoord2f(tx2, ty1);
+  <br />
+  gl.glVertex3f(w, h, 0f);
+		
+  <br />
+  <br />
+  gl.glTexCoord2f(tx2, ty2);
+  <br />
+  gl.glVertex3f(w, -h, 0f);
+		
+  <br />
+  <br />
+  gl.glTexCoord2f(tx1, ty2);
+  <br />
+  gl.glVertex3f(-w, -h, 0f);
+		
+  <br />
+  <br />
+  gl.glEnd();<br />
+</p>
+<p>Note that this example even takes care of cases where the texture-image is not square. Using non-square images is a performance hit, but sometimes useful. Another important aspect to note is that the texture needs to be enabled and bound (the equivalent of the same calls in C). Finally, if you look closely at the TexCoord calls, you'll note that the X coords look normal, but the Y coords seem to be inverted - the top of the texture is mapped to the bottom of the face and the bottom is mapped to the upper right of the face. This is because the texture is mapped in the Java2D space which, like a lot of 2D geometries, is mapped like a CRT with the origin at the upper left and Y values increasing as one goes down the screen (For you kids, this is because that is how the old cathode ray tubes worked, starting the sweep at the top and sweeping down :-). So by default, your textures will be inverted unless you correct for that.</p>
+<h2>Rendering Text</h2>
+<p>Last but not least is text. As I mentioned in the first tutorial, good text rendering was one of my major requirements. JOGL does a pretty good job of providing text capabilities by basically mapping the Java2D text rendering into the OpenGL space. As a result of this approach, the text is two-dimensional (i.e. there is no thickness) but is fine for most purposes - spinning extruded text may look cool but isn't that useful.</p>
+<p>Using the renderer is pretty straightforward. To intialize (from the JOGL demos TextCube):</p>
+<p class="code-example">renderer = new TextRenderer(new Font(&quot;Times New Roman&quot;, Font.TRUETYPE_FONT, 72), true, true);<br />
+    <br />
+// Compute the scale factor of the largest string which will make<br />
+// them all fit on the faces of the cube<br />
+Rectangle2D bounds = renderer.getBounds(&quot;Bottom&quot;);<br />
+float w = (float) bounds.getWidth();<br />
+ float h = (float) bounds.getHeight();<br />
+textScaleFactor = 1.0f / (w * 1.1f);<br />
+</p>
+<p>A couple of comments. The text renderer takes a normal AWT font, so it can be either a so-called &quot;logical&quot; font, which is platform specific, or it can be an actual facename (e.g. Times New Roman or Palatino). Secondly, the two flags at the end of the call are for anti-aliasing and fractional metrics, respectively. Anti-aliasing is a very good idea in almost all cases except where performance is paramount (though I suspect that anti-aliasing probably gets lost in the noise performace-wise). The fractional metrics flag controls whether characters are always spaced an incremental number of pixels apart or are placed as closely as possible to the location where they would be if the screen had infinite resolution. In general, fractional metrics make sense for high-resolution devices, but not if you are targeting low resolution devices like phones or PDAs.</p>
+<p>Once you have initialized the renderer, you're ready to draw.</p>
+<p class="code-example">renderer.begin3DRendering();<br />
+    <br />
+Rectangle2D bounds = renderer.getBounds(text);<br />
+float w = (float) bounds.getWidth();<br />
+float h = (float) bounds.getHeight();<br />
+<br />
+renderer.draw3D(text, w / -2.0f * textScaleFactor, h / -2.0f * textScaleFactor, halfFaceSize, textScaleFactor);<br />
+<br />
+renderer.end3DRendering();<br />
+</p>
+<p>Note that the code is getting the bounding box so it can offset the text by half the height and width so it centers the text on the face of the cube. This is needed because the draw3D code places the baseline of the leftmost          character at position (x, y, z) in the current          coordinate system.</p>
+<p>One aspect to bear in mind with this text-rendering approach is that what it is doing under the covers is rendering the glyphs (characters) in an offscreen buffer and creating a texture with them. The texture is then mapped into your scene. The gotcha with this is that the resulting text is effectively a fixed size texture so the glyphs are effectively bitmapped. Turning on anti-aliasing will help, but if you are going to be zooming in on the text, it's going to pixelate at some point.</p>
+<p><i>(I am working on some true vector text support leveraging the the TextRenderer object and will report on that when it is baked)</i></p>
+<h2>Next Steps</h2>
+<p>So that's pretty much a complete coverage of the GLScene class and its usage. I could dig into further, but you have the source code, so you can explore on your own. Feel free to send me questions or suggestions at <a href="mailto:rkwright@geofx.com?subject=Comment on OpenGL and Eclipse - Part 2">rkwright@geofx.com</a>.</p>
+<p>The next part of this series is an OpenGL-enabled Eclipse perspective. For my purposes, it allows me to write visualization models easily with both OpenGL and 2D SWT windows for displaying data. But that's a work in progress - this isn't my day job, so it gets worked on when I can stay up late enough!</p>
+   <!--#include virtual="/includes/footer.shtml" -->
+</div>
+
+</body>
+</html>

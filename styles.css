@@ -1,0 +1,409 @@
+@charset "UTF-8";
+/* CSS Stylers for the geofx-pages */
+body {
+   		margin: 0px;
+        margin-top: 0px;
+        margin-right-value: 0px;
+        margin-bottom: 0px;
+        margin-left-value: 0px;
+        margin-left-ltr-source: physical;
+        margin-left-rtl-source: physical;
+        margin-right-ltr-source: physical;
+        margin-right-rtl-source: physical;
+   		padding: 0px;
+        padding-top: 0px;
+        padding-right-value: 0px;
+        padding-bottom: 0px;
+        padding-left-value: 0px;
+        padding-left-ltr-source: physical;
+        padding-left-rtl-source: physical;
+        padding-right-ltr-source: physical;
+        padding-right-rtl-source: physical; 
+		font-family: Verdana,Arial,Helvetica,"Nimbus Sans L",sans-serif;
+		font-size:16px;
+}
+
+/* =Reset
+-------------------------------------------------------------- */
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: 0;
+}
+
+ /*
+html,
+body,
+div{
+    margin: 0;
+    padding: 0;
+}
+*/
+
+/* =Color
+-------------------------------------------------------------- */
+/* 
+#header{
+     background: #cccccc; 
+}
+ 
+#main{
+    background: #dddddd;   
+}
+*/
+
+/* =Structures
+-------------------------------------------------------------- */
+ 
+.wrap{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0em;
+}
+ 
+#primary{
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+/* -------------------------------------------------------------- */ 
+
+h2
+{
+	
+}
+
+h3
+{
+	font-variant:small-caps
+}
+
+.textbox_div { 
+	 margin:4em;
+	 position: relative; 
+	 top:2 em;
+	 width:60%;
+}
+
+.lesson_link {
+	test-align:left;
+}
+
+.lesson_img {
+	width:60px;
+}
+
+.text_div{ 
+	 margin:2em;
+	 position: relative; 
+	 top:1 em;
+	 width:80%;
+}
+
+.siteInfo{
+	clear: both;
+	_border: 1px solid #cccccc;
+	font-size: 75%;
+	color: #cccccc;
+	padding: 10px 10px 10px 10px;
+	margin-top: 0px;
+}
+
+.code-example    
+{
+	font-size: small;
+	font-family: "Lucida Console", "Courier New", Courier, Monaco, monospace;
+	background-color: #FFFFCC;
+	padding: 10 px;
+	border: solid 1px #000;
+	border-collapse: collapse;
+	border-spacing: 10 px;
+	padding: 1em;
+	margin-left: 2em;
+}
+
+.warning    
+{
+	font-size: 0.75em;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFEEFF;
+	margin: 4 em;
+	padding: 10 px;
+	border: solid 1px #000;
+	border-collapse: collapse;
+	border-spacing: 10 px;
+	padding: 1em;
+}
+
+.summary tr {
+	height:14px;
+}
+
+.fxl_content {
+	position: absolute;
+	top: 109px;
+	left: 3px;
+	width: 556px;
+	height: 995px;
+	border: solid 1px #CCC;
+	background-color: #FFFFFF;
+	overflow: hidden;
+	margin: 0em;
+	padding: 1em;
+}
+ navigation ------------- 
+ #banner {   background: none repeat scroll 0% 0% rgb(255,255,255);
+        background-color: rgb#FFF;
+        background-image: none;
+        background-repeat: repeat;
+        background-attachment: scroll;
+        background-position: 0% 0%;
+        background-clip: border-box;
+        background-origin: padding-box;
+        background-size: auto auto;
+		margin:0;
+}
+
+#normal_div { 
+	 margin:3em;
+	 position: relative; 
+	 top:2em;
+	 width:60em;
+}
+
+#textbox_div { 
+	 margin:4em;
+	 position: relative; 
+	 top:2 em;
+	 width:60%;
+}
+
+#nav {
+	width: 100%;
+	float: left;
+	margin: 0 0 0em 0;
+	padding: 0 0 0 0;
+	list-style: none;
+	background-color: rgb(211,228,233);
+	border-bottom: 0px solid #ccc; 
+	border-top: 0px solid #ccc; 
+	}
+#nav li {
+	float: left; }
+#nav li a {
+	display: block;
+	padding: 8px 15px;
+	text-decoration: none;
+	font-weight: bold;
+	color: rgb(153,192,203);
+	_border-right: 1px solid #ccc; }
+#nav li a:hover {
+	color: #fff;
+	background-color: rgb(153,192,203); }
+
+pre
+	{
+	display:block;
+	background: #FFFFcc;
+	border: solid 1px;
+	padding-top: 0.5em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-bottom: 0.5em;
+	margin-right: 1%;
+	margin-left: 1%;
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+	border-color: rgb(204,204,204);
+	font-size:90%;
+	}
+
+.note
+	{
+	display:block;
+	background: rgb(255,235,255);
+	border: solid 1px;
+	padding-top: 0.5em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-bottom: 0.5em;
+	margin-right: 1%;
+	margin-left: 1%;
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+	border-color: rgb(204,204,204);
+	font-size:90%;
+	}
+.symbol {
+	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
+	font-size: 100%;
+	display: inline;
+}
+	
+.codeword {
+	font-family: "Lucida Console", Monaco, monospace;
+	font-size: 100%;
+	font-weight:600;
+}
+	
+p img .border
+{
+    border: 1px solid;
+	border-color: rgb(204,204,204);
+}
+
+/*---------------------*/
+    .navigation > ul{
+        display: -webkit-box;
+        -webkit-box-orient: horizontal;
+
+        display: -moz-box;
+        -moz-box-orient: horizontal;
+
+        display: box;
+        -moz-box-orient: horizontal;
+    }
+	
+    .navigation ul{
+        list-style :none;
+        margin:0; 
+        padding:0; /* gets rid of any inherited margins and padding */
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: normal;
+        position:relative;
+        z-index:1000;
+        width:600px;
+    }
+    .navigation > ul > li { 
+        position : relative;
+        float : left;
+
+        font-size: 15px; /* this is here and not above, so that the subs can be made smaller using a % if desired */
+
+        -webkit-box-flex: 1;
+        -moz-box-flex: 1;
+        box-flex: 1;
+    }
+
+    .navigation > ul > li + li{
+        margin-left:5px;
+    }
+    .navigation > ul > li > a {
+        background-color: #2c2c2c; /*  grey */
+        display:block;
+        padding:8px 14px;
+        text-decoration:none;
+        color:#aaaaaa; 
+
+        /* make the background-color fade in on roll-over */
+        -webkit-transition: background-color 0.3s ease;
+        -moz-transition: background-color 0.3s ease;
+        -o-transition: background-color 0.3s ease;
+        -ms-transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease;
+
+
+    }
+    .navigation > ul > li > a:hover{
+        background-color:#666666; /* grey */
+        color:#eeeeee; /* light grey */
+    }
+
+
+    /* the show/hide effects */
+    /* the drop-down box */
+
+    .navigation ul ul{
+
+        /* background-color:#e6056f;  remove. this is for illustration purposes only */
+        width:340px; /* you need a width to accomodate tertiary menus */
+
+        position:absolute;
+        z-index:100;
+
+        height: 0;
+        overflow: hidden;
+        -webkit-transition: height 0.3s ease-in;
+        -moz-transition: height 0.3s ease-in;
+        -o-transition: height 0.3s ease-in;
+        -ms-transition: height 0.3s ease-in;
+        transition: height 0.3s ease-in;
+    }
+
+
+    /* don't display tertiary box yet */
+    .navigation > ul > li:hover ul ul, .navigation > ul > li > a:hover ul ul{
+        height:0px;
+
+    }
+    /* tertiary drop-down box */
+    .navigation ul ul ul{
+        left:170px;
+        width:170px;
+    }
+
+    .navigation > ul > li:hover ul, .navigation > ul > li > a:hover ul,
+    .navigation ul ul li:hover > ul, .navigation ul ul li a:hover > ul{
+        height:220px;
+
+    }
+
+    /* drop-down item styles */
+    .navigation ul ul li{
+        background-color:#eaeaea; /* grey */
+        width:170px;
+
+        /* make the background-color fade in on roll-over */
+        -webkit-transition: background-color 0.3s ease;
+        -moz-transition: background-color 0.3s ease;
+        -o-transition: background-color 0.3s ease;
+        -ms-transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease;
+
+    }
+    /* unfortunate ie7 gap fix */
+    .ie7 .navigation ul ul li{
+        margin-bottom:-3px;
+    }
+    .navigation ul ul li:hover {
+        background-color:#999;
+    }
+
+    .navigation ul ul li a {
+        display:block;
+        text-decoration:none;
+        margin:0 12px;
+        padding:5px 0;
+        color:#4c4c4c; /* grey */
+
+    }
+
+    /* The following six rules set the lines in between menu items.
+       To make this play nice in IE, we will not be using nth-child
+       but the "+" sibling slector.
+    */
+    .navigation ul ul ul li a{
+        border:none !important;
+    }
+    .navigation ul ul ul li + li a{
+        border-top:1px dotted #999 !important;
+    }
+    .navigation ul ul li + li a{
+        border-top:1px dotted #999;
+    }
+    .navigation ul ul li:hover + li a{
+        border-top:1px solid #eaeaea;
+    }
+    .navigation ul ul ul li:hover + li a{
+        border: 0 !important;
+    }
+    .navigation ul ul ul li:hover + li{
+        border-top:1px solid #999 !important;
+    }
+
+
+    .navigation ul ul li a:hover, .navigation ul ul li:hover > a {
+        color:#ffffff; /* white */
+	}

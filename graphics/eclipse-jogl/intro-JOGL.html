@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Digital Publishing, EPUB, Graphics, GIS Consulting</title>
+<link href="../../styles.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="../../images/favicon.png" type="image/png" />
+</head>
+<body>
+	<!--#include virtual="../../includes/banner_nav.shtml" -->
+<div class="text_div">
+<p class="warning">Just a warning:  This is very old.  I provide it only for legacy's sake.  These  days, please look into <a href="https://www.khronos.org/webgl/">WebGL</a> and <a href="http://threejs.org/">Three.js.</a></p>
+
+<h2>Introduction to Eclipse and JOGL</h2>
+<p>In my spare time, I like to pursue my previous vocation as an earth scientist. I don't really have the time or scope to do field research, so I tend to play with computer models. Once I start getting results from some exploration, I like see what the result looks like. Sometimes a set of 2D graphs are sufficient, but sometimes I like to see three dimensional models. I did a lot of OpenGL work at one time (see some of the examples elsewhere on my site). I did that work in C++, but lately I have had some fun exploring Java. So I thought it would be fun to combine OpenGL and Java. I use Eclipse in my work on a daily basis so naturally I thought I'd check out OpenGL in Eclipse. This turned out to be a rather arduous and somewhat convoluted journey. As usual with Eclipse, documentation and tutorials were somewhat sketchy. But I have finally gotten to the point where I have the tools I need and can go back to what I started this all for - my modelling. But since I spent all this time figuring out how to do this in Eclipse, I though I would share my experience.</p>
+<p>It's important to note that this article (and the others in this group) are not intended as tutorials in OpenGL. That's beyond my scope. I'll leave that to others more knowledgeable than I. I'll touch on some of that in passing, but to really understand OpenGL, dig into the Red Book, NeHe and other sources.</p>
+<p>The complete sources are <a href="CompositeView_20080606.zip">here</a>.</p>
+<h2 >Acknowledgements</h2>
+<p >I'd like to thank several people who gave me good advice along the way, including Bo Majewski (now of Google), Laurent M. and Ken Russel (Sun), who is currently the keeper of the JOGL flame. I also learned a fair amount from  scoping out the fine work by <a href="http://pepijn.fab4.be/software/nehe-java-ports/">Pepijn Van Eeckhoudt</a> and from the excellent work by all the contributors at <a href="http://nehe.gamedev.net/">NeHe</a>. Many thanks to all these folks and others who have published tutorials and comments on the web. Any errors are of course my own.</p>
+
+<p class="warning"><b>Helping Out:</b> If (when!) you see any errors, omissions, or misleading info, please let me know. I am always willing to learn and want to make these tutorials as accurate and helpful as possible. <a href="mailto:rkwright@geofx.com?subject=Comments on OpenGL with JOGL">rkwright@geofx.com</a>. TIA.</p>
+<p>&nbsp;</p>
+<h2 >Flavors of OpenGL in Eclipse</h2>
+<p >It turns out there are several flavours of OpenGL support in Eclipse. A summary page is <a href="http://www.eclipse.org/swt/opengl/">here</a>. There is native SWT support, LightWeight GL support (LWGL) and Java OpenGL (JOGL). I'll confess that I didn't try LWGL beyond a little reading, but I did experiment a fair amount with SWT before switching to JOGL.</p>
+<h3 class="h2">Native SWT Support</h3>
+<p >WIth the release of Eclipse 3.x, Eclipse added native support for OpenGL. The OpenGL support consists of two parts:</p>
+<ul>
+    <li>An implementation (wrapper) for the actual drawing surface</li>
+    <li>A set of method mappings</li>
+</ul>
+<p>The actual OpenGL support is actually as native libraries written in C/C++ (and shader library languages). So, for the first part, the Java implementation  has to wrap the actual drawing surface and handle the various events (mouse, paint, resize, etc.).  For the second part, the Java OpenGL implementation has map the appropriate Java representation of the C method signature  and make the JNI call across to the binary library. </p>
+<p >What Eclipse 3.x provided was a SWT implemenation of the &quot;canvas&quot;, called a GLCanvas. The properties of the surface were represented in another object, the GLCapabilities. One can instantiate a GLCanvas from a given Composite, then handle the events and do the usual GL drawing. You can find an excellent article about this <a href="http://www.eclipse.org/articles/Article-SWT-OpenGL/opengl.html" >here</a> by Bo Majewski. </p>
+<p >The problem with the Eclipse implementation, as I found out, was that it isn't complete. Eclipse has implemented a wrapper for the drawing surface (GLCanvas), exposed some of the parameters of the surface through the GLCapabilities object, but they have only implemented most of the base GL methods and few of the more advanced capabilities (mesh evaluation, NURBs, etc.). More importantly, there is one glaring weakness: lack of good text support. For some OpenGL users, this isn't a deal-breaker, but because I am interested in scientific visualization modelling, a method for drawing text quickly and easily is essential.</p>
+<h3 >JOGL</h3>
+<p >Fortunately, there is a very good alternative: the Java™  Binding for the OpenGL® API or <a href="https://jogl.dev.java.net/">JOGL</a>.  JOGL is a formally supported extension to Java designated as <a href="http://jcp.org/en/jsr/detail?id=231">JSR 231</a>. JOGL provides full access to (almost all of) the APIs in the OpenGL  2.0 specification as well as nearly all vendor extensions, and  integrates with the both AWT and Swing widget sets. It is part of a suite  of open-source technologies initiated by the Game Technology Group at  Sun Microsystems.</p>
+<p >The downside of JOGL is that it uses AWT for its binding to the underlying graphics and event handling, rather than SWT. This doesn't mean that it can't be used with Eclipse, but it does mean that one has to use the rather heavyweight AWT Frame to hook into it. But this doesn't impose any major problems so it works very nicely within Eclipse.</p>
+<p >The rest of this article will detail my exploration and lessons in getting JOGL to work well within Eclipse.</p>
+<h2 >Getting JOGL</h2>
+<p>Getting JOGL is relatively easy. You can download it from <a href="https://jogl.dev.java.net/servlets/ProjectDocumentList?expandFolder=8767&amp;folderID=9260">here</a>. The 1.1.1 version was recently (May 2008) released. You'll want to download:</p>
+<ul><ul><li><a href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1/jogl-1.1.1-windows-i586.zip"> jogl-1.1.1-windows-i586.zip</a> (or the appropriate file for your OS)</li>
+    <li><a href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1/jogl-1.1.1-src.zip"> jogl-1.1.1-src.zip</a></li>
+    <li><a href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1/jogl-1.1.1-docs.zip"> jogl-1.1.1-docs.zip</a></li>
+  </ul>
+</ul>
+<p>You may also want to download the demos and their sources for reference:</p>
+<ul>
+  <ul>
+    <li><a href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1/jogl-demos.zip"> jogl-demos.zip</a></li>
+    <li><a href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1/jogl-demos-src.zip"> jogl-demos-src.zip</a></li>
+  </ul>
+</ul>
+<h2>Setting up JOGL</h2>
+<p>Installing JOGL is easy. The following is for Windows only. (TODO: Mac and Linux)</p>
+<p>Unzip the contents of the binary zip file (e.g.  jogl-1.1.1-windows-i586.zip) to some folder. I just put the package contents in the root of C: with the default path, e.g. C:\jogl-1.1.1-windows-i586. Then copy the src.zip to that folder (I create a separate subfolder named src, but this isn't required). </p>
+<p>Finally, copy the javadoc zip file (i.e. jogl-1.1.1-docs.zip) and  to the jogl folder . I put it in a new folder named javadoc, but this isn't actually required. You can get to the same docs online <a href="http://download.java.net/media/jogl/builds/nightly/javadoc_public/index.html">here</a>. Both the src and doc steps are optional, but I find them handy.</p>
+<p>Finally, edit your path variable (Control Panel/Settings/System) and add the path to the lib folder in your JOGL binary folder to the system path, e.g. in my case C:\jogl-1.1.1-windows-i586\lib.</p>
+<p>That's all you have to do at the OS level. There is a little more setup required on a per project level in Eclipse, which I'll cover in the next section.</p>
+<h2>Java3D</h2>
+<p>You will find some of the JOGL demos floating around also require Java3D. Actually, what they require is some limted pieces of the linear algebra support (javax.vecmath) that is in Java3D. The whole area of numerical support is (like text and graphics) one of the sore points with Java. There have been a raft of proposals about supporting numerical computation, but no real standard library exists. This is largely because while everyone agrees on the simple aspects (1 and 2D math), how to handle the more estoric aspects 4x4 matrix math, exceptions, etc. lead to long wrangles.</p>
+<p>The net net is that there isn't (to my knowledge) a good standard vector math library. I currently use java3D's vecmath but am looking for a simpler solution - i.e. one that doesn't drag in a bunch of unneeded 3D APIs.</p>
+<p>To get Java3D for Eclipse, go <a href="http://java3d-eclipse.sourceforge.net/">here</a>. And instructions for installing it are <a href="http://java3d-eclipse.wiki.sourceforge.net/Installing+java3d-eclipse+plug-in">here</a>.</p>
+<h1 >A Simple View</h1>
+<h2 >Setting Up</h2>
+<p >Always good to start simple. So I started by just trying to create Hello World in OpenGL. I wanted to create a plugin with a view, so I used the plugin development wizard in Eclipse to create a simple view project with no actions, menus or anything. You can download the complete source for the project  here.</p>
+<p >This ends up creating a very simple project with two files, an Activator (which controls the life of the plugin) and a View.</p>
+<p >Once the project is created, you need to let it know about JOGL. </p>
+<p >Navigate to where you installed JOGL. In the Lib folder are the jars, jogl.jar and gluegen-rt.jar. Copy both of these. Go to where your Eclipse project is located. Create a new folder there in the root of the project (as a peer to src and bin) named &quot;lib&quot;. Copy the jars folder into that new folder.</p>
+<p >Now, right-click on the name of the project in the package explorer and select &quot;Properties&quot;. This will open the properties for the project. Select &quot;Build Path&quot;, then go to the libraries tab. This should show you a window with two items, the JRE aand the &quot;plugin dependencies&quot; (of which there are a whole bunch). </p>
+<p >Press the &quot;Add Jars...&quot; button. This will open a dialog with at least one project listed - yours. Click to open the tree and it should show you the folder your created, i.e. &quot;lib&quot;. Open that and you should see the two jars you put there. Select both and press OK. Now you should be back in the libraries tab of your build properties dialog, with your two jars there.</p>
+<p >Open both jars by clicking the tree control beside their name. A number of items are shown, Source attachement, Javadoc location, Native library location, and Access rules. For each of the jars, do the following:</p>
+<ul>
+    <li>Click on the &quot;Source attachement&quot; item then press &quot;Edit...&quot; and navigate to where the source zip file is. It doesn't have to be unzipped - Eclipse will do that. Select the zip file and you're done.</li>
+    <li>Select &quot;Javadoc location&quot; and press &quot;Edit...&quot;. Choose the option &quot;Javadoc in archive&quot;. Then press &quot;Browse...&quot; next to the Archive location field. Navigate to where the javadoc zipfile is, select it and press OK. Now press &quot;Browse...&quot; next to the &quot;Path location within archive&quot; field. It will show you the path to the archive as the root of a tree control. Open the tree one level, which will show &quot;jogl-1.1.1-docs&quot;. Select that and press OK. then press OK back in the dialog and you're done.</li>
+    <li>Select &quot;Native Library location&quot; then press &quot;Edit&quot;. Navigate to where JOGL is installed and select the &quot;Lib&quot; folder. Select that and press OK. <i>[One might ask why one has to set both the Path to the Lib folder in the environment AND have to also set the location of the native library in the project. To be honest, I don't know :-) ]</i></li>
+</ul>
+<p>Do this for both jars and your library pane should look like this:</p>
+<p><img src="images/Build_Props_JOGL.jpg" alt="Build Properties" width="853" height="539" /></p>
+<p>OK, the project is set up. Now for the code.</p>
+<h2 >The Activator</h2>
+<p >The default Activator is fine. You can just leave it be.</p>
+<h2 >The View</h2>
+<p >The view is also relatively simple. There are two key parts:</p>
+<ul>
+    <li>Instantiating the GLCanvas and setting it in the frame</li>
+    <li>Implementing GLEventListener</li>
+</ul>
+<p>The first part is setting up the canvas. This is done in the callback to the Eclipse ViewPart method, &quot;CreatePartControl&quot;. This method gets passed the Composite that is the SWT control contained within the ViewPart. This is the control that we use to contain in the GLCanvas. </p>
+<p>But it is a little more complicated than that. Because we have to use AWT as the actual container for the JOGL GLCanvas object, we need to use the special bridge object that Eclipse provides to get us the AWT Frame that holds the GLCanvas object. Moreover, the bridge requires that the Composite control that provides the bridge with the hooks for the bridge has the property SWT.EMBEDDED. So we can't use the Composite that is passed to CreatePartControl(). Instead we need to instantiate another Composite as a child of the original and pass that one to the new_Frame method. Here's what the code looks like.</p>
+<p class="code-example"cellpadding="10"> // this allows us to set particular properties for the GLCanvas<br />
+  glCapabilities = new GLCapabilities();<br />
+    <br />
+    // we don't need either of these, just an example<br />
+glCapabilities.setDoubleBuffered(true);<br />
+glCapabilities.setHardwareAccelerated(true);<br />
+<br />
+// instantiate the canvas<br />
+this.canvas = new GLCanvas(glCapabilities);<br />
+<br />
+    // we can't use the default Composite because using the AWT bridge<br />
+    // requires that it have the property of SWT.EMBEDDED<br />
+    Composite composite = new Composite(parent, SWT.EMBEDDED);<br />
+    <br />
+    // set the layout so our canvas fills the whole control<br />
+    composite.setLayout(new FillLayout());<br />
+    <br />
+// create the special frame bridge to AWT<br />
+java.awt.Frame glFrame = SWT_AWT.new_Frame(composite);<br />
+<br />
+// we need the listener so we get the GL events<br />
+this.canvas.addGLEventListener(this);<br />
+<br />
+// finally, add our canvas as a child of the frame<br />
+glFrame.add(this.canvas);</p>
+
+<p>Now we have the GLCanvas set up, so we need to actually make it render. To do this, we require that the view implement the GLEventListener interface. Once we do that, we need to implement the required methods:</p>
+<ul>
+  <li>init - handles all the one-time initialization</li>
+  <li>reshape - when the geometry of the container window-frame changes</li>
+  <li>display - actually updating the display</li>
+  <li>displayChanged - called when the underlying device changes (not used normally)</li>
+</ul>
+<p>The last, displayChanged, is called extremely rarely (or never) and, in fact, the reference implementation by Sun does not implement this. You can safely skip this one in your code (unless you need to change the color depth in the middle of the application...).</p>
+<p>The init routine is used to set up all the one-time rquirements for our view. Here's the code we use in this example:</p>
+<p class="code-example">public void init(GLAutoDrawable drawable)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;GL gl = drawable.getGL();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glShadeModel(GL.GL_SMOOTH);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glClearDepth(1.0f);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glEnable(GL.GL_DEPTH_TEST);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glDepthFunc(GL.GL_LEQUAL);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);<br />
+}<br />
+</p>
+<p>Note that we get the GL component from the &quot;GLDrawable&quot; object passed in by the JOGL machinery. It is important to note that this object is specific to the thread we are on and cannot be saved or used outside of the method being called. This is particularly important when handling other events, like mouse and keyboard events. more on this in the next installment of the tutorial.</p>
+<p>Next is the reshape() method. This is called whenever the containing control is resized. We essentially take the geometry of the container and force OpenGL to recalculate the 3D geometry of the view. In this case it looks like this:</p>
+<p class="code-example">public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;GL gl = drawable.getGL();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;final GLU glu = new GLU();
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glViewport(0, 0, width, height);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glMatrixMode(GL.GL_PROJECTION);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glLoadIdentity();
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;glu.gluPerspective(45.0f, (double) width / (double) height, 0.1f, 1000.0f);
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glMatrixMode(GL.GL_MODELVIEW);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glLoadIdentity();
+  <br />}</p>
+
+<p>Finally, let's actually draw the scene. </p>
+<p class="code-example">public void display(GLAutoDrawable drawable)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;GL gl = drawable.getGL();
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gl.glLoadIdentity();<br />
+<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glTranslatef(-1.5f, 0.0f, -6.0f);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glRotatef(pyramidRotation, 0.0f, 1.0f, 0.0f);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;drawPyramid(gl);<br />
+  <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glLoadIdentity();<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glTranslatef(1.5f, 0.0f, -7.0f);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gl.glRotatef(cubeRotation, 1.0f, 1.0f, 1.0f);<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;drawCube(gl);<br />
+  }</p>
+<p>This is pretty straightforward. We get the GL object, then clear the view. We reset the matrix, the translate to the left and draw the pyramid. Then we translate to the right and draw the cube. </p>
+<p>That's it. We now have JOGL working in Eclipse. This is a good start. It's a little simplistic, but all the basic pieces are present. We set up the environment, set up the project, created the frame and canvas and finally implemented the necessary event handlers.</p>
+<p>In the <a href="opengl-scene.html">next part</a> of this tutorial, we'll expand this simple example to a much more complex one that supports more complex examples, showing how to handle mouse and keyboard events as well as how to use the dynamic aspects of Java to do some interesting tricks.</p>
+<h1>&nbsp;</h1>
+</p>
+</div>
+   <!--#include virtual="/includes/footer.shtml" -->
+
+</body>
+</html>
