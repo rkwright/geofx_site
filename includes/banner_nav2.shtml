@@ -1,0 +1,81 @@
+<div id="banner" >
+	<img src="/images/Banner.png" width="100%"  alt="" />   
+</div>
+
+
+       				<!-- Nav -->
+				<nav class="nav">
+					<ul class="nav-list">
+					    <li class="nav-item">
+							<a href="?=about">Homer</a>
+						</li>
+						<li class="nav-item">
+							<a href="/index.html">Digital Publishing</a>
+							<ul class="nav-submenu">
+								<li class="nav-submenu-item">
+									<a href="/publishing/readium.html">Readium</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/publishing/epub.html">EPUB</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/publishing/ebooks.html">eBooks</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/publishing/svg.html">SVG</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a href="?=services">Graphics</a>
+							<ul class="nav-submenu">
+								<li class="nav-submenu-item">
+									<a href="/graphics/nehe-three-js/nehe-three-js.html">NeHe-Three.js</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/graphics/epub-webgl/epub-webgl.html">EPUB-WebGL</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/graphics/eclipse-jogl/eclipse-jogl.html">Eclipse-JOGL</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a href="?=services">GIS</a>
+							<ul class="nav-submenu">
+								<li class="nav-submenu-item">
+									<a href="/gis/contouring/contouring.html">Contouring</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/gis/projections/projections.html">Projections</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/gis/simulations/simulations.html">Simulations</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/gis/sculpture/bronze-sculptures.html">Sculpture</a>
+								</li>
+							</ul>
+						</li>
+					<li class="nav-item">
+							<a href="?=services">About</a>
+							<ul class="nav-submenu">
+								<li class="nav-submenu-item">
+									<a href="/about/about.html">About Geo-F/X</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/about/pro-bono.html">Pro Bono Activities</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/about/rkw_resume.html">Resumé</a>
+								</li>
+								<li class="nav-submenu-item">
+									<a href="/about/contacts.html">Contacts</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</nav>
+				<!-- /Nav -->
+
+   <hr/>	 
