@@ -10,10 +10,13 @@ a,
 a:hover {
 	text-decoration:none;
 }
-ul,
-ol {
+nav ul,
+nav ol {
 	list-style:none;
 }
+
+ul { padding-left: 2em; }
+
 .wrapper {
 	max-width:1280px;
 	width:95%;
