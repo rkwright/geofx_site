@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
-	<head>
-		<title>NeHe-Lesson 4</title>
+<head>
+		<title>NeHe - Lesson 05</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 
-		<!-- The following meta line sets the size of the fixed viewport for
-                     a pre-paginated EPUB page -->
+		<!-- The following meta line optimizes the site for mobile devices. It sets the viewport size
+		to the screen size, so it will be displayed maximized, but unscaled. -->
 		<meta name="viewport" content="width=768, height=1024"/>
 		<style type="text/css">
 			body {
@@ -28,30 +28,27 @@
 		<div id="WebGLCanvas">
 
 		<!-- This JavaScript block encloses the Three.js commands -->
-		<script>
+		<script type="text/javascript"> //<![CDATA[
 			// Global scene object
 			var scene;
 
 			// Global camera object
 			var camera;
 
-			// Global mesh object of the triangle
-			var triangleMesh;
+			// Global mesh object of the pyramid
+			var pyramidMesh;
 
-			// Global mesh object of the square
-			var squareMesh;
+			// Global mesh object of the cube
+			var cubeMesh;
 
 			// Initialize the scene
 			initializeScene();
-
-			// Instead of calling 'renderScene()', we call a new function: 'animateScene()'. It will
-			// update the rotation values and call 'renderScene()' in a loop.
 
 			// Animate the scene
 			animateScene();
 
 			/**
-			 * Initialze the scene.
+			 * Initialize the scene.
 			 */
 			function initializeScene(){
 				// Check whether the browser supports WebGL. If so, instantiate the hardware accelerated
@@ -61,11 +58,10 @@
 				// viewed in browsers, which don't support WebGL. The limitations of the canvas renderer
 				// in contrast to the WebGL renderer will be explained in the tutorials, when there is a
 				// difference.
-				if(Detector.webgl){
+				if (Detector.webgl){
 					renderer = new THREE.WebGLRenderer({antialias:true});
 
-				// If its not supported, instantiate the canvas renderer to support all non WebGL
-				// browsers
+				// If its not supported, instantiate the canvas renderer to support all non WebGL browsers
 				} else {
 					renderer = new THREE.CanvasRenderer();
 				}
@@ -73,7 +69,7 @@
 				// Set the background color of the renderer to black, with full opacity
 				renderer.setClearColor(0x000000, 1);
 
-				// Set the size of the fixed page
+				// Get the size of the inner window (content area) to create a full size renderer
 				canvasWidth = 768;
 				canvasHeight = 1024;
 
@@ -100,11 +96,11 @@
 				// ... aspect ratio (usually set to the quotient of canvas width to canvas height)
 				// ... near and
 				// ... far.
-				// Near and far define the clipping planes of the view frustum. Three.js provides an
+				// Near and far define the cliping planes of the view frustum. Three.js provides an
 				// example (http://mrdoob.github.com/three.js/examples/
 				// -> canvas_camera_orthographic2.html), which allows to play around with these
 				// parameters.
-				// The camera is moved 15 units towards the z axis to allow looking to the center of
+				// The camera is moved 10 units towards the z axis to allow looking to the center of
 				// the scene.
 				// After definition, the camera has to be added to the scene.
 				camera = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 1, 100);
@@ -112,25 +108,28 @@
 				camera.lookAt(scene.position);
 				scene.add(camera);
 
-				// Create the triangle (or any arbitrary geometry).
-				// 1. Instantiate the geometry object
-				// 2. Add the vertices
-				// 3. Define the faces by setting the vertices indices
-				var triangleGeometry = new THREE.Geometry();
-				triangleGeometry.vertices.push(new THREE.Vector3( 0.0,  1.0, 0.0));
-				triangleGeometry.vertices.push(new THREE.Vector3(-1.0, -1.0, 0.0));
-				triangleGeometry.vertices.push(new THREE.Vector3( 1.0, -1.0, 0.0));
-				triangleGeometry.faces.push(new THREE.Face3(0, 1, 2));
+				// To create a pyramid, we use THREE.CylinderGeometry. By its five parameters, we are
+				// able to create the geometry of the pyramid (subtype of a cylinder).
+				// Parameter 1 'radiusTop': Controls the radius of the upper end of the cylinder. If we
+				//                          set to to '0', we have a cone.
+				// Parameter 2 'radiusBottom': Controls the radius of the lower end.
+				// Parameter 3 'height': Sets the height of the cylinder.
+				// Parameter 4 'segments': Number of segments, forming the cylindrical shell. To create
+				//                         a pyramid, we choose '4'.
+				// Parameter 5 'openEnded': Allows to have open ends ('true') or closed ends ('false')
+				//                          of the cylinder. Since the pyramid shall have a bottom
+				//                          face, we set it to 'false'.
+				var pyramidGeometry = new THREE.CylinderGeometry(0, 1.5, 1.5, 4, false);
 
-				// To color the surface, a material has to be created. If all vertices shall have
-				// different colors, we need to set the vertex colors of each face. The colors in
-				// between will be interpolated as color gradients.
-				// Unfortunately, the canvas renderer doesn't support vertex yolors (yet [Three.js,
-				// release 50]). Either you accept a white face color, or set another face color.
+				// The pyramid geometry used to optionally use a Face4, but Face4 was removed in r62C
+				// We just loops through all the faces and set the the three vertex colors.
+				for (var i = 0; i < pyramidGeometry.faces.length; i++) {
 
-				triangleGeometry.faces[0].vertexColors[0] = new THREE.Color(0xFF0000);
-				triangleGeometry.faces[0].vertexColors[1] = new THREE.Color(0x00FF00);
-				triangleGeometry.faces[0].vertexColors[2] = new THREE.Color(0x0000FF);
+					pyramidGeometry.faces[i].vertexColors[0] = new THREE.Color(0xFF0000);
+					pyramidGeometry.faces[i].vertexColors[1] = new THREE.Color(0x00FF00);
+					pyramidGeometry.faces[i].vertexColors[2] = new THREE.Color(0x0000FF);
+
+				}
 
 				// To activate the vertex color, we have to set 'vertexColors' attribute to
 				// 'THREE.VertexColors'. Otherwise they won't be displayed.
@@ -142,62 +141,59 @@
 				// rendered (backface culling). But this performance optimization sometimes leads
 				// to wholes in the surface. When this happens in your surface, simply set
 				// 'doubleSided' to 'true'.
-				var triangleMaterial = new THREE.MeshBasicMaterial({
+				var pyramidMaterial = new THREE.MeshBasicMaterial({
 					vertexColors:THREE.VertexColors,
 					side:THREE.DoubleSide
 				});
 
 				// Create a mesh and insert the geometry and the material. Translate the whole mesh
 				// by -1.5 on the x axis and by 4 on the z axis. Finally add the mesh to the scene.
-				triangleMesh = new THREE.Mesh(triangleGeometry, triangleMaterial);
-				triangleMesh.position.set(-1.5, 0.0, 4.0);
-				scene.add(triangleMesh);
+				pyramidMesh = new THREE.Mesh(pyramidGeometry, pyramidMaterial);
+				pyramidMesh.position.set(-1.5, 0.0, 4.0);
+				scene.add(pyramidMesh);
 
-				// The creation of the square is done in the same way as the triangle, except of the
-				// face definition. Instead of using THREE.Face3, we define a face with four vertices:
-				// THREE.Face4.
-				// 1. Instantiate the geometry object
-				// 2. Add the vertices
-				// 3. Define the faces by setting the vertices indices
-				var squareGeometry = new THREE.Geometry();
-				squareGeometry.vertices.push(new THREE.Vector3(-1.0,  1.0, 0.0));
-				squareGeometry.vertices.push(new THREE.Vector3( 1.0,  1.0, 0.0));
-				squareGeometry.vertices.push(new THREE.Vector3( 1.0, -1.0, 0.0));
-				squareGeometry.vertices.push(new THREE.Vector3(-1.0, -1.0, 0.0));
-				squareGeometry.faces.push(new THREE.Face3(0, 1, 2));
-				squareGeometry.faces.push(new THREE.Face3(0, 2, 3));
+				// Create the cube
+				// Parameter 1: Width
+				// Parameter 2: Height
+				// Parameter 3: Depth
+				var cubeGeometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
 
-				// The square gets a new face color. In contrast to vertex colors means face color,
-				// that all vertices have the same color or in other words, the whole face has the
-				// same color (no color gradients).
+				// Applying different materials to the faces is a more difficult than applying one
+				// material to the whole geometry. We start with creating an array of
+				// THREE.MeshBasicMaterial.
 
-				// Create a light blue basic material and activate the 'doubleSided' attribute.
-				var squareMaterial = new THREE.MeshBasicMaterial({
-					color:0x8080FF,
-					side:THREE.DoubleSide
-				});
+				// Define six colored materials
+				var cubeMaterials = [
+					new THREE.MeshBasicMaterial({color:0xFF0000}),
+					new THREE.MeshBasicMaterial({color:0x00FF00}),
+					new THREE.MeshBasicMaterial({color:0x0000FF}),
+					new THREE.MeshBasicMaterial({color:0xFFFF00}),
+					new THREE.MeshBasicMaterial({color:0x00FFFF}),
+					new THREE.MeshBasicMaterial({color:0xFFFFFF})
+				];
+
+				// Create a MeshFaceMaterial, which allows the cube to have different materials on
+				// each face
+				var cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
 
 				// Create a mesh and insert the geometry and the material. Translate the whole mesh
 				// by 1.5 on the x axis and by 4 on the z axis and add the mesh to the scene.
-				squareMesh = new THREE.Mesh(squareGeometry, squareMaterial);
-				squareMesh.position.set(1.5, 0.0, 4.0);
-				scene.add(squareMesh);
+				cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+				cubeMesh.position.set(1.5, 0.0, 4.0);
+				scene.add(cubeMesh);
 			}
 
 			/**
 			 * Animate the scene and call rendering.
 			 */
 			function animateScene(){
-				// At first, we increase the y rotation of the triangle mesh and decrease the x
-				// rotation of the square mesh.
-			
 				// Increase the y rotation of the triangle
-				triangleMesh.rotation.y += 0.1;
+				pyramidMesh.rotation.y += 0.1;
 
-				// Decrease the x rotation of the square
-				squareMesh.rotation.x -= 0.075;
+				// Decrease the rotation of the cube
+				cubeMesh.rotateOnAxis(new THREE.Vector3(1, 1, 1).normalize(), 0.075);
 
-				// Define the function, which is called by the browser-supported timer loop. If the
+				// Define the function which is called by the browser supported timer loop. If the
 				// browser tab is not visible, the animation is paused. So 'animateScene()' is called
 				// in a browser controlled loop.
 				requestAnimationFrame(animateScene);
@@ -212,7 +208,7 @@
 			function renderScene(){
 				renderer.render(scene, camera);
 			}
-		</script>
-	</div>
+        //]]></script>
+		</div>
 	</body>
 </html>
