@@ -30,7 +30,7 @@
 							<a href="?=services">Graphics</a>
 							<ul class="nav-submenu">
 								<li class="nav-submenu-item">
-									<a href="/graphics/nehe-three-js/nehe-three-js.xhtml">NeHe-Three.js</a>
+									<a href="/graphics/nehe-three-js/nehe-three-js.html">NeHe-Three.js</a>
 								</li>
 								<li class="nav-submenu-item">
 									<a href="/graphics/epub-webgl/epub-webgl.html">EPUB-WebGL</a>

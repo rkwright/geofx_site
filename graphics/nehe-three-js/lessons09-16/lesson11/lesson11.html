@@ -66,7 +66,7 @@ gfxScene.add(paraMesh);</code>
 }</code></pre>
 
 <p>A final note. Some might wonder if this effect couldn't have been achieved also by writing a custom shader. The answer is (AFAIK) no. The effect of waving is achieved by &quot;rolling&quot; the values in the array of vertices from one vertex to the next (and the last vertex to the first). Shaders work atomically on one vertex at a time, with no way to access the values of any other vertex. You could oscillate each vertex back and forth but you couldn't roll them one to the other. And example of oscillating the vertext values can be found <a href="https://github.com/rkwright/nehe-three-js/blob/develop/lesson11/lesson11webgl-S.html" title="Oscillating shader" target="_blank">here</a>.</p>
-<p>And that's it!  Click on <a href="lesson11webgl.xhtml" title="Lesson 11" target="_self">this link</a> to see the actual rendered demo in all its waving glory!</p>
+<p>And that's it!  Click on <a href="lesson11webgl.html" title="Lesson 11" target="_self">this link</a> to see the actual rendered demo in all its waving glory!</p>
 </div></div></div></div>
 </body>
 </html>

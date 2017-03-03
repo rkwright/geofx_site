@@ -6,7 +6,7 @@
 
 		<!-- The following meta line optimizes the site for mobile devices. It sets the viewport size
 		to the screen size, so it will be displayed maximized, but unscaled. -->
-		<meta name="viewport" content="width=768, height=1024"/>
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="../../css/NeHe.css" />
 
 		<!-- Include the necessary libs -->
@@ -31,11 +31,9 @@
 
 
 		<!-- This JavaScript block encloses the Three.js commands -->
-		<script type="text/javascript"> <![CDATA[
+		<script type="text/javascript"> 
             // allocate the Scene object, and set the camera position
-            var gfxScene = new GFX.Scene( { cameraPos:[0,0,6],
-            	canvasWidth : 768,
-            	canvasHeight : 1024});
+            var gfxScene = new GFX.Scene( { cameraPos:[0,0,6]});
 
 			// x and y rotation
 			var xRotation = 0.0;
@@ -193,6 +191,6 @@
                 gfxScene.renderScene();
 			}
 
-		]]> </script>
+		</script>
 	</body>
 </html>

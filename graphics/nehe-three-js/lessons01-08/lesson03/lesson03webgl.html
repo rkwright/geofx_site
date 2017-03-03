@@ -6,7 +6,7 @@
 
 		<!-- The following meta line sets the size of the fixed viewport for
                      a pre-paginated EPUB page -->
-		<meta name="viewport" content="width=768, height=1024"></meta>
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
 		<style type="text/css">
 			body {
 				/* Set the background color of the HTML page to black */
@@ -65,8 +65,8 @@
 				renderer.setClearColor(0x000000, 1);
 
 				// Get the fixed window size
-				canvasWidth = 768;
-				canvasHeight = 1024;
+ 				canvasWidth = window.innerWidth;
+	       		canvasHeight = window.innerHeight;
 
 				// Set the renderers size to the content areas size
 				renderer.setSize(canvasWidth, canvasHeight);

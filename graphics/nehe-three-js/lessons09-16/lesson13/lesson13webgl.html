@@ -6,7 +6,7 @@
 
 		<!-- The following meta line optimizes the site for mobile devices. It sets the viewport size
 		to the screen size, so it will be displayed maximized, but unscaled. -->
-		<meta name="viewport" content="width=768, height=1024"/>
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="../../css/NeHe.css" />
 
 		<!-- Include two libraries from THREE.js: Core and the Detector for WebGL -->
@@ -18,7 +18,7 @@
 	</head>
 	<body>	
 
-<script> <![CDATA[
+<script> 
 	//custom global variables
 	var cube;
 	var DESCENDER_ADJUST = 1.28;
@@ -26,8 +26,6 @@
 	// allocate the Scene object, request orbitControls, 3D axes 10 units high and the stats
 	var gfxScene = new GFX.Scene( {
         cameraPos : [5, 2, 8],
-        canvasWidth : 768,
-		canvasHeight : 1024,
 		axesHeight:10,
 		controls:true,
 		displayStats:true });
@@ -56,7 +54,7 @@
 			borderThickness:4, fillColor: {r:255, g:255, b:255, a:1.0}, radius:0, vAlign:"bottom", hAlign:"right" } );
 		gfxScene.add( txSprite1 );
 
-		var txSprite2 = makeTextSprite( "Center-Rightt", -1, 0, 0.25, { fontsize: 72, fontface: "Georgia", borderColor: {r:0, g:0, b:255, a:1.0},
+		var txSprite2 = makeTextSprite( "Center-Right", -1, 0, 0.25, { fontsize: 72, fontface: "Georgia", borderColor: {r:0, g:0, b:255, a:1.0},
 			borderThickness:6, fillColor: {r:255, g:255, b:255, a:1.0}, radius:12, vAlign:"center", hAlign:"right" } );
 		gfxScene.add( txSprite2 );
 
@@ -341,7 +339,7 @@
 		gfxScene.renderScene();
 	}
 
-]]> </script>
+ </script>
 
 </body>
 </html>

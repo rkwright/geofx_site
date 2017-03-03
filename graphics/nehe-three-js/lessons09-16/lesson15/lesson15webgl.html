@@ -12,7 +12,7 @@
 
 		<!-- The following meta line optimizes the site for mobile devices. It sets the viewport size
 		to the screen size, so it will be displayed maximized, but unscaled. -->
-		<meta name="viewport" content="width=768,height=1024"/>
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="../../css/NeHe.css" />
 
 		<!-- Include several libraries from THREE.js and the Scene class  -->
@@ -66,7 +66,7 @@
 		</script>
 	</head>
 	<body>	
-		<script> <![CDATA[
+		<script> 
 			// global variables
 			var 	textGeom;
 		
@@ -87,8 +87,6 @@
 			
 			// allocate the Scene object, request orbitControls, some of 3D axes 10 units high and the stats
 			var gfxScene = new GFX.Scene( { cameraPos:[6,2,6],
-				canvasWidth : 768,
-				canvasHeight : 1024,
 				axesHeight:10,
 				controls:true,
 				displayStats:true });
@@ -199,6 +197,6 @@
 				// Map the 3D scene down to the 2D screen (render the frame)
 				gfxScene.renderScene();
 			}
-		]]> </script>
+		 </script>
 	</body>
 </html>
