@@ -6,25 +6,73 @@
     <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
     <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
     <link rel="shortcut icon" href="../../../../images/favicon.png" type="image/png" />
-    <script src="../../../../js/jquery-3.1.1.min.js"></script>
-    <script src="../../../../js/flaunt.js"></script>
+    <script src="../../../../js/jquery-3.1.1.min.js" type="text/javascript"></script>
+    <script src="../../../../js/flaunt.js" type="text/javascript"></script>
     <link type="text/css" href="../../css/NeHe-EPUB.css" rel="stylesheet"/>
     <link type="text/css" href="../../css/prism.css" rel="stylesheet"/>
     <script src="../../js/prism.js" type="text/javascript"></script>
 </head>
 <body>
 
-		<div class="wrapper">
- 		<div class="main">
+<div class="wrapper">
+<div class="main">
 			
-				 <!--#include virtual="/includes/banner_nav2.shtml" -->			
+<!--#include virtual="/includes/banner_nav2.shtml" -->			
 
-				<div class="content">
-					<div class="content-text">
+<div class="content">
+<div class="content-text">
 <h2>Lesson 20 - Alpha Masking with Textures</h2>
+<p>This lesson is very short because three.js does alpha-masking automagically. We start off the same as previous lessons by initializing the GFXScene object.</p>
+
+<pre><code class="language-javascript">var gfxScene = new GFX.Scene( { cameraPos : [3, 5, 10],
+                                controls : true,
+					            axesHeight:10,
+                                displayStats:true});</code></pre>
+
+
+<p>The we call call <span class="inline-code">initializeDemo() </span>which in turn calls <span class="inline-code">makeMesh()</span> and sets up a keypress listener so we can let the user switch between the two available masks. All the work gets done in <span class="inline-code">makeMesh</span>:</p>
+<pre><code class="language-javascript">function makeMesh( number ) {
+
+    gfxScene.remove(mesh);
+
+    var geom = new THREE.CubeGeometry( 2, 2, 2 );
+
+    var texture = new THREE.ImageUtils.loadTexture("images/image" + number + ".jpg");
+    var mask = new THREE.ImageUtils.loadTexture("images/mask" + number + ".jpg");
+
+    var material = new THREE.MeshBasicMaterial( { map:texture, alphaMap:mask, 
+                               side:THREE.DoubleSide, transparent:true } );
+
+    mesh = new THREE.Mesh( geom, material );
+
+    gfxScene.add(mesh);
+}</code></pre>
+
+<p>Note that the first step is to remove the previous mesh (it doesn't matter if it doesn't exist). We have to do this because you can't modify a material that contains an alpha mask. Se we destroy the previous mesh and recreate it on the fly.</p>
+<p>Then we create simple Box geometry, and leave it centered on the origin. </p>
+<p>Then we load the textures that will be the basis for the mask. One is a actual RGB image, like this:</p>
+<br/>
+
+    <p><img src="images/Image1.jpg" height="256" width="256"/>
+    </p>
+
+<br/>
+
+<p>Note that the background is black, which is essential since if black it will be rendered as invisible since the image effectively ANDed against the mask We also load the mask itself:</p>
+<br/>
+
+<p><img src="images/Mask1.jpg" height="256" width="256"/></p>
+
+<br/>
+
+<p>which as you can see is an inverse of the colored sections of the image. Note that there are two pairs of image/masks, just make it a little more interesting.</p>
+<p>Finally, we create the material. We tell it the &quot;texture&quot; should be mapped on to the material, and to use the mask as an alphaMask and we set transparent to true. This last is essentail or the masking will not take place. We also set the material to be double-side since we are going to be able to look &quot;through&quot; the cube.</p>
+<p>Then we just create the mesh and added it to the scene.</p>
+<p></p>
 
 
 <p>And that's it!  Click on <a href="lesson20webgl.html" title="Lesson 20" target="_self">this link</a> to see the actual rendered demo in all it's masked glory!</p>
-</body>
+
 </div></div></div></div>
+</body>
 </html>
