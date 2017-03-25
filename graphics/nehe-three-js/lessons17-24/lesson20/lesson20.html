@@ -35,7 +35,7 @@
 
     gfxScene.remove(mesh);
 
-    var geom = new THREE.CubeGeometry( 2, 2, 2 );
+    var geom = new THREE.BoxGeometry( 2, 2, 2 );
 
     var texture = new THREE.ImageUtils.loadTexture("images/image" + number + ".jpg");
     var mask = new THREE.ImageUtils.loadTexture("images/mask" + number + ".jpg");
@@ -48,7 +48,7 @@
     gfxScene.add(mesh);
 }</code></pre>
 
-<p>Note that the first step is to remove the previous mesh (it doesn't matter if it doesn't exist). We have to do this because you can't modify a material that contains an alpha mask. Se we destroy the previous mesh and recreate it on the fly.</p>
+<p>Note that the first step is to remove the previous mesh (it doesn't matter if it doesn't exist). We have to do this because you can't modify a material that contains an alpha mask. So we destroy the previous mesh and recreate it on the fly.</p>
 <p>Then we create simple Box geometry, and leave it centered on the origin. </p>
 <p>Then we load the textures that will be the basis for the mask. One is a actual RGB image, like this:</p>
 <br/>
@@ -58,15 +58,15 @@
 
 <br/>
 
-<p>Note that the background is black, which is essential since if black it will be rendered as invisible since the image effectively ANDed against the mask We also load the mask itself:</p>
+<p>Note that the background is black, which is essential since if black (i.e. 0x000000) it will be rendered as invisible since the image is effectively ANDed against the mask We also load the mask itself:</p>
 <br/>
 
 <p><img src="images/Mask1.jpg" height="256" width="256"/></p>
 
 <br/>
 
-<p>which as you can see is an inverse of the colored sections of the image. Note that there are two pairs of image/masks, just make it a little more interesting.</p>
-<p>Finally, we create the material. We tell it the &quot;texture&quot; should be mapped on to the material, and to use the mask as an alphaMask and we set transparent to true. This last is essentail or the masking will not take place. We also set the material to be double-side since we are going to be able to look &quot;through&quot; the cube.</p>
+<p>which as you can see is an inverse of the colored sections of the image. Note that there are two pairs of image/masks, just to make it a little more interesting.</p>
+<p>Finally, we create the material. We tell it the <span class="inline-code">texture</span> should be mapped on to the material, and to use the mask as an <span class="inline-code">alphaMask</span> and we set <span class="inline-code">transparent</span> to true. This last is essential or the masking will not take place. We also set the material to be double-sided since we are going to be able to look &quot;through&quot; the cube.</p>
 <p>Then we just create the mesh and added it to the scene.</p>
 <p></p>
 
