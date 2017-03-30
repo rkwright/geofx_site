@@ -64,7 +64,7 @@ call initDemo, which is where it gets interesting.</p>
 <pre><code class="language-javascript">clock = new THREE.Clock(true);</code></pre>
 
 <p>We use the clock to control the degree of motion of the three.js
-particle system sprites. Then we createa simple wire-frame box mesh (in
+particle system sprites. Then we create a simple wire-frame box mesh (in
 red), just as a visual reference. The box is the same size as the
 checkerboard floor.</p>
 
@@ -116,7 +116,7 @@ that is partially transparent:</p>
     });</code></pre>
 
 <p>We make the snowflake white at 40% of its natural size and set it to
-be partially transparent have it blended into the scene. Finally we
+be partially transparent so it is blended into the scene. Finally we
 create the particle system and return it to be added to the scene.</p>
 
 <pre><code class="language-javascript">particleSystem = new THREE.Points(particles, particleMaterial);return particleSystem;</code></pre>
@@ -351,8 +351,8 @@ variation. The geometry of this looks like this:</p>
     method. If the ball's height above the floor is less than the radius, we check if the ball is still on the floor.
     If it is we bounce it by inverting the vertical (y) velocity less the ball's restitution. Then we place the ball
     exactly on the floor.</p>
-<p>Alternatively, if the ball is NOT over the floor anymore, then it is not bounced but instead acceleratesdownward under
-    the force of gravity. Each time it's transparence is reduced by 2.5% until it finally disappears.</p>
+<p>Alternatively, if the ball is NOT over the floor anymore, then it is not bounced but instead accelerates downward under
+    the force of gravity. Each time it's transparency is reduced by 2.5% until it finally disappears.</p>
 <pre><code class="language-javascript">
 for ( var i=this.active.length-1; i&gt;=0; i-- ) {
 
