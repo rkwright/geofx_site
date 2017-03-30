@@ -85,6 +85,7 @@ gfxScene.renderer.clear();
 gfxScene.renderer.render(backgroundScene , backgroundCamera );
 gfxScene.renderScene();</code></pre>
 <p>Setting <span class="inline-code">autoClear</span> to false means that rendering the second Scene (the foreground scene) won't clear out the view buffer (which would occur normally since <span class="inline-code">autoClear</span> is true by default). Then we explicitly clear the view buffer. Then we render the background scene first so it is overwritten by the foreground Scene. Since <span class="inline-code">autoClear</span> is off, the foreground scene gets layered on top of the background, just as we want.</p>
+<p>Of course this demo only simulates the reflection - and not very realisticallat that since it simply wraps the same image as the background around the sphere. For more realistic reflections one needs to use cube or environmental mapping.</p>
 <p>And that's it!  Click on <a href="lesson23webgl.html" title="Lesson 23" target="_self">this link</a> to see the actual rendered demo in all it's simulated glory!</p>
 </div>
 </div></div></div>
