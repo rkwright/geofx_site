@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
+  <meta name="generator" content="HTML Tidy for HTML5 for Mac OS X version 5.4.0" />
+  <title>Hurricane Andrew</title>
+  <link type="text/css" href="../css/styles.css" rel="stylesheet" />
+  <link type="text/css" href="../css/prism.css" rel="stylesheet" />
+  <script src="../js/prism.js" type="text/javascript"></script>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <h2>Hurricane Andrew</h2>
+  <p>This chapter and the next (State Population Demo) are rather similar in terms of the
+  animation approach. Both use SVG's animation elements to animate the SVG. The process
+  of generating these scripts was a bit involved so let's cover that first then look at
+  some of the animation itself.</p>
+  <p>How was this file created? It was created using a combination of some custom GIS
+  tools for map-data extraction, a custom parser for the hurricane data, Adobe
+  Illustrator and hand-editing. The custom GIS tools were needed to convert the
+  GIS-format vector data to SVG. The custom parser was needed since the hurricane data
+  was a simple ASCII table with headers, etc. Ideally, we should get this sort of data in
+  XML and process it through XSLT. Illustrator was used for some parts, such as the text.
+  Why wasn't Illustrator used for all the rest and avoid hand-editing? Because, for all
+  its power and sophistication, Illustrator is not well-suited for building complex SVG
+  animations. Almost always, one wants to use different coordinate systems and multiple
+  transformations. Illustrator does not natively support this type of approach. Ideally,
+  what is needed is a tool that allows one to natively edit SVG, perform transforms using
+  XSLT and XPath and not flatten the artwork at all.</p>
+  <p>Thus the coastlines, state borders, title, <em>etc.</em> are all static SVG. The
+  hurricane itself is basically an animated ellipse whose size and opacity is animated as
+  a function of the pressure at its center and maximum windspeed over time. The hurricane
+  and its animation is:</p>
+  <pre><code class="language-svg">&lt;defs&gt;
+     &lt;radialGradient id="HurrGradient"&gt;
+         &lt;stop offset="0" stop-color="white" stop-opacity="0" /&gt;
+         &lt;stop id="HurrStop1" offset="0.03" stop-color="white" stop-opacity="0.9" /&gt;
+         &lt;stop id="HurrStop2" offset="0.25" stop-color="white" stop-opacity="0.6" /&gt;
+         &lt;stop offset="1" stop-color="white" stop-opacity="0.1" /&gt;
+      &lt;/radialGradient&gt;
+
+      &lt;g id="hurricane"&gt;
+          &lt;ellipse  cx="0" cy="0" rx="0.4" ry="0.6" fill="url(#HurrGradient)" stroke="none" &gt;
+              &lt;animateTransform attributeName="transform" type="rotate" dur="2s" repeatDur="indefinite" from="0" to="360" /&gt;
+              &lt;animate attributeName="rx" dur="23s" fill="freeze" values="0.40;0.60;0.60;0.80;..." /&gt;
+              &lt;animate attributeName="ry" dur="23s" fill="freeze" values="0.60;0.80;0.80;1.00;..." /&gt;
+              &lt;animate xlink:href="#HurrStop1" attributeName="stop-opacity" dur="23s" fill="freeze" values="0.30;0.31;0.32;..." /&gt;
+              &lt;animate xlink:href="#HurrStop2" attributeName="stop-opacity" dur="23s" fill="freeze" values="0.20;0.21;0.21;0.22;0.24;..." /&gt;
+           &lt;/ellipse&gt;
+       &lt;/g&gt;
+  &lt;/defs&gt;
+  &lt;use  xlink:href="#hurricane" x="-60" y="10" &gt;
+       &lt;animate attributeName="y" dur="23s" fill="freeze" values="10.80;11.20;11.70;12.30;..." /&gt;
+       &lt;animate attributeName="x" dur="23s" fill="freeze" values="-35.50;-37.40;-39.60;-42.00;..." /&gt;
+   &lt;/use&gt;</code></pre>
+  <p>One can see that the hurricane is an <span class="inline-code">ellipse</span> with a
+  radial white gradient. The <span class="inline-code">animateTransform</span> rotates
+  the ellipse as it travels. The first two animation elements inside the ellipse animate
+  <span class="inline-code">rx,ry</span> which changes the size of the ellipse. The last
+  two animate the opacity range of the gradient inside the ellipse. Finally, the
+  <span class="inline-code">use</span> element causes the definition of the ellipse to be
+  rendered and the two animation elements inside the <span class="inline-code">use</span>
+  element animate the position of the ellipse. The ellipses (...) in the animation
+  elements are where many more values were present, which have been left out here for
+  brevity.</p>
+  <p>In a similar fashion, the track of the hurricane is</p>
+  <pre><code class=
+  "language-svg">   &lt;g id="HurricanePath1" stroke-width="0.2" display="none" stroke-linejoin="round" stroke-opacity="0.5" &gt;
+       &lt;path style="fill:none;stroke:blue" d="M-35.50 10.80L-37.40 11.20L-39.60 11.70L-42.00 12.30" /&gt;
+       &lt;path style="fill:none;stroke:green" d="M-42.00 12.30L-44.20 13.10L-46.20 13.60..." /&gt;
+       &lt;path style="fill:none;stroke:cyan" d="M-68.30 25.80L-69.70 25.70L-71.10 25.60" /&gt;
+       &lt;path style="fill:none;stroke:yellow" d="M-71.10 25.60L-72.50 25.50" /&gt;
+       &lt;path style="fill:none;stroke:orange" d="M-72.50 25.50L-74.20 25.40" /&gt;
+       &lt;path style="fill:none;stroke:red" d="M-74.20 25.40L-75.80 25.40L-77.50 25.40L-79.30 25.40L-81.20 25.60" /&gt;
+       &lt;path style="fill:none;stroke:orange" d="M-81.20 25.60L-83.10 25.80" /&gt;
+       &lt;path style="fill:none;stroke:red" d="M-83.10 25.80L-85.00 26.20L-86.70 ..." /&gt;
+       &lt;path style="fill:none;stroke:cyan" d="M-91.70 30.10L-91.60 30.90" /&gt;
+       &lt;path style="fill:none;stroke:green" d="M-91.60 30.90L-91.10 31.50L-90.50 32.10" /&gt;
+       &lt;path style="fill:none;stroke:blue;" d="M-90.50 32.10L-89.60 32.80L-88.40 33.60L-86.70 34.40L-84.00 35.40" /&gt;
+       &lt;set attributeName="display" begin="23s" to="inline" /&gt;
+    &lt;/g&gt;</code></pre>
+  <p>Again, not all the data is shown as it is very long. But note that initially the
+  path is hidden, <span class="inline-code">display="none"</span>. The <span class=
+  "inline-code">set</span> element at the end indicates that after 23s the attribute
+  should change to <span class="inline-code">display="inline"</span>, which makes the
+  path appear.</p>
+  <p>The windspeed and pressue info is done in a rather cumbersome way:</p>
+  <pre><code class="language-svg">   &lt;defs&gt;
+       &lt;text id="PressTextNA"&gt;n/a&lt;/text&gt;
+       &lt;text id="PressText0"&gt;1010&lt;/text&gt;
+       &lt;text id="PressText1"&gt;1009&lt;/text&gt;
+       &lt;text id="PressText2"&gt;1008&lt;/text&gt;
+        ...
+   &lt;/defs&gt;
+   &lt;g font-family="Arial" font-size="14" fill="white" &gt;
+        &lt;text x="875" y="325" &gt;Windspeed (mph):&lt;/text&gt;
+        &lt;use xlink:href="#WindTextNA" x="1000" y="325" &gt;
+            &lt;animate attributeName="xlink:href" dur="23s" values="#WindText0;#WindText1;#WindText2;#WindText3;..." /&gt;
+        &lt;/use&gt;
+
+        &lt;text x="875" y="350"&gt;Pressure (mb):&lt;/text&gt;
+        &lt;use xlink:href="#PressTextNA" x="1000" y="350" &gt;
+            &lt;animate attributeName="xlink:href" dur="23s" values="#PressText0;#PressText1;#PressText2;#PressText3;..." /&gt;
+        &lt;/use&gt;
+    &lt;/g&gt;</code></pre>
+  <p>Each piece of data to be displayed is present as a separate text object inside the
+  <span class="inline-code">defs</span> element. Then two <span class=
+  "inline-code">use</span> elements animate the <span class=
+  "inline-code">xlink:href</span> attribute of the info's <span class=
+  "inline-code">text</span> element itself and swap the text elements in and out to
+  provide the updates.</p>
+  <p>Finally, here is the Saffir-Simpson popup info screen:</p>
+  <pre><code class=
+  "language-svg">    &lt;g id="SaffirInfo" transform="matrix(1 0 0 1 75 325)" display="none" pointer-events="none" font-family="'Verdana'" font-size="12"&gt;
+        &lt;rect fill="#FFFDE5" filter="url(#Shadow)"  fill-opacity="0.90" width="280" height="260"/&gt;
+        &lt;text transform="matrix(1 0 0 1  15 20)" &gt;
+            &lt;tspan x="0" y="0" font-family="'Verdana'" font-size="12"&gt;The Saffir Simpson scale is a widely used &lt;/tspan&gt;
+            &lt;tspan x="0" y="14.5" font-family="'Verdana'" font-size="12"&gt;method for categorizing the overall &lt;/tspan&gt;
+            ...
+        &lt;/text&gt;
+
+        &lt;set xlink:href="#SaffirInfo" attributeName="display" begin="SaffirCaption.mouseover" to="inline" /&gt;
+        &lt;set xlink:href="#SaffirInfo" attributeName="display" begin="SaffirCaption.mouseout" to="none" /&gt;
+    &lt;/g&gt;</code></pre>
+  <p>As you can see the text is just laid over a yellow <span class=
+  "inline-code">rect</span>, a filter applied that gives it a drop-shadow. The info is
+  shown when the user mouses over the rect and disappears when the user mouses out.</p>
+  <p>And that's it! Click on <a href="hurricane-svg.xhtml" title="Hurricane Andrew" target="_self">this link</a> to see the actual rendered demo in all its
+  whirling glory!</p>
+</body>
+</html>

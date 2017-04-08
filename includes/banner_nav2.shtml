@@ -33,6 +33,9 @@
 									<a href="/graphics/nehe-three-js/nehe-three-js.html">NeHe-Three.js</a>
 								</li>
 								<li class="nav-submenu-item">
+									<a href="/graphics/svg-anim/svg-anim.html">SVG Animation</a>
+								</li>
+								<li class="nav-submenu-item">
 									<a href="/graphics/epub-webgl/epub-webgl.html">EPUB-WebGL</a>
 								</li>
 								<li class="nav-submenu-item">

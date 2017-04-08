@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="generator" content="HTML Tidy for HTML5 for Mac OS X version 5.4.0" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+  <link type="text/css" href="../css/prism.css" rel="stylesheet" />
+  <script src="../js/prism.js"></script>
+  <title>Tempwave SVG</title>
+</head>
+<body>
+  <div>
+    <h2>Tempwave Demonstration</h2>
+    <p>The sinusoidal temperature wave demo is quite similar in terms of animation to
+    Lessons 6 and 7 in that it is some relatively simple static SVG and some somewhat
+    more complex JavaScript to handle the interactivity and animation.</p>
+    <p>The demo a simple animation of the transmission of temperature from the air into
+    the ground. Heat is conducted from the air into the ground and diffuses downward. As
+    the heat diffuses downwards, the amplitude of the wave decreases until at some depth
+    there is no perceptible variation over the time period being examined. The physics of
+    this are quite complex but can be evaluated by this approximation:</p>
+    <blockquote>
+      <p>t<sub>d</sub> = T<sub>a</sub> + A<sub>t</sub> * e<sup>-d / D</sup> * cos( t * ω
+      - d / D)</p>
+    </blockquote>
+    <p>where</p>
+    <blockquote>
+      <table width="426">
+        <tr>
+          <td width="34">t<sub>d</sub></td>
+          <td width="380">the temperature at depth d</td>
+        </tr>
+        <tr>
+          <td>T<sub>a</sub></td>
+          <td>air temperature at the surface (i.e. d = 0)</td>
+        </tr>
+        <tr>
+          <td>A<sub>t</sub></td>
+          <td>daily temperature amplitude, in degrees</td>
+        </tr>
+        <tr>
+          <td>D</td>
+          <td>the "damping depth" of the material being heated</td>
+        </tr>
+        <tr>
+          <td>t</td>
+          <td>time</td>
+        </tr>
+        <tr>
+          <td>ω</td>
+          <td>time period cycle expressed in radians</td>
+        </tr>
+      </table>
+    </blockquote>
+    <p>The interesting aspects of this demo are how the temperatures are stored and hence
+    rendered and the use of buttons to control the animation. The temperatures are
+    calculated and stored at ten depths, down to 10 metres. The time period is 200 steps
+    with each step being 3600 seconds (one hour) long. So the demo runs for 8.33 days.
+    Then it has to roll over to the beginning of the storage, which it does through a
+    simple ring-buffer approach.</p>
+    <p>For the time-line display of the temperatures, it simply builds up a new points
+    array for each iteration for each depth.</p>
+    <pre><code class=
+    "language-javascript">         function UpdateTempAtDepth ( depthNum, depthID ) {
+                        dampingDepth    = Depth[depthNum] / damping;
+                        dampedAmplitude = diurnalAmplitude * Math.exp(-Depth[depthNum] / damping);
+                        Temps[depthNum][nCurTemp] = airTemperature + dampedAmplitude * Math.cos(curTime * omegaDayRad - dampingDepth);
+
+                        Times[depthNum][nCurTemp] = curTime / 3600.0;   
+
+                        // find the first index in our ring buffer
+                        index = nCurTemp - nMaxTemp;
+                        if (index &lt; 0) {
+                                if ((nTotTemp &lt; nMaxTemp) || (nTotTemp % nMaxTemp) == (nMaxTemp - 1))
+                                        index = 0;
+                                else
+                                        index += nMaxTemp + 1;
+                        }
+
+                        // now build the string from the values in the buffer
+                        var     pointStr = '';
+                        for ( k=0; k&lt;nMaxTemp &amp;&amp; k&lt;=nTotTemp; k++ ) {
+                                var dTime = Times[depthNum][index] - timeOffset;
+                                pointStr += dTime + ',' + Temps[depthNum][index] + ' ';
+
+                                // increment the index and wrap around in the ring buffer, if need be
+                                index++;
+                                if (index &gt;= nMaxTemp)
+                                        index = 0;
+                        }
+
+                        UpdatePolyline( depthID, pointStr );
+                }</code></pre>
+    <p>Displaying the profile is very similar:</p>
+    <pre><code class="language-javascript">   function UpdateProfile () {
+        var pointStr = '';
+            for ( j=0; j&lt;nDepth; j++ ) {
+            dampingDepth    = Depth[j] / damping;
+                        dampedAmplitude = diurnalAmplitude * Math.exp(-Depth[j] / damping);
+                        temperature     = airTemperature + dampedAmplitude * Math.cos(curTime * omegaDayRad - dampingDepth);
+
+                        pointStr += temperature + ',' + Depth[j] + ' ';
+                }
+
+                UpdatePolyline( profileID, pointStr );
+        }</code></pre>
+    <p>The date info displayed is calculated on the fly by using some JavaScript
+    functions that convert from seconds to actual month and day values which are then
+    displayed by updating the text-node child, just as in the previous demos.</p>
+    <p>Finally, the buttons which control the demo are very straightforward JavaScript.
+    The buttons are just plain SVG round rects</p>
+    <pre><code class=
+    "language-svg">    &lt;g id="playbutton" transform="matrix(1 0 0 1 408 236)" onmousedown="OnPlayButton(evt)"&gt;
+        &lt;rect width="55" height="31" rx="4" style="fill:green;stroke:black" /&gt;
+        &lt;text  transform="matrix(1 0 0 1 27.5 15.5)" style="font-family:'Verdana'; font-size:12;fill:black;dominant-baseline:central;" 
+              text-anchor="middle"&gt;Play&lt;/text&gt;
+    &lt;/g&gt;
+    
+    &lt;g id="pausebutton" transform="matrix(1 0 0 1 484 236)" onmousedown="OnPauseButton(evt)"&gt;
+        &lt;rect width="55" height="31" rx="4" style="fill:yellow;stroke:black" /&gt;
+        &lt;text  transform="matrix(1 0 0 1 27.5 15.5)" style="font-family:'Verdana'; font-size:12;fill:black;dominant-baseline:central;" 
+              text-anchor="middle"&gt;Pause&lt;/text&gt;
+    &lt;/g&gt;
+    
+    &lt;g id="stopbutton" transform="matrix(1 0 0 1 561 236)" onmousedown="OnStopButton(evt)"&gt;
+        &lt;rect width="55" height="31" rx="4" style="fill:red;stroke:black" /&gt;
+        &lt;text  transform="matrix(1 0 0 1 27.5 15.5)" style="font-family:'Verdana'; font-size:12;fill:black;dominant-baseline:central;
+              pointer-events:none;" text-anchor="middle"&gt;Stop&lt;/text&gt;
+    &lt;/g&gt;
+    
+    &lt;g id="restartbutton" transform="matrix(1 0 0 1 639 236)" onmousedown="OnRestartButton(evt)"&gt;
+        &lt;rect width="55" height="31" rx="4" style="fill:magenta;stroke:black" /&gt;
+        &lt;text  transform="matrix(1 0 0 1 27.5 15.5)" style="font-family:'Verdana'; font-size:12;fill:black;dominant-baseline:central;" 
+              text-anchor="middle"&gt;Restart&lt;/text&gt;
+    &lt;/g&gt;</code></pre>
+    <p>And the handlers are straightforward too.</p>
+    <pre><code class="language-javascript">        function OnStopButton(evt) {
+            window.clearInterval( intervalID );
+            curTime  = 0;
+            nCurTemp = 0;
+            nTotTemp = 0;
+        }
+
+        function OnPauseButton(evt) {
+            window.clearInterval( intervalID );
+        }
+
+        function OnPlayButton(evt) {
+            intervalID = window.setInterval('next_update()', 50);
+        }
+
+        function OnRestartButton(evt) {
+            OnStopButton(evt);
+            OnPlayButton(evt);
+        }</code></pre>
+    <p>And that's it. Click on <a href="TempWave.svg" title="Tempwave Demo" target="_self">this link </a>to see the demo in all its sinusoidal
+    glory!</p>
+  </div>
+</body>
+</html>

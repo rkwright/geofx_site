@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
+  <meta name="generator" content="HTML Tidy for HTML5 for Mac OS X version 5.4.0" />
+  <title>State Pop Demo</title>
+  <link type="text/css" href="../css/styles.css" rel="stylesheet" />
+  <link type="text/css" href="../css/prism.css" rel="stylesheet" />
+  <script src="../js/prism.js"></script>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <h2>State Population Mapping</h2>
+  <p>The State Population demo is similar in some respects to the Hurrican demo in that
+  it was made with GIS data for the map data and then some custome GIS work to extract
+  the data from tables and generate the animation elements. Let's look at a couple of
+  spects of it.</p>
+  <p>First off, there is simply the framework of the outlines of the 48 (lower) states as
+  SVG shapes. As before, these were extracted from publicly available GIS files and
+  converted to SVG.</p>
+  <p>Then there are 2 sources of data:</p>
+  <ul>
+    <li>The relative proportion of the state's population to the overall population of
+    the US</li>
+    <li>The proportion of the states's population relative to that state's total
+    today</li>
+  </ul>
+  <p>The first is used to shade the map (called a chlopleth map) as a thematic map using
+  color (the typical ROYGB) with the most populus states being red and the least blue. In
+  addition, both data-sets are used to create a graph in the lower-left of the graphic
+  that shows a graph over time of the trends of the two data-sets. This graph is updated
+  with the apprpriate state's data as the user mouses over the map.</p>
+  <p>So how is this done? The graph is drawn in the lower left quadrant of the map, below
+  California:</p>
+  <pre><code class=
+  "language-svg">&lt;svg id="Graph" x="50" y="400" height="150" width="200" viewBox="1790 0 210 1" pointer-events="all" 
+           preserveAspectRatio="none" stroke-width="0.02" overflow="visible"&gt;
+    &lt;g transform="matrix(1 0 0 -1 0 1)" font-family="'TimesNewRomanPSMT'" &gt;
+        &lt;rect x="1790" y="0" height="1" width="210" fill="none" stroke="black" /&gt;
+        &lt;g fill="none" stroke="grey" stroke-width="0.001" &gt;
+            &lt;line x1="1800" y1="0" x2="1800" y2="1" /&gt;
+            &lt;line x1="1850" y1="0" x2="1850" y2="1" /&gt;
+            &lt;line x1="1900" y1="0" x2="1900" y2="1" /&gt;
+            &lt;line x1="1950" y1="0" x2="1950" y2="1" /&gt;
+            &lt;line x1="1790" y1="0" x2="1790" y2="1" stroke="gold" stroke-width="1" &gt;
+                &lt;animate attributeName="x1" dur="22s" fill="freeze" values="1790;2000" /&gt;
+                &lt;animate attributeName="x2" dur="22s" fill="freeze" values="1790;2000" /&gt;
+            &lt;/line&gt;
+        &lt;/g&gt;
+
+        &lt;use id="useStatePop" xlink:href="#CaliforniaPop" stroke="blue" fill="none" /&gt;
+        &lt;use id="useStateProp" xlink:href="#CaliforniaProp" stroke="red" fill="none"/&gt;
+        &lt;use id="useStateName" xlink:href="#CaliforniaName" transform="matrix(2 0 0 -0.01 1790 1.05)"  fill="red" /&gt;
+
+        &lt;g fill="black" &gt;
+            &lt;text transform="matrix(1 0 0 -0.01 1790 1)" text-anchor="end" baseline-shift="-30%" &gt;1 &lt;/text&gt;
+            &lt;text transform="matrix(1 0 0 -0.01 1790 0)" text-anchor="end"  baseline-shift="-30%"&gt;0 &lt;/text&gt;
+            &lt;text transform="matrix(1 0 0 -0.01 2000 1)" text-anchor="start" baseline-shift="-30%" &gt; 1&lt;/text&gt;
+            &lt;text transform="matrix(1 0 0 -0.01 2000 0)" text-anchor="start"  baseline-shift="-30%"&gt; 0&lt;/text&gt;
+
+            &lt;text transform="matrix(1 0 0 -0.01 1800 0)" text-anchor="middle" baseline-shift="-150%"&gt;1800&lt;/text&gt;
+            &lt;text transform="matrix(1 0 0 -0.01 1850 0)" text-anchor="middle" baseline-shift="-150%"&gt;1850&lt;/text&gt;
+            &lt;text transform="matrix(1 0 0 -0.01 1900 0)" text-anchor="middle" baseline-shift="-150%"&gt;1900&lt;/text&gt;
+            &lt;text transform="matrix(1 0 0 -0.01 1950 0)" text-anchor="middle" baseline-shift="-150%"&gt;1950&lt;/text&gt;
+            &lt;text transform="matrix(1 0 0 -0.01 2000 0)" text-anchor="middle"  baseline-shift="-150%"&gt;2000&lt;/text&gt;
+        &lt;/g&gt;
+    &lt;/g&gt;
+
+    &lt;set xlink:href="#useStatePop" attributeName="xlink:href" begin="Alabama.mouseover" to="#AlabamaPop" /&gt;
+    &lt;set xlink:href="#useStateProp" attributeName="xlink:href" begin="Alabama.mouseover" to="#AlabamaProp" /&gt;
+    &lt;set xlink:href="#useStateName" attributeName="xlink:href" begin="Alabama.mouseover" to="#AlabamaName" /&gt;
+    ... 
+&lt;/svg&gt;</code></pre>
+  <p>The animation lasts 22 seconds, one second for each decade from 1790 to 2010.</p>
+  <p>The first two animation elements simply move the timeline (gold line) indicator
+  across the graph as time passes.</p>
+  <p>Then the three use elements point to the appropriate state's data to use to stroke
+  the state's data on the graph and to draw the state's name. This is done by pointing to
+  the actual data. Here is Alabama's for example (as usual a lot of data omitted for
+  brevity).</p>
+  <pre><code class="language-svg">&lt;text id="AlabamaName"&gt;Alabama&lt;/text&gt;
+ &lt;path id="AlabamaPop" d="M1790 0.000L1800 0.000L1810 0.000L1820 0.032L1830 0.070L1840 0.133L1850 0.174 ..." /&gt;
+ &lt;path id="AlabamaProp" d="M1790 0.000L1800 0.000L1810 0.000L1820 0.413L1830 0.696L1840 1.000L1850 0.962 ..." /&gt;</code></pre>
+  <p>So when the user mouses over a given state, that state's data is pointed to by the
+  use elements in the graph.</p>
+  <p>Finally, the colors of the states are animated over time by a single animation
+  element that just updates the color every second:</p>
+  <pre><code class=
+  "language-svg">&lt;animate xlink:href="#Alabama" attributeName="fill" dur="22s" fill="freeze" values="#0101ff;#0101ff;#0101ff;#0150ff; ..." /&gt;</code></pre>
+  <p>And that's it! Click on<a href="statepop-svg.xhtml" title="State Population Demo" target="_self"> this link</a> to see the actual rendered demo in all its
+  growing glory!</p>
+</body>
+</html>

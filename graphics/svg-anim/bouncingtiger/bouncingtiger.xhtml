@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
+    <title>Bouncing Tiger and King Tut</title>
+    <link type="text/css" href="../css/styles.css" rel="stylesheet"/>
+    <link type="text/css" href="../css/prism.css" rel="stylesheet"/>
+    <script src="../js/prism.js" type="text/javascript"></script>
+    <meta charset="utf-8"/>
+</head>
+<body>
+<h2>Bouncing Tiger and King Tut</h2>
+
+
+
+<p>The final example of SVG animation is done through CSS3 animation. It's a fairly limited demonstration but does show the basics of CSS3 animation with keyframes.</p>
+<p>There are three components of the SVG as a whole:</p>
+<ul>
+  <li>A stroked red <span class="inline-code">rect</span> that delimits the bounds of the animation</li>
+  <li>A very complex SVG drawing of a tiger's head, originally done in Illustrator</li>
+  <li>A very complex SVG drawing of King Tut's head and torso, also done in Illustrator.</li>
+</ul>
+<p>Both of the drawings are relatively ancient Adobe demo drawings (original artists not known). </p>
+<p>As usual, the base document is HTML, which loads the SVG via an <span class="inline-code">object</span> tag. There is no JavaScript so that's it. Here is the root <span class="inline-code">svg</span> element, very bare bones:</p>
+
+<pre><code class="language-svg">&lt;svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="768" height="1024"&gt;</code></pre>
+
+<p>Both of them are relatively large drawings, but we just want smaller ones, so we scale them down to about 100x100. Here is the tiger:</p>
+
+<pre><code class="language-svg">&lt;svg id="tiger" viewBox="-190 -150 510 510" height="100" width="100"&gt;</code></pre>
+
+<p>You see that we use the <span class="inline-code">viewBox</span> to scale the drawing which is in points so it fits in a 100x100 box. And we give the element an ID of &quot;tiger&quot; Simple.</p>
+<p>Unfortunately, we can't do that with  King Tut because none of the browsers support animating a nested svg element (<em>boo! hiss!</em>). So we have to fake a viewBox by specifying the equivalent transform elements:</p>
+
+<pre><code class="language-svg">&lt;g  id="kingtutX"&gt;
+    &lt;g id="kingtutY"&gt;
+        &lt;g transform="translate(-10.156 -6.3636) scale(0.15625, 0.127)"&gt;</code></pre>
+
+<p>Also note that we have to have two g elements, one for X and one for Y because two CSS animations can't target a single element (or at least it didn't work in any browser the author has).</p>
+<p>So now for the animation. Animating the tiger couldn't be easier:</p>
+
+<pre><code class="language-svg">&lt;animate xlink:href="#tiger" attributeName="x" values="0;668;0" dur="9s" repeatCount="indefinite"/&gt;
+&lt;animate xlink:href="#tiger" attributeName="y" values="0;924;0" dur="5s" repeatCount="indefinite"/&gt;</code></pre>
+
+
+<p>CSS animation works by specifying a CSS style that has the properties that are to be animated and the timing info (duration, repeats, etc.). Then there is a separate @keyframe rule that defines when the steps of the animation occur.</p>
+
+<pre><code class="language-css">   &lt;style&gt;
+        #kingtutX {
+            animation: kingtutX 10s linear infinite;
+            transform: translateZ(0);
+        }
+
+        #kingtutY {
+            animation: kingtutY 4.5s linear infinite;
+            transform: translateZ(0);
+        }
+
+        @keyframes kingtutX {
+            0% {
+                transform: translateX(693px);
+            }
+            50% {
+                transform: translateX(0px);
+            }
+            100% {
+                transform: translateX(693px);
+            }
+        }
+
+        @keyframes kingtutY {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(930px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    &lt;/style&gt;</code></pre>
+
+<p>Not as concise a clear as the equivalent SMIL, but it does work. </p>
+<p>If you go and try the animation you'll find the tiger and King Tut bouncing happily around the page. Unfortunately, they are such complex drawings that the animation isn't smooth. Wouldn't it be nice if we could offload the work on the GPU? In theory, you can. If you specify a GPU-specific property, some browsers (e.g. Chrome) will create a &quot;layer&quot; and essentially rasterize the specified HTML element and load it into the GPU as GL texture where it will be animated as a whole. This is why you see the<span class="inline-code"> transform:translateZ(0)</span> property in the kingTut rules. Unfortunately, it doesn't work. Apparently this support doesn't work for SVG.</p>
+<p>And that's it!  Click on <a href="bouncingtigerG.svg" title="Bounncing Tiger and Tut" target="_self">this link</a> to see the actual rendered demo in all its bouncing glory!!!</p>
+</body>
+</html>

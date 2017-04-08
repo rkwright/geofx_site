@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="generator" content="HTML Tidy for HTML5 for Mac OS X version 5.4.0" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+  <link rel="stylesheet" type="text/css" href="../css/fixed.css" />
+  <title>Lesson 7 SVG</title>
+</head>
+<body>
+  <div style="float:left;z-index: 999;position:relative;width:200px;height:400px">
+    <object type="image/svg+xml" data="lesson7.svg" >
+      <p>Unable to load the lesson7.svg file</p>
+    </object>
+  </div>
+  <div style="width:100%;z-index:0; position:relative">
+    <h2>A Lesson in Ballistics</h2>
+    <p>In the previous lesson, we saw how one can calculate the vertical position of an
+    object as a function of its initial velocity and the accelerationofgravity. In this
+    lesson, we will extend that concept to allow us to calulate the horizontal position
+    of the object as well. To demonstrate this we will use a common application of this
+    principle: ballistics.</p>
+    <p>For our example we will use the cannon shown on the left. Our cannon fires a
+    cannonball. This cannonball leaves the barrel of the cannon at some intial velocity
+    V<sub>0</sub>. Recall that velocity is the vector that includes both the speed and
+    the direction of an object. So initially, the cannonball has a velocity that includes
+    both a horizontal component, V<sub>x</sub> and a vertical component,
+    V<sub>y</sub>.</p>
+    <p>From trigonometry, it is easy to see that we can calulate the components from the
+    velocity:</p>
+    <blockquote>
+      <blockquote>
+        <p>V<sub>x</sub> = V<sub>0</sub> * cos(θ)</p>
+        <p>V<sub>y</sub> = V<sub>0</sub> * sin(θ)</p>
+      </blockquote>
+    </blockquote>
+    <p>where θ is the angle of the initial trajectory of the cannonball.</p>
+    <p>The important point to grasp in this lesson is, as in the previous lesson, the
+    forces acting on the object to not change with time (<em>as before, we ignore the
+    effects of friction from the atmosphere</em>).</p>
+    <p>Therefore, the position of the cannonball at any time after time t<sub>0</sub> can
+    be calculated as:</p>
+    <blockquote>
+      <blockquote>
+        <p>x<sub>t</sub> = V<sub>x</sub> * t</p>
+        <p>y<sub>t</sub> = V<sub>y</sub> * t - 1/2 * g * t<sup>2</sup></p>
+      </blockquote>
+    </blockquote>
+    <p>where t is the time in seconds from the firing the cannon and g is the
+    acceleration of gravity (9.802m/s<sup>2</sup>).</p>
+    <p>Questions:</p>
+    <ol>
+      <li>If the initial velocity is 15m/s and the barrel angle is 50o above the horizon,
+      what is the maximum height the cannonball will reach? (mouse over here for a
+      hint).</li>
+      <li>In the above example, how far will the ball travel before it hits the ground
+      (assume the “ground”is the faint brown line, which is the elevation the cannon ball
+      starts at time zero)? (mouse over here for a hint)</li>
+    </ol>
+  </div><audio id="audio-cannon" src="../audio/cannon.mp3"></audio>
+</body>
+</html>

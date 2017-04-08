@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     x="0px" y="0px" width="100%" height="100%" viewBox="-20 0 273.268 721.3623" onload="on_load(evt)"
+     preserveAspectRatio="xMinYMin meet">
+
+    <script type="text/javascript" xlink:href="lesson6.js" />
+
+    <g id="highstriker-layer-1">
+        <path fill="#F7F573" stroke="#000000" stroke-width="2" d="M119.136,663.744H17.28V52.416h101.76v611.328H119.136z" />
+        <path fill="#B5820D" stroke="#000000" stroke-width="2" d="M136.416,696.96H1.248V661.632h135.168V696.96z" />
+        <path fill="#FAC93F" stroke="#000000" stroke-width="0.5" d="M72.96,641.28H60.48V79.68h12.48V641.28z" />
+        <g>
+            <path fill="#F8190D" d="M137.28,47.04c0,2.688-2.112,4.8-4.8,4.8H4.8c-2.688,0-4.8-2.112-4.8-4.8V4.8C0,2.112,2.112,0,4.8,0
+			h127.68c2.688,0,4.8,2.112,4.8,4.8V47.04z" />
+            <text transform="matrix(0.8812 0 0 1 9.5996 31.6797)" fill="#FFFFFF" font-family="'CenturySchoolbook-Bold'" font-size="23.04">Superman!!</text>
+
+            <text transform="matrix(0.8812 0 0 1 9.5996 31.6797)" fill="none" stroke="#FFFFFF" font-family="'CenturySchoolbook-Bold'" font-size="23.04">Superman!!</text>
+        </g>
+        <g id="highstriker-bell">
+
+            <radialGradient id="SVGID_1_" cx="74.3583" cy="839.0836" r="28.2037" gradientTransform="matrix(0.96 0 0 -0.96 -4.28 868.4)" gradientUnits="userSpaceOnUse">
+                <stop offset="0" style="stop-color:#FFFFFF" />
+                <stop offset="0.1473" style="stop-color:#FCFCFC" />
+                <stop offset="0.2758" style="stop-color:#F1F1F1" />
+                <stop offset="0.3973" style="stop-color:#DFDFDF" />
+                <stop offset="0.5145" style="stop-color:#C6C6C6" />
+                <stop offset="0.6287" style="stop-color:#A5A5A5" />
+                <stop offset="0.7406" style="stop-color:#7D7D7D" />
+                <stop offset="0.8506" style="stop-color:#4E4E4E" />
+                <stop offset="0.9565" style="stop-color:#181818" />
+                <stop offset="1" style="stop-color:#000000" />
+            </radialGradient>
+            <path fill="url(#SVGID_1_)" stroke="#000000" stroke-width="0.5" d="M94.848,62.88c0,14.592-12.48,26.304-27.744,26.304
+			c-15.36,0-27.744-11.808-27.744-26.304c0-14.592,12.48-26.304,27.744-26.304C82.368,36.48,94.848,48.288,94.848,62.88z" />
+            <path stroke="#000000" stroke-width="0.5" d="M68.16,63.552l-1.152,0.576l-1.152-0.768l0.096-1.344l1.152-0.576l1.056,0.768
+			L68.16,63.552z" />
+        </g>
+        <line fill="none" stroke="#FF0000" x1="227.52" y1="604.8" x2="227.52" y2="624" />
+        <line fill="none" stroke="#FF0000" x1="217.92" y1="614.4" x2="237.12" y2="614.4" />
+        <g transform="translate(18 666) scale(106 55.75) translate(0 0) scale(1 -1)">
+            <g>
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="0.4778" x2="0.6652" y2="0.4778" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="1.4378" x2="0.6652" y2="1.4378" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="2.3978" x2="0.6652" y2="2.3978" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="3.3578" x2="0.6652" y2="3.3578" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="4.3178" x2="0.6652" y2="4.3178" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="5.2778" x2="0.6652" y2="5.2778" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="6.2378" x2="0.6652" y2="6.2378" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="7.1978" x2="0.6652" y2="7.1978" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="8.1578" x2="0.6652" y2="8.1578" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="9.1178" x2="0.6652" y2="9.1178" />
+                <line fill="none" stroke="#000000" stroke-width="0.05" x1="0.2812" y1="10.0778" x2="0.6652" y2="10.0778" />
+            </g>
+
+            <linearGradient id="highstriker-traveller_1_" gradientUnits="userSpaceOnUse" x1="-1.1296" y1="-0.1454" x2="-0.1296" y2="-0.1454" gradientTransform="matrix(20.352 0 0 13.38 23.3678 2.5428)">
+                <stop offset="0" style="stop-color:#FFFFFF" />
+                <stop offset="1" style="stop-color:#000000" />
+            </linearGradient>
+
+            <rect id="Traveller" x="0.3772" y="0.4778" fill="gray" stroke="#000000" stroke-width="0.01" width="0.192" height="0.24" />
+
+            <text id="Velocity" transform="matrix(0.0135 0 0 -0.0179 -0.1031 -0.9627)" font-family="'LucidaConsole'"
+                  font-size="10">0</text>
+        </g>
+
+        <path id="highstriker-redblock" fill="#DE2F09" stroke="#DE2F09" stroke-width="1.5" d="
+	     	M95.808,660.864H40.224v-20.928h55.584V660.864z" />
+    </g>
+
+    <g id="Sledge" onmousedown="OnMouseDownSledge(evt)">
+        <linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="-218.9519" y1="851.184" x2="-205.4117" y2="851.184" gradientTransform="matrix(0.96 0.0049 0.0049 -0.96 427.9591 1359.6155)">
+            <stop offset="0" style="stop-color:#FFFFFF" />
+            <stop offset="1" style="stop-color:#000000" />
+        </linearGradient>
+        <path fill="url(#SVGID_2_)" stroke="#0000ff" d="M234.528,620.544l-12.96-0.096l0.768-158.112l12.96,0.096L234.528,620.544z" />
+        <path opacity="0.45" fill="#DEA814" stroke="#000000" enable-background="new    " d="M234.528,620.544l-12.96-0.096l0.768-158.112
+	        l12.96,0.096L234.528,620.544z" />
+        <linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="-679.2346" y1="656.0909" x2="-660.4358" y2="656.0909" gradientTransform="matrix(-0.014 0.9599 0.9599 0.014 -410.6923 1086.4474)">
+            <stop offset="0" style="stop-color:#FFFFFF" />
+            <stop offset="1" style="stop-color:#000000" />
+        </linearGradient>
+
+        <path fill="url(#SVGID_3_)" stroke="#000000" d="M213.408,461.472
+        	c-5.088-0.096-9.216-0.48-9.216-0.96l0.192-16.32c0-0.48,4.128-0.768,9.216-0.768l29.952,0.48c5.088,0.096,9.216,0.48,9.216,0.96
+	        l-0.192,16.32c0,0.48-4.128,0.768-9.216,0.768L213.408,461.472z" />
+    </g>
+    <g transform="matrix(0.667 0 0 -1 0 0)">
+        <text transform="matrix(1.9013 0 0 -1 147.9933 -591.481)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">1</text>
+        <text transform="matrix(1.9013 0 0 -1 147.9933 -484.4272)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">3</text>
+        <text transform="matrix(1.9013 0 0 -1 147.9933 -377.4047)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">5</text>
+        <text transform="matrix(1.9013 0 0 -1 147.9933 -270.3509)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">7</text>
+        <text transform="matrix(1.9013 0 0 -1 147.9933 -163.2972)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">9</text>
+    </g>
+    <g transform="matrix(0.667 0 0 -1 0 0)">
+        <text transform="matrix(1.9013 0 0 -1 42.966 -644.9922)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">0</text>
+        <text transform="matrix(1.9013 0 0 -1 42.966 -537.9697)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">2</text>
+        <text transform="matrix(1.9013 0 0 -1 42.966 -430.9159)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">4</text>
+        <text transform="matrix(1.9013 0 0 -1 42.966 -323.8622)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">6</text>
+        <text transform="matrix(1.9013 0 0 -1 42.966 -216.8397)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">8</text>
+        <text transform="matrix(1.9013 0 0 -1 22.489 -109.8172)" font-family="'CenturySchoolbook-Bold'" font-size="18.732">10</text>
+    </g>
+    <text transform="matrix(0.8663 -0.4996 0.4996 0.8663 77.7488 123.3587)" fill="#DE2109" font-family="'CenturySchoolbook-Bold'" font-size="11.5204">Strong!</text>
+    <text transform="matrix(0.8663 -0.4996 0.4996 0.8663 82.5491 341.2793)" fill="#DE2109" font-family="'CenturySchoolbook-Bold'" font-size="11.5204">So-So!</text>
+    <text transform="matrix(0.87 0.493 -0.493 0.87 23.9891 192.0005)" fill="#DE2109" font-family="'CenturySchoolbook-Bold'" font-size="11.5197">Wow!</text>
+    <text transform="matrix(0.87 0.493 -0.493 0.87 19.1881 438.2391)" fill="#DE2109" font-family="'CenturySchoolbook-Bold'" font-size="11.5197">Uh-Oh!</text>
+    <text transform="matrix(0.8663 -0.4996 0.4996 0.8663 78.7088 583.1991)" fill="#DE2109" font-family="'CenturySchoolbook-Bold'" font-size="11.5204">Wimpy!</text>
+</svg>

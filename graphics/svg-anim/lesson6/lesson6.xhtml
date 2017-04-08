@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
+  <meta name="generator" content="HTML Tidy for HTML5 for Mac OS X version 5.4.0" />
+  <title>Lesson 6</title>
+  <link type="text/css" href="../css/styles.css" rel="stylesheet" />
+  <link type="text/css" href="../css/prism.css" rel="stylesheet" />
+  <script src="../js/prism.js"></script>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <div>
+    <h2>Lesson 6 - One Dimensional Trajectories</h2>
+    <p>This lesson, part of a "fictional" set of physics lessons, created as a demo of
+    JavaScript animation of SVG. The subject is the physics of simple one-dimensional
+    trajectories. The demonstration uses a "high striker" featured at carnivals and
+    fairs. The artwork was created in Adobe Illustrator, exported as SVG and then
+    hand-edited to add the JavaScript.</p>
+    <p>The lesson consists of a HTML page which comprises the text of the lesson, laid
+    out in standard HTML5. The HTML has two main <span class="inline-code">div</span>
+    elements. One contains the HTML markup that is the text of the lesson. The other has
+    a single HTML <span class="inline-code">object</span> tag that loads the actual SVG.
+    The SVG could just be placed inline within the HTML, but for ease of editing and
+    maintenance it is easier to load it with the <span class="inline-code">object</span>
+    tag. One aspect to note is that the HTML <span class="inline-code">div</span> has a
+    large (10em) margin where the SVG is rendered. The "SVG" <span class=
+    "inline-code">div</span> is positioned absolutely so it gets composited on top of the
+    HTML and appears to be beside the HTML when in fact it is on top of it, only it is in
+    the margin of the HTML.</p>
+    <p>The SVG in turn loads the JavaScript with the SVG <span class=
+    "inline-code">script</span> object. Again, the script could be inline, but it is
+    easier to maintain if separate. Also, the script could have been within the HTML, but
+    it would be a little more convoluted to get a handle to the SVG's document object.
+    Also, note that the SVG script object uses <span class=
+    "inline-code">xlink:href</span> instead of the <span class="inline-code">src</span>
+    attribute of the HTML <span class="inline-code">script</span> tag.</p>
+    <pre><code class=
+    "language-svg">&lt;script type="text/javascript" xlink:href="../js/lesson6.js" /&gt;</code></pre>
+    <p>The SVG's root <span class="inline-code">svg</span> element looks like this:</p>
+    <pre><code class=
+    "language-svg">&lt;svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     x="0px" y="0px" width="280px" height="1024px" viewBox="-20 0 273.268 721.3623" onload="on_load(evt)"/&gt;</code></pre>
+    <p>A few points to note. First, we need to declare the xlink namespace because it is
+    needed for SVG's script element. Seond we declare the view position , which could be
+    omitted as (0,0) is the default. And the <span class="inline-code">height</span> and
+    <span class="inline-code">width</span>, which are essential. We also declare the
+    <span class="inline-code">viewBox</span>, which are the real-world coordinates that
+    are mapped to the corners of th height and width box we declare.</p>
+    <p>This is needed because Illustrator creates all drawings in points and has no
+    concept of coordinate systems, so we determine the coordinates of the corner of the
+    drawing in Illustrator's point (page) based coordinate systems and declare the
+    viewBox with those coordinates. Fortunately, we don't have to do that. The script
+    used to export the code from Illustrator (see the Colophon for details) calculates
+    the values and writes out the viewBox for us.</p>
+    <p>Finally, note that we have also set up our SVG to receive the "onload" event . The
+    handler <span class="inline-code">on_load</span> will be called with a SVG event
+    object (which is slightly different than a vanilla HTML event) when the SVG section
+    of our EPUB has been loaded.</p>
+    <p>The SVG itself is fairly straightforward. The various pieces, the high striker
+    boady, labels, <em>etc.</em> are all fairly normal. Two key elements are that the
+    "traveller" (the weight that moves up and down) and the sedgehammer are separate
+    groups so we can easily animate them. Now, let's look at the JavaScript itself.</p>
+    <p>First, the handler for the onload event:</p>
+    <pre><code class="language-javascript">function on_load(evt) {
+        svgDoc = getSVGDoc(evt.target);
+
+        sledge    = svgDoc.getElementById('Sledge');
+        traveller = svgDoc.getElementById('Traveller');
+        info      = svgDoc.getElementById('Velocity');
+        bellSound = window.parent.document.getElementById("audio-bell");
+        hitSound  = window.parent.document.getElementById('audio-hit');
+    }
+
+    function  getSVGDoc(node) {
+        if (node.nodeType == 9)
+            return node;
+        else
+            return node.ownerDocument;
+    }</code></pre>
+    <p>First, we call getSVGDoc to get the SVG document object. Usually, the event object
+    passed to our handler is an HTML node which whose owner document is the SVG document,
+    but in older browsers it was sometimes the SVG document itself.</p>
+    <p>Then we we search for three special SVG elements we want for the animation: the
+    traveller, the sledge and a text object we will use to output information about the
+    animation as it occurs. We also search for two audio elements so we can play sounds.
+    Note that these audio elements are actually in the HTML body, NOT in the SVG. Audio
+    support in SVG is a little iffy from browser to browser so it is easier and more
+    consistent to put the audio in the HTML and call those elements from our
+    JavaScript.</p>
+    <p>The next important piece is the handler for the mousedown on the sledge, which we
+    use to trigger the animation:</p>
+    <pre><code class=
+    "language-svg">&lt;g id="Sledge" onmousedown="OnMouseDownSledge(evt)"&gt;</code></pre>
+    <p>And the handler looks like this:</p>
+    <pre><code class="language-javascript">function OnMouseDownSledge(evt) {
+         if (traveling == false) {
+            traveling = true;
+            setSledge( -90 );
+
+            startTime = new Date();
+
+            initialVelocity = 13.85;
+
+            hitSound.play();
+
+            intervalID = window.setInterval('next_update()', 16);
+        }
+    }</code></pre>
+    <p>We first check that we aren't already in the middle of an animation - if not we
+    set the flag to indicate that we have started animating. Then we rotate the
+    sledgehammer to hit the fulcrum and start the traveler upwards. We record the start
+    time, set the initial velocity to an arbitrary constant that is just sufficient to
+    ring the bell. Then we call the HTML audio element to make the sound of the sledge
+    hitting the fulcrum. Finally, we call the browser's setInterval function, telling it
+    to call the next_update function every 16 milliseconds. The is effectively telling it
+    to call as often as it can. It will continue to call that function until we call the
+    clearInterval function on the browser and pass the intervalID returned by the call to
+    setInterval.</p>
+    <p>The setSledge function is quite simple:</p>
+    <pre><code class="language-javascript">function setSledge( angle ) {
+        sledge.setAttribute("transform", "rotate("+ angle + " " + sledgeAnchorX + " " + sledgeAnchorY + ")");
+}</code></pre>
+    <p>It just sets the transform attribute of the sledge's group element to rotate the
+    sledge around the sledgeAnchorX and sledgeAnchorY.</p>
+    <p>All the real work happens in the next_update method:</p>
+    <pre><code class="language-javascript">function next_update () {
+        elapsed = (Date.now() - startTime.getTime()) / 1000.0;
+
+        velocity = initialVelocity - deltaTime * gravity;
+        posY = elapsed * initialVelocity - 0.5 * gravity * elapsed * elapsed;
+     
+        if (posY &gt;= 9.7) {
+            posY = 9.7;
+            bellSound.play();
+        }
+        else if (posY &lt;= 0 ) {
+            posY = 0;
+            traveling = false;
+            hitSound.play();
+            window.clearInterval( intervalID );
+        }
+
+        if (deltaTime &gt; 1.0)
+            setSledge(0);
+
+        traveller.setAttribute("y", posY + 0.4778 );
+        info.firstChild.nodeValue = ( 't: ' + elapsed.toFixed(1) + ' v: ' 
+                + velocity.toFixed(1) + ' y: ' + posY.toFixed(1));
+    }</code></pre>
+    <p>We first fetch the current time and get the elapsed time in seconds since the
+    animation started. We use that to calculate current velocity and from that the
+    current y position of the traveler. If the traveler has reached the belll, we make
+    sure it doesn't go too far upwards and call the HTML audio element to ring the
+    bell.</p>
+    <p>If, on the other hand, the traveler has reached the bottom, we ensure it doesn't
+    drop further, set the animation flag to false and call the HTML audio element to make
+    the thump sound again. The we call the browser with the intervalID to stop the calls
+    to next_update.</p>
+    <p>Note that we also check to see if one second has passed since the animation
+    started and, if so, we put the sledge back where it started.</p>
+    <p>Finally, we set the traveler's position and update the info text.</p>
+    <p>And that's it! Click on <a href="lesson6-svg.xhtml" title="Lesson 6" target="_self">this link</a> and see the animation in all it's traveling
+    glory!</p>
+  </div>
+</body>
+</html>

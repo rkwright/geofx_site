@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="generator" content="HTML Tidy for HTML5 for Mac OS X version 5.4.0" />
+  <title>NeHe-EPUB-Intro</title>
+  <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+  <meta charset="utf-8" />
+</head>
+<body>
+  <div class="body">
+    <h1>Introduction</h1>
+    <h2>A (Very) Brief History of SVG and Its Animation</h2>
+    <p>SVG's origin was an exploration of the possibilities of creating a markup language
+    written in XML. It began with markup created by Jon Ferraiolo and Richard Cohen, both
+    at Adobe Systems. They named their creation Precision Graphics Markup Language
+    (PGML). In the early days there was no animation, it was a static markup that was
+    essentially an XML expression of the same capabilities as PDF (in which Richard was
+    heavily involved in creating in the early 1990s).</p>
+    <p>As PGML evolved, Adobe reached out and began colllaborating with other companies,
+    notably Natscape, Sun Microsystems and IBM. Together, they drew up a spec and
+    submitted it for review to the W3C. Although a working group was formed and <a href=
+    "https://www.w3.org/TR/1998/NOTE-PGML-19980410">specifications created</a>, it
+    ultimately foundered as the W3C received a number of competing proposals,
+    including:</p>
+    <ul>
+      <li>PGML, from Adobe, IBM, Netscape, and Sun</li>
+      <li>VML, by Autodesk, Hewlett-Packard, Macromedia, and Microsoft</li>
+      <li>Web Schematics, from CCLRC</li>
+      <li>Hyper Graphics Markup Language, by Orange, PCSL, and PRP</li>
+      <li>WebCGM, from Boeing, CCLRC, Inso, JISC, and Xerox</li>
+      <li>DrawML, from Excosoft</li>
+    </ul>
+    <p>but none of them could gain consensus and the whole effort ground to a halt. But
+    it is worth noting that even the early proposal for PGML at the W3C included a
+    requirement that the markup be animatable.</p>
+    <p>A year or so later, as both XML and the Web gained momentum, Jon Ferraiolo
+    spearheaded another attempt along the same lines, this time calling the markup
+    Scalable Vector Graphics. This time, it gained a fair amount of momentum and SVG
+    became a reality.</p>
+    <p>In order to support the animation requirement, the SVG Working Group (WG) debated
+    several methods, but ended up choosing two:</p>
+    <ul>
+      <li>Using SVG&nbsp;<a href=
+      "https://www.w3.org/TR/SVG/animate.html#AnimationElements">animation elements</a>.
+        <ul>
+          <li>SVG document fragments can describe time-based modifications to the
+          document's elements. Using the various animation elements, you can define
+          motion paths, fade-in or fade-out effects, and objects that grow, shrink, spin
+          or change color.</li>
+          <li>The animation elements use SMIL syntax. SMIL is the Synchronized Multimedia
+          Integration Language. It is an XML markup that allows authors to control the
+          timing and synchronization of events. It is not specific to controlling a
+          specific set of events but is intended as general control language. Two notable
+          uses (in the context of this book) are SVG animation and, in EPUB, Media
+          Overlays. SVG uses only a subset of the full SMIL specification.</li>
+        </ul>
+      </li>
+      <li>Using the&nbsp;<a href="https://www.w3.org/TR/SVG/svgdom.html">SVG DOM</a>
+        <ul>
+          <li>In JavaScript, authors can use events (e.g. onload, mouse gestures,
+          <em>etc.</em> ) or JavaScript's native support for timing (<em>e.g.</em> Date
+          object, setInterval, etc.) to provide the animation characteristics to modify
+          the DOM.</li>
+          <li>Every attribute and style sheet setting is accessible to scripting, and SVG
+          offers a set of additional DOM interfaces to support efficient animation via
+          scripting.</li>
+        </ul>
+      </li>
+    </ul>
+    <p>Initially, SVG support was primarily by the Adobe SVG Viewer as a browser plugin,
+    but slowly SVG gained momentum and the browsers implemented native support for SVG.
+    SVG's animation elements were at one point subject to deprecation by the browsers
+    (notably Chrome) but they have subequently rescinded that and the major browsers
+    actually support the SVG animation elements quite well (as of 2017).</p>
+    <p>With the rise of the GPUs in 1999 and later, some saw a great opportunity to be
+    able to animate not only SVG but also HTML via CSS. This led the CSS Working Group to
+    propose a new methods of animation in CSS3. This is a declarative keyframe-based
+    animation that allows developers to animate not only CSS properties but also SVG
+    properties.</p>
+    <p>Finally, it should be noted that there are other paths (<em>sic</em>) by which
+    "SVG" can be animated in that one can load an SVG file into memory and extract and
+    render the paths using some other rendering method (<em>e.g.</em> WebGL). However,
+    this book is focused on ways in which SVG, rendered as SVG, can be animated.</p>
+  </div>
+</body>
+</html>

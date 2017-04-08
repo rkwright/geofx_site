@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+  <link rel="stylesheet" type="text/css" href="../css/fixed.css" />
+  <title>Lesson 6 SVG</title>
+</head>
+<body id="html-body">
+  <div style="float:left;">
+    <object type="image/svg+xml" data="lesson6.svg" width="320px" height="800px">
+      <p>Unable to load the lesson6.svg file</p>
+    </object>
+  </div>
+  <div >
+    <h2>One Dimensional Trajectories</h2>
+    <p>This lesson deals with calculation of position and velocity for a moving object in
+    one dimension (we will consider two dimensions in the next lesson). For simplicity,
+    we will consider an object which is constrained to move only up and down, such as the
+    famous carnival show Test-Your-Strength attraction (often called a "high-striker")
+    where one slams a sledgehammer on a board to drive a weight (called the traveller) up
+    a pole in (a normally futile) attempt to ring a bell.</p>
+    <p>In this case, there are two forces acting on the weight; the initial velocity
+    imparted by the sledge hammer (which is transmitted to the traveller via the lever of
+    the board), and the force of gravity which pulls down on the traveller with a
+    constant acceleration. In this case, we will ignore the friction of the traveller as
+    it slides up the pole. We call the initial velocity V<sub>0</sub>.</p>
+    <p>Recall from previous lessons that a body in motion tends to stay in motion. Thus
+    we can think of the traveller as always having the same velocity imparted by the
+    sledge, it is just that the acceleration of gravity acts in the opposite direction
+    and becomes larger, so the weight falls back down. The velocity at any given moment
+    will be equal to that in intial velocity less the velocity due to the acceleration of
+    gravity. From the previous lesson, recall that the velocity of an object is the
+    product of the acceleration times the length of the acceleration.</p>
+    <p>So if we call time, t, and repreent the force of gravity as g, we can find the
+    velocity due to gravity Vg ) at any time t as</p>
+    <blockquote>
+      <blockquote>
+        <p>V<sub>g</sub> = g * t</p>
+      </blockquote>
+    </blockquote>
+    <p>so the velocity at any time t is</p>
+    <blockquote>
+      <blockquote>
+        <p>V<sub>t</sub> = V<sub>0</sub> - g * t</p>
+      </blockquote>
+    </blockquote>
+    <p>So, given a intial velocity, how high will the traveller travel? We solve this by
+    observing that at the maximum height, the net velocity will be zero, so first we
+    figure out long it takes to get to that point:</p>
+    <blockquote>
+      <blockquote>
+        <p>0 = V<sub>0</sub> - g * t</p>
+      </blockquote>
+    </blockquote>
+    <p>thus</p>
+    <blockquote>
+      <blockquote>
+        <p>g * t = V<sub>0</sub></p>
+      </blockquote>
+    </blockquote>
+    <p>and, finally,</p>
+    <blockquote>
+      <blockquote>
+        <p>t = V<sub>0</sub> / g</p>
+      </blockquote>
+    </blockquote>
+    <p>Once we know at what time, t, we can easily figure out where it is. Again, from
+    the previous lesson, recall that the distance an object falls can be calculated
+    as</p>
+    <blockquote>
+      <blockquote>
+        <p>d = 1/2 * a * t<sup>2</sup></p>
+      </blockquote>
+    </blockquote>
+    <p>Since the traveller has to fall back in the same time as it rose, we can then find
+    the answer by subsituting gravity for the acceleration and our value of t from our
+    earlier calculation.</p>
+    <p>Questions:</p>
+    <ol>
+      <li>If the initial velocity is 5 m/s, how long will it take to reach the zenith and
+      what will be the height? For 8 m/s?</li>
+      <li>If the traveller reaches a height of 8 meters, what was the initial velocity?
+      How long did it take to get there?</li>
+    </ol>
+  </div><audio id="audio-hit" src="../audio/hit1.mp3"></audio> <audio id="audio-bell"
+  src="../audio/boxing_bell.mp3"></audio>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
+  <meta name="generator" content="HTML Tidy for HTML5 for Mac OS X version 5.4.0" />
+  <title>NeHe-EPUB-Preface</title>
+  <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+  <meta charset="utf-8" />
+</head>
+<body>
+  <div class="body">
+    <h1 style="text-align: center">Colophon</h1>
+    <p>This book was created using a variety of tools, but the general workflow was as
+    follows:</p>
+    <ul>
+      <li>The EPUB was begun by creating the <a href=
+      "http://www.idpf.org/epub/301/spec/epub-publications.html#sec-package-def">OPF</a>,
+      then adding the requisite HTML, CSS and scripts to the OPF and creating those
+      files.
+      </li>
+      <li>Editing of the OPF and other markup was done in <a href=
+      "https://www.jetbrains.com/webstorm/">Webstorm</a>
+      </li>
+      <li>WYSIWYG editing of the HTML text that forms the chapters was done in <a href=
+      "http://www.adobe.com/products/dreamweaver.html">Dreamweaver</a>. An "external
+      tool" shortcut was added to Webstorm to facilitate jumping back and forth.
+      </li>
+      <li>A little <a href="https://github.com/rkwright/UpdateModTime">Java program</a>
+      was written (and invoked as a jar) that updates the OPF, setting the
+      dcterms:modified to the current date and time
+      </li>
+      <li>A <a href=
+      "https://github.com/readium/readium-test-files/blob/master/util/scripts/zip-epub-check.sh">
+        bash script</a> was written to invoke that jar, zip up all the sources of the
+        Webstorm project and then run them against <a href=
+        "https://github.com/IDPF/epubcheck">EPUBCheck</a>
+      </li>
+    </ul>
+    <p>The "lessons" 6 and 7 artwork was created in Illustrator and exported using
+    <a href="https://github.com/iconic/illustrator-svg-exporter" title=
+    "SVG Exporter on github" target="_blank">SVG Exporter</a>., which is a nice tool that
+    runs from the Illustrator File menu and generates a neat viewBox view of the content.
+    (Side note: The author wrote this same functionality into the original Illustrator 9
+    code for saving SVG, but someone in a later version took it out for reasons
+    unknown).</p>
+    <p>As noted in the Hurricane and State Population demos were largely created with
+    custom GIS tools. Some hand-editing was required at the end. Titles and info was done
+    in Illustrator.</p>
+    <p>The Tempwave demo was done largely by hand though the titles and text were done in
+    Illustrator</p>
+    <p>The Tiger and King Tut demo was, as noted based on Illustrator demo files and the
+    animation added by hand.</p>
+    <p>The actual format of the EPUB is fairly straightforward. There are a few aspects
+    that are interesting. First, each chapter or lesson is actually two different spine
+    items. The main part of the chapter is a reflowable spine item. The final page of
+    each chapter is the actual functional SVG demo. It is a separate spine item which is
+    a fixed-layout page where the itemref in the spine has an override. Thus the second
+    chapter's spine items are</p>
+    <pre>&lt;itemref idref="hurricane-xhtml" /&gt;
+&lt;itemref idref="hurricane-svg" properties="rendition:layout-pre-paginated"/&gt;</pre>
+    <p>It is done this way because the JavaScript code that is the demo has to have a
+    specific size. Normally, in the browser the JS code fetches the size of the
+    innerWindow, but that doesn't work from inside an EPUB reading system since it
+    normally wraps the actual page content in a iFrame or other construct. So it works
+    much better to specify a fixed size page.</p>
+    <p>The other interesting aspect is the use of PrismJS to colorize the JavaScript ,
+    HTML and SVG code for better readability. This requires that each block of code to be
+    colorized be wrapped in a &lt;code&gt; element and the language specified as part a
+    CSS style, e.g.</p>
+    <pre>&lt;code class="language-javascript"&gt; (or css, or html or svg)</pre>
+    <p>Finally, all the illegal HTML characters need to be escape (<em>e.g.</em> &amp;lt;
+    &amp;amp; <em>etc.</em>). This is a bit of a pain since if the actual demo code is
+    modified then the example code in the chapter has to be updated.</p>
+  </div>
+</body>
+</html>

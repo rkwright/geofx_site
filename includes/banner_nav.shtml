@@ -18,6 +18,7 @@
             <li onClick="return true"><a>Graphics</a>
                 <ul>
                     <li onClick="return true"><a href="/graphics/nehe-three-js/nehe-three-js.html">NeHe-Three.js</a></li>
+                    <li onClick="return true"><a href="/graphics/svg-anim/svg-anim.html">SVG Animation</a></li>
                     <li onClick="return true"><a href="/graphics/epub-webgl/epub-webgl.html">EPUB-WebGL</a>
                     <li onClick="return true"><a href="/graphics/eclipse-jogl/eclipse-jogl.html">Eclipse-JOGL</a>
                 </ul>
