@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1593" height="1739"
-     viewBox="0 0 1593 1739" overflow="visible" xml:space="preserve" onload="on_load(evt)" id="cannon" preserveAspectRatio="xMinYMin meet">
+     viewBox="0 0 1593 1739" overflow="visible" xml:space="preserve" onload="on_load(evt)" id="cannon">
 
     <script type="text/javascript" xlink:href="lesson7.js" />
 

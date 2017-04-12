@@ -15,13 +15,18 @@
 	text-rendering:optimizeLegibility;
 }
 body {
-	font:400 13px/1.4 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	/* font:400 13px/1.4 'Helvetica Neue', Helvetica, Arial, sans-serif; */
 	background:#f9f9f9;
 	line-height:1.2;
 }
 
 p {
 	margin: 0.375em;
+}
+
+a img {
+  border-style: ridge;
+  boreder-color: #888;
 }
 /*------------------------------------*\
     STRUCTURE

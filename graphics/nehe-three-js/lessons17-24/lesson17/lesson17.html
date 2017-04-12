@@ -1,26 +1,24 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>NeHe Lessons 17</title>
-    <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
-    <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
-    <link rel="shortcut icon" href="../../../../images/favicon.png" type="image/png" />
-    <script src="../../../../js/jquery-3.1.1.min.js"></script>
-    <script src="../../../../js/flaunt.js"></script>
-    <link type="text/css" href="../../css/NeHe-EPUB.css" rel="stylesheet"/>
-    <link type="text/css" href="../../css/prism.css" rel="stylesheet"/>
-    <script src="../../js/prism.js" type="text/javascript"></script>
+  <meta charset="UTF-8" />
+  <title>NeHe Lessons 17</title>
+  <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../../../css/prism.css" rel="stylesheet" type="text/css" />
+  <link href="../../css/NeHe-EPUB.css" rel="stylesheet" type="text/css"/>
+  <link  href="../../../../images/favicon.png" rel="shortcut icon" type="image/png" />
+  <script src="../../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../../js/flaunt.js"></script>
+  <script src="../../../../js/prism.js" type="text/javascript"></script>
 </head>
 <body>
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->			
+<div class="content">
+<div class="content-text">
 
-		<div class="wrapper">
- 		<div class="main">
-			
-				 <!--#include virtual="/includes/banner_nav2.shtml" -->			
-
-				<div class="content">
-					<div class="content-text">
 <h2>Lesson 17 - Texture Atlases</h2>
 
 <p>In real-time computer graphics, a texture atlas (also called a tile map, tile engine, or sprite sheet) is a large image containing a collection, or &quot;atlas&quot;, of sub-images, each of which is a texture map for some part of a 2D or 3D model. The sub-textures can be rendered by modifying the texture coordinates of the object's uvmap on the atlas, essentially telling it which part of the image its texture is in. In an application where many small textures are used frequently, it is often more efficient to store the textures in a texture atlas which is treated as a single unit by the graphics hardware. This saves memory and because there are less rendering state changes by binding once, it can be faster to bind one large texture once than to bind many smaller textures as they are drawn.</p>
@@ -104,6 +102,7 @@ gfxScene.add(cubeMesh);
 </code></pre>
 
 <p>And that's it!  Click on <a href="lesson17webgl.html" title="Lesson 17" target="_self">this link</a> to see the actual rendered demo in all it's texture-atlas glory!</p>
+
 </div></div></div></div>
 </body>
 </html>

@@ -44,6 +44,7 @@ nav ul { padding-left: 2em; }
 	display:inline-block;
 	font-size:14px;
 	font-weight:900;
+  font:900 13px/1.4 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .nav-list {
 	text-align:left;
