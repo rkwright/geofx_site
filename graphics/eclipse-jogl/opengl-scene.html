@@ -1,18 +1,24 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Digital Publishing, EPUB, Graphics, GIS Consulting</title>
-<link href="../../styles.css" rel="stylesheet" type="text/css" />
-<link rel="shortcut icon" href="../../images/favicon.png" type="image/png" />
+  <meta charset="utf-8" />
+  <title>Geo-F/X</title>
+  <link href="../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../../images/favicon.png" rel="shortcut icon" type="image/png" />
+  <script src="../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../js/flaunt.js"></script>
 </head>
 <body>
-	<!--#include virtual="../../includes/banner_nav.shtml" -->
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->
+<div class="content">
+<div class="content-text">
 
-<div  class="text_div">
 <h2>Eclipse, JOGL and a Simple Scene</h2>
 
-<p class="warning">Just a warning:  This is very old.  I provide it only for legacy's sake.  These  days, please look into <a href="https://www.khronos.org/webgl/">WebGL</a> and <a href="http://threejs.org/">Three.js.</a></p>
+<p class="warning">Just a warning:  This is very old.  I provide it only for legacy's sake.  These  days, please look into <a href="https://www.khronos.org/webgl/">WebGL</a> and <a href="http://threejs.org/">Three.js.</a> I encourage you to look at <a href="../nehe-three-js/nehe-three-js.html" title="NeHe Three.js" target="_self">my own three.js demos</a>.</p>
 
 <p>In the <a href="intro-JOGL.html">first tutorial</a>, I covered my initial exploration of JOGL in Eclipse. The example doesn't do much (a cube and a triangle - woohoo!) but did show how to set up JOGL itself, configure a project and the basic instantiation of the GLCanvas and the implementation of the methods of the GLEventListener interface.</p>
 <p>That was useful, doesn't provide much of an extensible framework for exploring JOGL - which was part of the intent. The intent of this second installment is to present a much more complete framework. The overall goal was to develop a framework that:</p>
@@ -449,8 +455,10 @@ renderer.end3DRendering();<br />
 <h2>Next Steps</h2>
 <p>So that's pretty much a complete coverage of the GLScene class and its usage. I could dig into further, but you have the source code, so you can explore on your own. Feel free to send me questions or suggestions at <a href="mailto:rkwright@geofx.com?subject=Comment on OpenGL and Eclipse - Part 2">rkwright@geofx.com</a>.</p>
 <p>The next part of this series is an OpenGL-enabled Eclipse perspective. For my purposes, it allows me to write visualization models easily with both OpenGL and 2D SWT windows for displaying data. But that's a work in progress - this isn't my day job, so it gets worked on when I can stay up late enough!</p>
-   <!--#include virtual="/includes/footer.shtml" -->
-</div>
+
+<!--#include virtual="/includes/footer.shtml" -->
+
+</div></div></div></div>
 
 </body>
 </html>
