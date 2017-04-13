@@ -5,7 +5,7 @@
 <nav class="nav">
   <ul class="nav-list">
 	  <li class="nav-item">
-		  <a href="?=about">Home</a>
+		  <a href="/index.html">Home</a>
 		</li>
 		<li class="nav-item">
 		  <a href="/index.html">Digital Publishing</a>
@@ -38,9 +38,6 @@
 				</li>
 				<li class="nav-submenu-item">
 					<a href="/graphics/eclipse-jogl/eclipse-jogl.html">Eclipse-JOGL</a>
-				</li>
-				<li class="nav-submenu-item">
-					<a href="/graphics/svg-anim/svg-anim.html">SVG Animations</a>
 				</li>
 			</ul>
 		</li>

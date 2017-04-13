@@ -1,24 +1,46 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>Projection Info</title>
-		<link rel="stylesheet" href="../styles.css" type="text/css" />
-	</head>
+<head>
+  <meta charset="utf-8" />
+  <title>Geo-F/X</title>
+  <link href="../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../../images/favicon.png" rel="shortcut icon" type="image/png" />
+  <script src="../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../js/flaunt.js"></script>
+</head>
 <body>
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->
+<div class="content">
+<div class="content-text">
 
-	<!--#include virtual="/includes/banner_nav.shtml" -->
-    
-<div class="text_div">
 	<h2>Projection Info</h2>
-	<p><img src="images/gnarlyglobe.jpg" alt="Gnarly globe with elevations exaggerated 100 times" width="577" height="581" /></p>
-	<p>The map projection demos were created by converting the publicly available 5 minute DEM data (courtesy of the <a href="http://www.ngdc.noaa.gov">NGDC)</a> from the original plain raster format to a registered GeoTIFF image file.&nbsp; The resulting file is read by proprietary Geo-F/X tools and projected using the Geo-F/X projection library.&nbsp; The projection is done in 3D (using OpenGL)&nbsp;&nbsp; The elevations in the DEM file are used to depict the elevations.&nbsp; In the other demos the vertical elevations are exaggerated by 15x - otherwise the earth&rsquo;s topography is virtually undetectable.&nbsp; In the &ldquo;gnarly&rdquo; globe above the elevations are exaggerated 100 times!</p>
-	<p>The color rendering of the globe is achieved by applying a simple model that relates the earth&rsquo;s biogeographical distribution to latitude and altitude and assigns colors based on the dominant biogeographical elements of each zone (e.g. desert/scrub brown, tropical forest green, temperate forest dark green, etc.)</p>
+	<p>
+    <img src="images/gnarlyglobe.jpg" alt="Gnarly globe with elevations exaggerated 
+      100 times" width="577" height="581" />
+  </p>
 	
-       <!--#include virtual="/includes/footer.shtml" -->
+  <p>The map projection demos were created by converting the publicly available 5 minute 
+    DEM data (courtesy of the <a href="http://www.ngdc.noaa.gov">NGDC)</a> from the original
+    plain raster format to a registered GeoTIFF image file.&nbsp; The resulting file is read 
+    by proprietary Geo-F/X tools and projected using the Geo-F/X projection library.&nbsp; 
+    The projection is done in 3D (using OpenGL)&nbsp;&nbsp; The elevations in the DEM file 
+    are used to depict the elevations.&nbsp; In the other demos the vertical elevations 
+    are exaggerated by 15x - otherwise the earth&rsquo;s topography is virtually 
+    undetectable.&nbsp; In the &ldquo;gnarly&rdquo; globe above the elevations are 
+    exaggerated 100 times!
+  </p>
+	<p>The color rendering of the globe is achieved by applying a simple model that relates 
+    the earth&rsquo;s biogeographical distribution to latitude and altitude and assigns 
+    colors based on the dominant biogeographical elements of each zone (e.g. desert/scrub
+    brown, tropical forest green, temperate forest dark green, etc.)
+  </p>
+	
+<!--#include virtual="/includes/footer.shtml" -->
 
-</div>
-
+</div></div></div></div>
 		
 </body>
 </html>
