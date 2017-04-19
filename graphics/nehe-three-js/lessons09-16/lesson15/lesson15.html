@@ -1,28 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>NeHe Lessons 15</title>
-    <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
-    <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
-    <link rel="shortcut icon" href="../../../../images/favicon.png" type="image/png" />
-    <script src="../../../../js/jquery-3.1.1.min.js"></script>
-    <script src="../../../../js/flaunt.js"></script>
-    <link type="text/css" href="../../css/NeHe-EPUB.css" rel="stylesheet"/>
-    <link type="text/css" href="../../css/prism.css" rel="stylesheet"/>
-    <script src="../../js/prism.js" type="text/javascript"></script>
+  <title>Lesson 15 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
+  <meta name="description" content="NeHe Lesson 15 in three.js and WebGL, developed by Geo-F/X - GeoFX"/>
+  <meta name="author" content="Richard K. Wright richardkylewright" />
+  <meta name="keywords" content="NeHe WebGL three.js GIS 3D Digital Publishing EPUB eBooks Readium SVG Graphics Geo-F/X Consulting - GeoFX" />
+  <meta charset="utf-8" /> 
+  <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../css/NeHe-EPUB.css" rel="stylesheet" type="text/css"/>
+  <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
+  <script src="../../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../../js/flaunt.js"></script>
+  <script src="../../../../js/prism.js"></script>
 </head>
 <body>
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->			
+<div class="content">
+<div class="content-text">
 
-		<div class="wrapper">
- 		<div class="main">
-			
-				 <!--#include virtual="/includes/banner_nav2.shtml" -->			
-
-				<div class="content">
-					<div class="content-text">
 <h2>Lesson 15 - Textured Vector Fonts</h2>
-
 
 <p>Lesson 15 is essentially a sequel to the previous lesson on vector fonts. The NeHe lesson was about how to apply texture to vector fonts. In OpenGL 1.1 that required a bit of work. In three.js it is actually pretty trivial as one can just create a material and specify a texture. However, that seems too easy, so we'll show you another way to do it - by writing your first shader program. The shader program is pretty trivial, but it introduces the concept. We'll encounter some more complex shaders later in the other lessons.</p>
 <p>OpenGL Shading Language (<strong>GLSL</strong>), is a high-level shading language based on the syntax of the C programming language. It was created by the OpenGL Architecture Review Board to give developers more direct control of the graphics pipeline without writing in assembly language. When your JavaScript program is executed by the browser, three.js takes the objects you have created and added to your scene, pushes them into vertex buffers and passes them to the GPU. The default shaders of three.js as well as any shaders you have defined to are compiled and passed to the GPU as well, where they use the data in the vertex buffers to render the actual pixels.</p>
@@ -107,6 +106,9 @@ var materialArray = [ shaderMaterialL, shaderMaterialW ];</code></pre>
 
 <p>Note the declaration of the <span class="inline-code">varying vec2</span> that we declared in the vertex shader. It contains the indices we need to figure out how to index into the texture passed in via our uniform. We then determine the <span class="inline-code">gl_fragColor</span> by calling a function, <span class="inline-code">texture2D</span>, which is a wrapper for the underlying low-level WebGL API. The other fragment shader is identical except that it's<span class="inline-code"> uniform sampler2D</span> is <span class="inline-code">leatherImage</span>.</p>
 <p>And that's it!  Click on <a href="lesson15webgl.html" title="Lesson 15" target="_self">this link</a> to see the actual rendered demo in all its texture filtered glory! Shazaam!</p>
+
+<!--#include virtual="/includes/footer.shtml" -->
+
 </div></div></div></div>
 </body>
 </html>

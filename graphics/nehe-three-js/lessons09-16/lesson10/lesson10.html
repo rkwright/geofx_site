@@ -1,28 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>NeHe Lessons 10</title>
-    <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
-    <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
-    <link rel="shortcut icon" href="../../../../images/favicon.png" type="image/png" />
-    <script src="../../../../js/jquery-3.1.1.min.js"></script>
-    <script src="../../../../js/flaunt.js"></script>
-    <link type="text/css" href="../../css/NeHe-EPUB.css" rel="stylesheet"/>
-    <link type="text/css" href="../../css/prism.css" rel="stylesheet"/>
-    <script src="../../js/prism.js" type="text/javascript"></script>
+  <title>Lesson 10 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
+  <meta name="description" content="NeHe Lesson 10 in three.js and WebGL, developed by Geo-F/X - GeoFX"/>
+  <meta name="author" content="Richard K. Wright richardkylewright" />
+  <meta name="keywords" content="NeHe WebGL three.js GIS 3D Digital Publishing EPUB eBooks Readium SVG Graphics Geo-F/X Consulting - GeoFX" />
+  <meta charset="utf-8" /> 
+  <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../css/NeHe-EPUB.css" rel="stylesheet" type="text/css"/>
+  <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
+  <script src="../../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../../js/flaunt.js"></script>
+  <script src="../../../../js/prism.js"></script>
 </head>
 <body>
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->			
+<div class="content">
+<div class="content-text">
 
-		<div class="wrapper">
- 		<div class="main">
-			
-				 <!--#include virtual="/includes/banner_nav2.shtml" -->			
-
-				<div class="content">
-					<div class="content-text">
 <h2>Lesson 10 - Specifying 3D Structures</h2>
-
 
 <p>This lesson is very simple, almst trivial. It was written in the days when writing any simple 3D game that involved moving from place to place was new and different. Today, with the far more complex types of games and other 3D adventures, this example seems pretty trivial. Nonetheless, it is part of the NeHe demos, so we include it here.</p>
 <p>The demo consists of the datafile which specifies a series of triangles that form a very simple structure that resembles nothing more than house of cards. Each of the &quot;walls&quot; and floor and ceiling consist of a pair of triangles, expressed as a JavaScript array. Here is the floor:</p>
@@ -85,6 +84,10 @@ var mesh = new THREE.Mesh( triGeom, material);
 gfxScene.add(mesh);</code></pre>
 	
 <p>Do this for each triangle and that's it. And that's it!  Click  on <a href="lesson10webgl.html" title="Lesson 10" target="_self">this link</a> to see the &quot;House of Sammy&quot; in all his glory!</p>
+
+<!--#include virtual="/includes/footer.shtml" -->
+
 </div></div></div></div>
+
 </body>
 </html>

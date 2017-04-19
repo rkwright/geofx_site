@@ -1,26 +1,26 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>NeHe Lessons 7</title>
-    <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
-    <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
-    <link rel="shortcut icon" href="../../../../images/favicon.png" type="image/png" />
-    <script src="../../../../js/jquery-3.1.1.min.js"></script>
-    <script src="../../../../js/flaunt.js"></script>
-    <link type="text/css" href="../../css/NeHe-EPUB.css" rel="stylesheet"/>
-    <link type="text/css" href="../../css/prism.css" rel="stylesheet"/>
-    <script src="../../js/prism.js" type="text/javascript"></script>
+  <title>Lesson 7 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
+  <meta name="description" content="NeHe Lesson 7 in three.js and WebGL, developed by Geo-F/X - GeoFX"/>
+  <meta name="author" content="Richard K. Wright richardkylewright" />
+  <meta name="keywords" content="NeHe WebGL three.js GIS 3D Digital Publishing EPUB eBooks Readium SVG Graphics Geo-F/X Consulting - GeoFX" />
+  <meta charset="utf-8" /> 
+  <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../css/NeHe-EPUB.css" rel="stylesheet" type="text/css"/>
+  <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
+  <script src="../../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../../js/flaunt.js"></script>
+  <script src="../../js/prism.js"></script>
 </head>
 <body>
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->			
+<div class="content">
+<div class="content-text">
 
-		<div class="wrapper">
- 		<div class="main">
-			
-				 <!--#include virtual="/includes/banner_nav2.shtml" -->			
-
-				<div class="content">
-					<div class="content-text">
 <h2>Lesson 7 - Texture Filters and Input</h2>
 <p>This lesson covers two aspects, texture filters and keyboard input. The keyboard input is rather trivial for anyone reasonably familiar with JavaScript, but texture filters are a bit more interesting. Again, three.js makes using them pretty easy, but there are a few tricks. And texture filters themselves are interesting.</p>
 <p>Textures in OpenGL are made up of arrays of elements known as <em>texels</em>, which contain colour and alpha values. This corresponds with the display, which is made up of a bunch of pixels and displays a different colour at each point. In OpenGL, textures are applied to triangles and drawn on the screen, so these textures can be drawn in various sizes and orientation. The texture filtering options in OpenGL tell it how to map the texels onto the pixels of the device, depending on the scale of the mapping.</p>
@@ -203,6 +203,9 @@ cubeMesh.rotation.set(xRotation, yRotation, 0.0);
 cubeMesh.position.z = zTranslation;</code></pre>
 
 <p>And that's it!  Go on to <a href="lesson07webgl.html" title="Lesson 7" target="_self">this link</a> to see the actual rendered demo in all its texture filtered glory!</p>
+
+<!--#include virtual="/includes/footer.shtml" -->
+
 </div></div></div></div>
 </body>
 </html>

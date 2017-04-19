@@ -25,7 +25,7 @@
 		  </ul>
 	  </li>
 		<li class="nav-item">
-			<a href="?=services">Graphics</a>
+			<a href="/graphics/nehe-three-js/nehe-three-js.html">Graphics</a>
 			<ul class="nav-submenu">
 				<li class="nav-submenu-item">
 					<a href="/graphics/nehe-three-js/nehe-three-js.html">NeHe-Three.js</a>
@@ -42,7 +42,7 @@
 			</ul>
 		</li>
 		<li class="nav-item">
-			<a href="?=services">GIS</a>
+			<a href="/gis/contouring/contouring.html">GIS</a>
 			<ul class="nav-submenu">
 			  <li class="nav-submenu-item">
 					<a href="/gis/contouring/contouring.html">Contouring</a>
@@ -59,7 +59,7 @@
 			</ul>
 		</li>
 		<li class="nav-item">
-			<a href="?=services">About</a>
+			<a href="/about/about.html">Geo-F/X</a>
 			<ul class="nav-submenu">
 			  <li class="nav-submenu-item">
 					<a href="/about/about.html">About Geo-F/X</a>
