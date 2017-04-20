@@ -1,2 +1,2 @@
 # geofx_site
-Website for geofx
+Website for Geo-F/X,  THe website itself is at http://www.geofx.com
