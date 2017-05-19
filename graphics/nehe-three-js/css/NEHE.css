@@ -5,6 +5,8 @@
  body {
 	/* Set the background color of the HTML page to black */
 	background-color: #000000;
+	margin:0;
+	padding:0;
 
 	/* Hide oversized content. This prevents the scroll bars. */
 	overflow: hidden;
