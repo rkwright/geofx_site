@@ -18,7 +18,7 @@
 		<script src="../../js/three.js" type="text/javascript"></script>
 		<script src="../../js/Detector.js" type="text/javascript"></script>
 		<script src="../../js/OrbitControls-Touch-Ortho.js" type="text/javascript"></script>
-		<script src="../../js/Stats.js" type="text/javascript"></script>
+		<script src="../../js/stats.js" type="text/javascript"></script>
         <script src="../../js/gfx-scene.js" type="text/javascript"></script>
 	</head>
 	<body>
@@ -465,7 +465,7 @@
                 vector.set( 2 * (e.clientX / gfxScene.canvasWidth) - 1, 1 - 2 * (e.clientY / gfxScene.canvasHeight ));
 
                  // pass two parameters to RayCaster, where the user clicked and the direction of the camera
-                pointCaster.setFromCamera(vector, gfxScene.camera);
+                pointCaster.setFromCamera(vector, gfxScene.cameras[0]);
 
                 // get all the objects that the ray instersects
                 var intersects = pointCaster.intersectObjects(objects.children);
