@@ -6,16 +6,17 @@
 
 	<!-- Set the viewport size to the screen size, so it will be displayed maximized, but unscaled. -->
 	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">	
+  <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
 	<link rel="stylesheet" type="text/css" href="../../css/NeHe.css" />
 
 	<!-- Include the necessary libs -->
 		<script src="../../js/three.js" type="text/javascript"></script>
 		<script src="../../js/Detector.js" type="text/javascript"></script>
-        <script src="../../js/OrbitControls-Touch-Ortho.js" type="text/javascript"></script>
-        <script src="../../js/stats.js" type="text/javascript"></script>
-        <script src="../../js/gfx-scene.js" type="text/javascript"></script>
-        <script src="js/beachball.js" type="text/javascript"></script>
-        <script src="js/cannon.js" type="text/javascript"></script>
+    <script src="../../js/OrbitControls-Touch-Ortho.js" type="text/javascript"></script>
+    <script src="../../js/stats.js" type="text/javascript"></script>
+    <script src="../../js/gfx-scene.js" type="text/javascript"></script>
+    <script src="js/beachball.js" type="text/javascript"></script>
+    <script src="js/cannon.js" type="text/javascript"></script>
 	</head>
 	<body>
 
@@ -47,7 +48,7 @@
 
                 clock = new THREE.Clock(true);
 
-                var cubeGeometry = new THREE.BoxGeometry( 10, 10, 10 );
+                var cubeGeometry = new THREE.BoxGeometry( 10, 10, 8 );
                 var cubeMaterial = new THREE.MeshBasicMaterial( { wireframe:true, color : 0xff0000 } );
                 cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
                 cube.position.set(0,0,0);

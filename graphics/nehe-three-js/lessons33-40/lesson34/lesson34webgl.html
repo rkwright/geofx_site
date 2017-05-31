@@ -8,7 +8,8 @@
   			@author: rkwright@geofx.com
 		-------------------------------------- -->
 		<title>NEHE Lesson 34</title>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<meta charset="UTF-8"/>
+    <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
 
 		<!-- Set the viewport size to the screen size, so it will be displayed maximized, but unscaled. -->
 		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1"/>
@@ -19,43 +20,43 @@
 		<script src="../../js/Detector.js" type="text/javascript"></script>
 		<script src="../../js/OrbitControls-Touch-Ortho.js" type="text/javascript"></script>
 		<script src="../../js/Stats.js" type="text/javascript"></script>
-        <script src="../../js/gfx-scene.js" type="text/javascript"></script>
+    <script src="../../js/gfx-scene.js" type="text/javascript"></script>
 
-        <!-- ---------------- Custom Shader Code ------------------------ -->
-        <script id="vertexShader" type="x-shader/x-vertex">
-            uniform sampler2D   vTexture;
-            uniform float       vScale;
-            uniform vec3        vLut[ 256 ];
+    <!-- ---------------- Custom Shader Code ------------------------ -->
+    <script id="vertexShader" type="x-shader/x-vertex">
+        uniform sampler2D   vTexture;
+        uniform float       vScale;
+        uniform vec3        vLut[ 256 ];
 
-            varying vec3        vColor;
+        varying vec3        vColor;
 
-            void main() {
+        void main() {
 
-	            vec4 heightData = texture2D( vTexture, uv );
+          vec4 heightData = texture2D( vTexture, uv );
 
-                // if the map is grayscale it doesn't matter if you use r, g, or b.
-	            float vAmount = heightData.r;
+            // if the map is grayscale it doesn't matter if you use r, g, or b.
+          float vAmount = heightData.r;
 
-                // fetch the color from the lookup table so it gets passed to the fragment shader
-                int index = int(heightData.r * 255.0);
-	            vColor = vLut[index];
+            // fetch the color from the lookup table so it gets passed to the fragment shader
+            int index = int(heightData.r * 255.0);
+          vColor = vLut[index];
 
-	            // move the position along the normal
-                vec3 newPosition = position + normal * vScale * vAmount;
+          // move the position along the normal
+            vec3 newPosition = position + normal * vScale * vAmount;
 
-	            gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
-            }
-        </script>
+          gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+        }
+    </script>
 
-        <script id="fragmentShader" type="x-shader/x-vertex">
+    <script id="fragmentShader" type="x-shader/x-vertex">
 
-            varying vec3  vColor;
+        varying vec3  vColor;
 
-            void main() {
+        void main() {
 
-                gl_FragColor = vec4(vColor, 1.0);
-            }
-        </script>
+            gl_FragColor = vec4(vColor, 1.0);
+        }
+    </script>
 	</head>
 	<body>
 
