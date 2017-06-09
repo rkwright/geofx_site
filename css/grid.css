@@ -1,11 +1,3 @@
-@charset "UTF-8";
-
-
-xdiv {
-	border-color: #EC1418;
-	border-width:1;
-	border-style: solid;
-}
 
 .box {
   background-color: #ccc;
@@ -28,7 +20,7 @@ img {
    box-shadow: 3px 3px 5px #666;
 }
 
-.container {
+.grid-container {
   display: grid;
 	grid-gap: 10px; 
 	grid-template-columns: repeat(3, [col] 180px );
@@ -73,7 +65,7 @@ img {
 	grid-row: 5;
 }
 
-.container2 {
+.grid-container2 {
   display: grid;
 	grid-gap: 10px; 
 	grid-column: 2 / span 2;
@@ -205,7 +197,6 @@ img {
 .tooltip {
     position: relative;
     display: inline-block;
-    /*border-bottom: 1px dotted black; */
 }
 
 .tooltip .tooltiptext {
@@ -217,7 +208,6 @@ img {
     border-radius: 6px;
     padding: 2px 0;
     
-    /* Position the tooltip */
     position: absolute;
     z-index: 1;
     top: 50%;
