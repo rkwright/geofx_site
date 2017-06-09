@@ -7,17 +7,18 @@
 	font-size: 150%;
 }
 
-img {
+.grid-container img {
+
 	display: block;
 	margin: 0 auto;
-	transform: translateY(20px);
+	margin-top:1em;
+  /*transform: translateY(20px); */
+
 	border: 1;
 	border-width:medium;
 	border-style: solid;
 	border-color: #000;
-	-moz-box-shadow: 3px 3px 5px #666;
-   -webkit-box-shadow: 3px 3px 5px #666;
-   box-shadow: 3px 3px 5px #666;
+  box-shadow: 3px 3px 5px #666;
 }
 
 .grid-container {
@@ -195,7 +196,7 @@ img {
 }
 
 .tooltip {
-    position: relative;
+    /*position: static; */
     display: inline-block;
 }
 
@@ -207,12 +208,16 @@ img {
     text-align: center;
     border-radius: 6px;
     padding: 2px 0;
+		margin-left:3em;
+		margin-bottom:3em;
     
+		
+		/*
     position: absolute;
-    z-index: 1;
+     z-index: 1;
     top: 50%;
     left: 50%;
-    margin-left: -66px;
+    margin-left: -66px;*/
 }
 
 .tooltip:hover .tooltiptext {
