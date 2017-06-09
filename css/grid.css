@@ -42,27 +42,35 @@ img {
 	grid-column: 1 / span 1 ;
 	grid-row:  1 / span 4;
 	grid-template-columns: repeat(1, [col] 180px );
-	grid-template-rows: repeat( 4, [row] 180px );
+	grid-template-rows: 0.5em repeat( 4, [row] 170px );
+}
+
+.dpub-title {
+	grid-column: 1;
+	grid-row: 1;
+	font-size:60%;
+	text-align: center;
+	line-height:30px;
 }
 
 .readium-box {
 	grid-column: 1;
-	row-column: 1;
+	grid-row: 2;
 }
 
 .epub-box {
 	grid-column: 1;
-	row-column: 2;
+	grid-row: 3;
 }
 
 .ebooks-box {
 	grid-column: 1;
-	row-column: 3;
+	grid-row: 4;
 }
 
 .svg-box {
 	grid-column: 1;
-	row-column: 4;
+	grid-row: 5;
 }
 
 .container2 {
@@ -71,62 +79,95 @@ img {
 	grid-column: 2 / span 2;
   grid-row: 1 / span 4;
 	grid-template-columns: repeat(2, [col] 180px );
-	grid-template-rows: repeat( 4, [row] 180px );
+	grid-template-rows: 0.5em [row] 180px [row] 180px 0.5em [row] 180px [row] 180px );
 }
 
 .graphics-box {
   display: grid;
   grid-column: 1 / span 2;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
   grid-template-columns: repeat(2, [col] 180px );
-	grid-template-rows: repeat( 2, [row] 180px );}
+	grid-template-rows: 0.5em repeat( 2, [row] 180px );
+}
+
+.graphics-title-box {
+	display: grid;
+	grid-column: 1 / span 2;
+  grid-row: 1;
+  grid-template-columns: 1fr );
+	grid-template-rows: 1fr );
+}
+
+.graphics-title {
+	grid-column: 1;
+	grid-row: 1;
+	font-size:60%;
+	text-align: center;
+	line-height:30px;
+}
 
 .nehe-box {
 	grid-column: 1;
-	grid-row: 1;
+	grid-row: 2;
 }
 
 .svganim-box {
-	grid-column: 2;
-	grid-row: 1;
-}
-
-.epubgl-box {
 	grid-column: 2;
 	grid-row: 2;
 }
 
 .jogl-box {
 	grid-column: 1;
-	grid-row: 2;
+	grid-row: 3;
 }
 
-.contour-box {
-	grid-column: 1;
-	grid-row: 1;
-}
-
-.project-box {
+.epub-gl-box {
 	grid-column: 2;
-	grid-row: 1;
-}
-
-.sim-box {
-	grid-column: 1;
-	grid-row: 2;
-}
-
-.sculpt-box {
-	grid-column: 2;
-	grid-row: 2;
+	grid-row: 3;
 }
 
 .gis-box {
   display: grid;
   grid-column: 1 / span 2;
-  grid-row: 3 / span 2;
+  grid-row: 4 / span 3;
 	grid-template-columns: repeat(2, [col] 180px );
-	grid-template-rows: repeat( 2, [row] 180px );
+	grid-template-rows: 0.5em repeat( 2, [row] 180px );
+}
+
+.visual-title-box {
+	display: grid;
+	grid-column: 1 / span 2;
+  grid-row: 1;
+  grid-template-columns: 1fr );
+	grid-template-rows: 1fr );
+}
+
+.visual-title {
+	grid-column: 1;
+	grid-row: 1;
+	font-size:60%;
+	text-align: center;
+	line-height:30px;
+}
+
+.contour-box {
+	grid-column: 1;
+	grid-row: 2;
+}
+
+.project-box {
+	grid-column: 2;
+	grid-row: 2;
+}
+
+.sim-box {
+	grid-column: 1;
+	grid-row: 3;
+}
+
+.sculpt-box {
+	grid-column: 2;
+	grid-row: 3;
 }
 
 .footer-box {
