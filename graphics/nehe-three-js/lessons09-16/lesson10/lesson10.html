@@ -28,8 +28,8 @@
 
 <pre><code class="language-javascript">var world = 	
 [	  	 
- 	// Floor 
- 	[-3.0, 0.0, -3.0, 0.0, 6.0],
+    // Floor 
+    [-3.0, 0.0, -3.0, 0.0, 6.0],
     [-3.0, 0.0,  3.0, 0.0, 0.0],
     [ 3.0, 0.0,  3.0, 6.0, 0.0],
     [-3.0, 0.0, -3.0, 0.0, 6.0],
@@ -38,7 +38,7 @@
     etc.
 ]</code></pre>
    
-<p>First we read in the image and create a texture we will apply to the resulting triangles. Note that we map the texture onto both sides of each object. The original demo used a mud-like image of the original author's face I liked my puppy better (he's a LOT bigger now), but you can get the original texture swapping &quot;mud&quot; for &quot;sammy&quot; in the code.</p>
+<p>First we read in the image and create a texture we will apply to the resulting triangles. Note that we map the texture onto both sides of each object. The original demo used a mud-like image of the original author's face I liked my puppy better <em>(sadly Sammy developed cancer in January 2017 and had to be put to sleep. RIP Sammy)</em>, but you can get the original texture swapping &quot;mud&quot; for &quot;sammy&quot; in the code.</p>
 
 <pre><code class="language-javascript">var texture = new THREE.ImageUtils.loadTexture("Data/Sammy.jpg");
 var material = new THREE.MeshBasicMaterial( { map: texture, side:THREE.DoubleSide } );</code></pre>

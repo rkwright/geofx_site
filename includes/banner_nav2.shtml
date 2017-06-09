@@ -42,7 +42,7 @@
 			</ul>
 		</li>
 		<li class="nav-item">
-			<a href="/gis/contouring/contouring.html">GIS</a>
+			<a href="/gis/contouring/contouring.html">Visualization</a>
 			<ul class="nav-submenu">
 			  <li class="nav-submenu-item">
 					<a href="/gis/contouring/contouring.html">Contouring</a>

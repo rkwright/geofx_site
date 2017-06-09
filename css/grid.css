@@ -1,0 +1,159 @@
+@charset "UTF-8";
+
+
+xdiv {
+	border-color: #EC1418;
+	border-width:1;
+	border-style: solid;
+}
+
+.box {
+  background-color: #ccc;
+	color: #fff;
+	border-radius: 10px;
+	padding: 0px;
+	font-size: 150%;
+}
+
+img {
+	display: block;
+	margin: 0 auto;
+	transform: translateY(14px);
+	opacity: 1.0;
+}
+
+.container {
+  display: grid;
+	grid-gap: 10px; 
+	grid-template-columns: repeat(3, [col] 128px );
+	grid-template-rows: repeat( 4, [row] 128px ) 64px;
+	
+}
+
+.dpub-box {
+	display: grid;
+	grid-gap: 10px;
+	grid-column: 1 / span 1 ;
+	grid-row:  1 / span 4;
+	grid-template-columns: repeat(1, [col] 128px );
+	grid-template-rows: repeat( 4, [row] 128px );
+}
+
+.readium-box {
+	grid-column: 1;
+	row-column: 1;
+}
+
+.epub-box {
+	grid-column: 1;
+	row-column: 2;
+}
+
+.ebooks-box {
+	grid-column: 1;
+	row-column: 3;
+}
+
+.svg-box {
+	grid-column: 1;
+	row-column: 4;
+}
+
+.container2 {
+  display: grid;
+	grid-gap: 10px; 
+	grid-column: 2 / span 2;
+  grid-row: 1 / span 4;
+	grid-template-columns: repeat(2, [col] 128px );
+	grid-template-rows: repeat( 4, [row] 128px );
+}
+
+.graphics-box {
+  display: grid;
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 2;
+  grid-template-columns: repeat(2, [col] 128px );
+	grid-template-rows: repeat( 2, [row] 128px );}
+
+.nehe-box {
+	grid-column: 1;
+	row-column: 1;
+}
+
+.svganim-box {
+	grid-column: 2;
+	row-column: 1;
+}
+
+.epubgl-box {
+	grid-column: 1;
+	row-column: 2;
+}
+
+.jogl-box {
+	grid-column: 2;
+	row-column: 2;
+}
+
+.contour-box {
+	grid-column: 1;
+	row-column: 1;
+}
+
+.project-box {
+	grid-column: 2;
+	row-column: 1;
+}
+
+.sim-box {
+	grid-column: 1;
+	row-column: 2;
+}
+
+.sculpt-box {
+	grid-column: 2;
+	row-column: 2;
+}
+
+.gis-box {
+  display: grid;
+  grid-column: 1 / span 2;
+  grid-row: 3 / span 2;
+	grid-template-columns: repeat(2, [col] 128px );
+	grid-template-rows: repeat( 2, [row] 128px );
+}
+
+.footer-box {
+  display: grid;
+	grid-column: 1 / span 3;
+  grid-row: 5;
+	grid-template-columns: repeat(3, [col] 128px );
+	grid-template-rows: repeat( 1, [row] 128px );
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
