@@ -26,7 +26,7 @@
 	grid-gap: 10px; 
 	grid-template-columns: repeat(3, [col] 180px );
 	grid-template-rows: repeat( 4, [row] 180px ) 64px;
-	
+	margin-left:3.5em;
 }
 
 .dpub-box {
@@ -175,24 +175,41 @@
 	grid-column: 1;
 	grid-row: 1;
 	font-size:75%;
+	font-weight:bold;
 	text-align: center;
 	line-height:60px;
+}
+
+.about-box a {
+	color:#FFF; 
+	text-decoration:none;
 }
 
 .blog-box {
 	grid-column: 2;
 	grid-row: 1;
 	font-size:75%;
+	font-weight:bold;
 	text-align: center;
   line-height:60px;
 }
 
+.blog-box a {
+	color:#FFF; 
+	text-decoration:none;
+}
 .contact-box {
 	grid-column: 3;
 	grid-row: 1;
 	font-size:75%;
+	font-weight:bold;
 	text-align: center;
 	line-height:60px;
+}
+
+.contact-box a {
+	color:#FFF; 
+	text-decoration:none;
 }
 
 .tooltip {
