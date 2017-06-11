@@ -213,7 +213,7 @@
 }
 
 .tooltip {
-    /*position: static; */
+    /*position: relative;*/
     display: inline-block;
 }
 
@@ -228,13 +228,13 @@
 		margin-left:3em;
 		margin-bottom:3em;
     
-		
-		/*
-    position: absolute;
-     z-index: 1;
+    /*
+		position: absolute;
+    z-index: 1;
     top: 50%;
     left: 50%;
-    margin-left: -66px;*/
+    margin-left: -66px;
+		*/
 }
 
 .tooltip:hover .tooltiptext {
