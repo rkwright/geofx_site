@@ -390,10 +390,14 @@
                     mesh.rotateY(mesh.spin.y);
                     mesh.rotateZ(mesh.spin.z);
                     mesh.updateMatrixWorld();
+                }
+                
+                for (var i = 0; i < objects.children.length; i++) {      
+                    checkWallCollision ( objects.children[i] );
+                }
 
-                    checkWallCollision ( mesh );
-
-                    checkObjectCollisions( mesh );
+                for (var i = 0; i < objects.children.length; i++) {      
+                    checkObjectCollisions( objects.children[i] );
                 }
             }
 
