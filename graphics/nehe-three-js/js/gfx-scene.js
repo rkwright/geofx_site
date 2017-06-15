@@ -508,31 +508,23 @@ GFX.Scene.prototype = {
         if (this.displayStats === true || this.displayStats.indexOf("fps") !== -1) {
             this.fpStats = new Stats();
             this.fpStats.showPanel(0);
-            this.fpStats.domElement.style.position = 'fixed';
             this.fpStats.domElement.style.bottom = pos + 'px';
             pos += 80;
-            this.fpStats.domElement.style.zIndex = 100;
             container.appendChild( this.fpStats.dom );
         }
 
         if (typeof this.displayStats === 'string' && this.displayStats.indexOf("ms") !== -1) {
             this.msStats = new Stats();
             this.msStats.showPanel(1);
-            this.msStats.domElement.style.position = 'absolute';
-            this.msStats.domElement.style.bottom = '0px';
             this.msStats.domElement.style.left = pos + 'px';
             pos += 80;
-            this.msStats.domElement.style.zIndex = 100;
             container.appendChild( this.msStats.dom );
         }
 
         if (typeof this.displayStats === 'string' && this.displayStats.indexOf("mb") !== -1) {
             this.mbStats = new Stats();
             this.mbStats.showPanel(2);
-            this.mbStats.domElement.style.position = 'absolute';
-            this.mbStats.domElement.style.bottom = '0px';
             this.mbStats.domElement.style.left = pos + '80px';
-            this.mbStats.domElement.style.zIndex = 100;
             container.appendChild( this.mbStats.dom );
         }
     },
