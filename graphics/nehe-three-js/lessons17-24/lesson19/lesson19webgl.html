@@ -33,6 +33,7 @@
 				cameraPos : [5,7.5,25],
                 controls : true,
                 floorRepeat : FLOOR_REPEAT,
+								floorImage: "../../images/checkerboard.jpg",
                 displayStats:true});
 				
 			// Initialize the demo
@@ -48,7 +49,7 @@
 
                 clock = new THREE.Clock(true);
 
-                var cubeGeometry = new THREE.BoxGeometry( 10, 10, 8 );
+                var cubeGeometry = new THREE.BoxGeometry( 10, 10, 10 );
                 var cubeMaterial = new THREE.MeshBasicMaterial( { wireframe:true, color : 0xff0000 } );
                 cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
                 cube.position.set(0,0,0);

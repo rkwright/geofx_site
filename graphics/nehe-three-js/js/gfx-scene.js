@@ -25,6 +25,8 @@ GFX.Scene = function ( parameters ) {
 
 	this.defaultCamera = true;
     this.cameras = [];
+    // just a proxy for backwards compatibility
+    this.camera;
     // these are the default values that can be overridden by the user
     this.perspective = true;
     this.fov = 45;
@@ -135,18 +137,18 @@ GFX.Scene.prototype = {
                 var aspect = _self.canvasWidth / _self.canvasHeight;
 
                 if (_self.perspective === true ) {
-                    _self.camera.aspect = aspect;
+                    _self.cameras[0].aspect = aspect;
                 } else {
                     var w2 = _self.orthoSize * aspect / 2;
                     var h2 = _self.orthoSize / 2;
 
-                    _self.camera.left   = -w2;
-                    _self.camera.right  = w2;
-                    _self.camera.top    = h2;
-                    _self.camera.bottom = -h2;
+                    _self.cameras[0].left   = -w2;
+                    _self.cameras[0].right  = w2;
+                    _self.cameras[0].top    = h2;
+                    _self.cameras[0].bottom = -h2;
                 }
 
-                _self.camera.updateProjectionMatrix();
+                _self.cameras[0].updateProjectionMatrix();
                 _self.renderer.setSize( _self.canvasWidth, _self.canvasHeight );
             });
 		}
@@ -304,6 +306,10 @@ GFX.Scene.prototype = {
             this.orbitControls[this.cameras.length-1] = new THREE.OrbitControls(camera, this.renderer.domElement);
         }
 
+        // set the "default" camera if not already done
+        if (this.camera === undefined)
+            this.camera = camera;
+
         return camera;
     },
 
@@ -343,21 +349,29 @@ GFX.Scene.prototype = {
     setDefaultLights: function () {
         // Ambient light has no direction, it illuminates every object with the same
         // intensity. If only ambient light is used, no shading effects will occur.
-        var ambLight = new THREE.AmbientLight(0xc0c0c0);
+        var ambLight = new THREE.AmbientLight(0xc0c0c0, 0.5);
         this.scene.add( ambLight );
         this.ambientLights.push( ambLight);
 
         // Directional light has a source and shines in all directions, like the sun.
         // This behaviour creates shading effects.
-        var dirLight = new THREE.DirectionalLight(0xc0c0c0);
+        var dirLight = new THREE.DirectionalLight(0xc0c0c0, 0.5);
         dirLight.position.set(5, 20, 12);
         this.scene.add( dirLight );
         this.directionalLights.push( dirLight );
 
-        var pointLight = new THREE.PointLight(0xc0c0c0, 1.0);
+        var pointLight = new THREE.PointLight(0xc0c0c0, 0.5);
         pointLight.position.set(-15, 20, 12);
         this.scene.add( pointLight );
         this.pointLights.push( pointLight );
+    },
+
+    getDefaultLight: function ( type ) {
+       if ( type.indexOf("directional") !== -1 && this.directionalLights.length > 0 ) {
+           return this.directionalLights[0];
+       }
+       else
+           return undefined;
     },
 
     /**
@@ -410,12 +424,14 @@ GFX.Scene.prototype = {
             if (type === 'directional') {
                 var target = this.getLightProp('target', values, undefined);
                 light = new THREE.DirectionalLight(color, intensity);
-                light.shadow.mapSize.x = 2048;
-                light.shadow.mapSize.y = 2048;
-                light.shadow.camera.left = -20;
-                light.shadow.camera.bottom = -20;
-                light.shadow.camera.right = 20;
-                light.shadow.camera.top = 20;
+                if (this.shadowMapEnabled === true) {
+                    light.shadow.mapSize.x = 2048;
+                    light.shadow.mapSize.y = 2048;
+                    light.shadow.camera.left = -20;
+                    light.shadow.camera.bottom = -20;
+                    light.shadow.camera.right = 20;
+                    light.shadow.camera.top = 20;
+                }
 
                 this.directionalLights.push(light);
            }

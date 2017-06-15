@@ -88,11 +88,13 @@
             icoMesh1 = THREE.SceneUtils.createMultiMaterialObject(
                 new THREE.IcosahedronGeometry( 1, 0 ), [ colorMaterial, wireMaterial ] );
             icoMesh1.position.set(2, 2, 2);
+						icoMesh1.castShadow = true;
             gfxScene.add(icoMesh1);
 
             icoMesh2 = THREE.SceneUtils.createMultiMaterialObject(
                 new THREE.IcosahedronGeometry( 1, 0 ), [ colorMaterial, wireMaterial ] );
             icoMesh2.position.set(-2, 2, -2);
+						icoMesh2.castShadow = true;
             gfxScene.add(icoMesh2);
 
             addFlare();

@@ -19,7 +19,7 @@
 		<script src="../../js/three.js" type="text/javascript"></script>
 		<script src="../../js/Detector.js" type="text/javascript"></script>
 		<script src="../../js/OrbitControls-Touch-Ortho.js" type="text/javascript"></script>
-		<script src="../../js/Stats.js" type="text/javascript"></script>
+		<script src="../../js/stats.js" type="text/javascript"></script>
     <script src="../../js/gfx-scene.js" type="text/javascript"></script>
 
     <!-- ---------------- Custom Shader Code ------------------------ -->
@@ -68,12 +68,17 @@
 
     <script type="text/javascript">
         var plane;
+				var REPEAT_SIZE = 10;
 
         // allocate the Scene object, request orbitControls, some of 3D axes 10 units high and the stats
         var gfxScene = new GFX.Scene( {
             cameraPos : [8, 10, 30],
             axesHeight: 30,
             controls:true,
+						floorX:REPEAT_SIZE*3,
+            floorZ:REPEAT_SIZE*3,
+            floorRepeat:REPEAT_SIZE,
+            floorImage: "images/grey_checkerboard.jpg",
             displayStats:true
         });
 
