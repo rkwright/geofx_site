@@ -10,7 +10,6 @@
     -------------------------------------- -->
     <title>NEHE Lesson 37</title>
     <meta charset="UTF-8"/>
-    <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
 
     <!-- Set the viewport size to the screen size, so it will be displayed maximized, but unscaled. -->
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1"/>
@@ -60,11 +59,12 @@
             vec3 normal = normalize( vNormal );
 
             // check the diffuse dot product against uBorder and adjust diffuse value accordingly.
-            //float diffuse = max( dot( normal, lVector ), 0.0);
             float diffuse = dot( normal, lVector );
 
-            float sign = diffuse < 0.0 ? -1.0 : 1.0;
-            diffuse = (floor((abs(diffuse) + 0.001) * uLevels ) / uLevels) * sign + (1.0 / (uLevels * 2.0));
+            if (uLevels > 0.0) {
+                float sign = diffuse < 0.0 ? -1.0 : 1.0;
+                diffuse = (floor((abs(diffuse) + 0.001) * uLevels ) / uLevels) * sign + (1.0 / (uLevels * 2.0));
+            }
 
             gl_FragColor = vec4( uKd * uMaterialColor * uDirLightColor * diffuse, 1.0 );
         }
@@ -85,16 +85,12 @@
         displayStats:true
     });
 
-
     // we can't use the default lights because we need to pass the directional light to the shader
-    gfxScene.clearAllLights();
     gfxScene.addLight( 'ambient', { color:0x333333, intensity : 1 });
     var dirLight = gfxScene.addLight( 'directional', { color:0xffffff, intensity:1.0,  position:[-10,10,20]});
 
-    // then initialize our demo's stuff
     initializeDemo();
 
-    // Animate the scene
     animateScene();
 
     /**
@@ -104,7 +100,7 @@
         var materialColor = new THREE.Color();
         materialColor.setRGB(1.0, 0.8, 0.6);
 
-        phongMaterial = createShaderMaterial("phongDiffuse", dirLight);
+        phongMaterial = createShaderMaterial( dirLight );
 
         phongMaterial.uniforms.uMaterialColor.value.copy(materialColor);
         phongMaterial.side = THREE.DoubleSide;
@@ -114,38 +110,27 @@
         document.addEventListener("keypress", onDocumentKeyPress, false);
     }
 
-    function createShaderMaterial(id, light) {
+    /**
+     *  Just a wrapper for creating the uniforms and the shader material
+     */
+    function createShaderMaterial( light ) {
 
-        // could be a global, defined once, but here for convenience
-        var shaderTypes = {
-            'phongDiffuse' : {
+       var uniforms =  {
 
-                uniforms: {
+            uDirLightPos: { type: "v3", value: light.position },
+            uDirLightColor: { type: "c", value: light.color },
 
-                    "uDirLightPos": { type: "v3", value: new THREE.Vector3() },
-                    "uDirLightColor": { type: "c", value: new THREE.Color( 0xFFFFFF ) },
+            uMaterialColor: { type: "c", value: new THREE.Color( 0xFFFFFF ) },
 
-                    "uMaterialColor": { type: "c", value: new THREE.Color( 0xFFFFFF ) },
-
-                    uKd:     { type: "f", value: 0.9 },
-                    uBorder: { type: "f", value: 0.4 },
-                    uLevels: { type: "f", value: nLevels }
-                }
-            }
-        };
-
-        var shader = shaderTypes[id];
-
-        var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+            uKd:     { type: "f", value: 0.9 },
+            uBorder: { type: "f", value: 0.4 },
+            uLevels: { type: "f", value: nLevels }
+       };
 
         var vs = document.getElementById("vertexShader").textContent;
         var fs = document.getElementById("fragmentShader").textContent;
-        var material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
 
-        material.uniforms.uDirLightPos.value = light.position;
-        material.uniforms.uDirLightColor.value = light.color;
-
-        return material;
+        return new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
     }
 
     function loadTeapot() {
@@ -210,7 +195,7 @@
         // Get the key code of the pressed key
         var keyChar = String.fromCharCode(event.which).toLowerCase();
 
-        var levelString = "2345678";
+        var levelString = "0123456789";
         var modelString = "trk";
 
         if ( modelString.indexOf(keyChar) !== -1) {
@@ -240,8 +225,9 @@
 
 </script>
     <!-- Create a DIV element, which will be shown over the WebGL canvas. -->
-    <div style="text-align:center; top: 0px; left: 10px;color:white">
-        '0 .. 2': which model
+    <div style="position: absolute; top: 10px; left: 10px">
+        Choose model, t,r,k <br/>
+        Number of levels: 0..9
     </div>
 </body>
 </html>
