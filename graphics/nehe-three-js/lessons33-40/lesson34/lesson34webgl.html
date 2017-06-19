@@ -118,7 +118,8 @@
             var loader = new THREE.TextureLoader();
 						var vScale = 5;
 
-            loader.load('images/terrain-edged.png', function ( texture ) {
+            loader.load('images/terrain-edged_512.png', function ( texture ) {
+							console.log("512x512 image used");
 							
                 // use "this." to create global object
                 this.vUniforms = {
