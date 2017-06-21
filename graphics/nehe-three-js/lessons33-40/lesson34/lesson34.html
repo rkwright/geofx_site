@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Lesson 32 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
+  <title>Lesson 34 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
   <meta name="description" content="NeHe Lesson 34 in three.js and WebGL, developed by Geo-F/X - GeoFX"/>
   <meta name="author" content="Richard K. Wright richardkylewright" />
-  <meta name="keywords" content="NeHe WebGL three.js GIS 3D Digital Publishing EPUB eBooks Readium SVG Graphics Geo-F/X Consulting - GeoFX" />
+  <meta name="keywords" content="height map NeHe WebGL three.js GIS 3D Digital Publishing EPUB eBooks Readium SVG Graphics Geo-F/X Consulting - GeoFX" />
   <meta charset="utf-8" /> 
   <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
   <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
@@ -23,9 +23,56 @@
 
 <h3>Lesson 34 - Heightmaps</h3>
 
+<h4>Introduction</h4>
+<p>This lesson is about how to create #D terrains (or shapes in general) using a height map. A height map is simply a monochromatic (black and white) image that is used to simulate the height of terrain based on the value at each pixel in the image. The methodology can be used to visualize any image but is most commonly used (and known for) simulating 3D terrain. It used to be more common, but is now largely supersed by digital elevation models (DEM).</p>
+<p>The lesson itself is fairly simple but has a few wrinkles. The basic process is:</p>
+<ul>
+  <li>Load the height map</li>
+  <li>Create a planar surface with either the same number of vertices (or a close approximation)</li>
+  <li>For each pixel in the height map, fetch the pixel value in the image that corresponds to the vertex's X,Y position</li>
+  <li>Change the Y-value (assuming X and Z are the horizontal axes) of the vertex in the plane, scaled by some appropriate value</li>
+  <li>Render the resulting plane </li>
+  </ul>
+<p>One could do this in JavaScript by rendering the image onto a 2D canvas, accessing the pixels via the canvas coordinates, then access the plane's vertices via the geometry's vertices array and making the changes that way. However, that would be VERY slow, both because the images tend to be large and you have to access two different data structures (canvas and plane).</p>
+<p>Far better to leverage the shaders, which are intended for exactly this purpose. The shaders automatically iterate across the entire geometric structure (the plane), visiting each vertex. They also provide built-in mapping from the texture to the vertex.</p>
+<h4>Surface Cover </h4>
+<p>The one additon wrinkle we will add to this lesson is to add some color to the height map, based on the computed height of the vertex. In this case, we will have a set of 7 colors which represent different surface-covers that might be found at the different elevations.</p>
+<br/>
+<p><img src="images/legend.svg" width="172" height="285" alt="Surface cover Legend"/></p>
+<br/>
+<h4>Basic Algorithm</h4>
+<p>The approach used in this lesson is to load the heigh map image into a <span class="inline-code">THREE.Texture</span>. Then a THREE.PlaneGeometry is created with the same dimensions. The texture is then passed to the shader in a uniform. The setup is this:</p>
+
+<pre><code class="language-javascript">var loader = new THREE.TextureLoader();
+var vScale = 5;
+
+loader.load('images/terrain-edged.png', function ( texture ) {
+                
+    this.uniforms = {
+        uDirLightPos:   { type: "v3", value: dirLight.position },
+        uDirLightColor: { type: "c", value: dirLight.color },
+        uTexture:	      { type: "t", value: texture },
+        uScale:	        { type: "f", value: vScale },
+        uLut:           { type: "v3v", value: lut }
+    };
+
+    var shaderMaterial = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+        fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+        side: THREE.DoubleSide
+    });
+
+    var planeGeo = new THREE.PlaneGeometry( 20, 20, 513, 513 );
+    plane = new THREE.Mesh(	planeGeo, shaderMaterial );
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = 0;
+    gfxScene.add(plane);</code></pre>
+
 <p>&nbsp;</p>
+<p>There are several ways this surface cover could be implemented but a simple and efficient way to do this is with a look-up table. The image we will be using is monochrome, but it has three 8-bit channels (all the same values of course) so we just use one of them. </p>
 <p>And that's it!  Click on <a href="lesson34webgl.html" title="Lesson 32" target="_self">this link</a> to 
-	see the actual rendered demo in all it's gaming glory!</p>
+  see the actual rendered demo in all it's elevated glory!</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
     		  
