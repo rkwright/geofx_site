@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Legend" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 172.1436 285" enable-background="new 0 0 172.1436 285" xml:space="preserve">
+<rect x="0.5" y="0.5" fill="#F8FBFC" stroke="#000000" stroke-miterlimit="10" width="57" height="40"/>
+<rect x="0.5" y="40.5" fill="#C4CCCC" stroke="#000000" stroke-miterlimit="10" width="57" height="41"/>
+<rect x="0.5" y="81.5" fill="#B6D39C" stroke="#000000" stroke-miterlimit="10" width="57" height="40"/>
+<rect x="0.5" y="121.5" fill="#258260" stroke="#000000" stroke-miterlimit="10" width="57" height="41"/>
+<rect x="0.5" y="162.5" fill="#598527" stroke="#000000" stroke-miterlimit="10" width="57" height="40"/>
+<rect x="0.5" y="202.5" fill="#C4BF6E" stroke="#000000" stroke-miterlimit="10" width="57" height="41"/>
+<rect x="0.5" y="243.5" fill="#E6DF74" stroke="#000000" stroke-miterlimit="10" width="57" height="41"/>
+<text transform="matrix(1 0 0 1 85 20.5)" font-family="'MyriadPro-Regular'" font-size="12">Snow and Ice</text>
+<text transform="matrix(1 0 0 1 85 61)" font-family="'MyriadPro-Regular'" font-size="12">Rock</text>
+<text transform="matrix(1 0 0 1 85 101.5)" font-family="'MyriadPro-Regular'" font-size="12">Tundra</text>
+<text transform="matrix(1 0 0 1 85 142)" font-family="'MyriadPro-Regular'" font-size="12">Coniferous Forest</text>
+<text transform="matrix(1 0 0 1 85 182.5)" font-family="'MyriadPro-Regular'" font-size="12">Deciduous Forest</text>
+<text transform="matrix(1 0 0 1 85 223)" font-family="'MyriadPro-Regular'" font-size="12">Chapparal</text>
+<text transform="matrix(1 0 0 1 85 268.0128)" font-family="'MyriadPro-Regular'" font-size="12">Grassland</text>
+</svg>
