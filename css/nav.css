@@ -40,6 +40,7 @@ nav ul { padding-left: 2em; }
 \*------------------------------------*/
 
 .nav {
+	z-index:100;
 	position:relative;
 	display:inline-block;
 	font-size:14px;
@@ -129,7 +130,7 @@ nav ul { padding-left: 2em; }
     Media Queries
 \*------------------------------------*/
 
-@media only screen and (min-width: 320px) and (max-width: 1536px) {
+@media only screen and (min-width: 320px) and (max-width: 1024px) {
 	.nav-mobile {
 		display:block;
 	}
