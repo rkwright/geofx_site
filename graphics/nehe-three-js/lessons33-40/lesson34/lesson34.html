@@ -36,12 +36,12 @@
 <p>One could do this in JavaScript by rendering the image onto a 2D canvas, accessing the pixels via the canvas coordinates, then access the plane's vertices via the geometry's vertices array and making the changes that way. However, that would be VERY slow, both because the images tend to be large and you have to access two different data structures (canvas and plane).</p>
 <p>Far better to leverage the shaders, which are intended for exactly this purpose. The shaders automatically iterate across the entire geometric structure (the plane), visiting each vertex. They also provide built-in mapping from the texture to the vertex.</p>
 <h4>Surface Cover </h4>
-<p>The one additon wrinkle we will add to this lesson is to add some color to the height map, based on the computed height of the vertex. In this case, we will have a set of 7 colors which represent different surface-covers that might be found at the different elevations.</p>
+<p>The one additonal wrinkle we will add to this lesson is to add some color to the height map, based on the computed height of the vertex. In this case, we will have a set of 7 colors which represent different surface-covers that might be found at the different elevations.</p>
 <br/>
 <p><img src="images/legend.svg" width="172" height="285" alt="Surface cover Legend"/></p>
 <br/>
 <h4>Basic Algorithm</h4>
-<p>The approach used in this lesson is to load the heigh map image into a <span class="inline-code">THREE.Texture</span>. Then a <span class="inline-code">THREE.PlaneGeometry</span> is created with the same dimensions. The texture is then passed to the shader in a uniform. The setup is this:</p>
+<p>The approach used in this lesson is to load the height map image into a <span class="inline-code">THREE.Texture</span>. Then a <span class="inline-code">THREE.PlaneGeometry</span> is created with the same dimensions. The texture is then passed to the shader in a uniform. The setup is this:</p>
 
 <pre><code class="language-javascript">var loader = new THREE.TextureLoader();
 var vScale = 5;
@@ -51,26 +51,123 @@ loader.load('images/terrain-edged.png', function ( texture ) {
     this.uniforms = {
         uDirLightPos:   { type: "v3", value: dirLight.position },
         uDirLightColor: { type: "c", value: dirLight.color },
-        uTexture:	      { type: "t", value: texture },
-        uScale:	        { type: "f", value: vScale },
+        uTexture:	     { type: "t", value: texture },
+        uScale:	       { type: "f", value: vScale },
         uLut:           { type: "v3v", value: lut }
     };
 
     var shaderMaterial = new THREE.ShaderMaterial({
         uniforms: uniforms,
         vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
-        fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-        side: THREE.DoubleSide
+        fragmentShader: document.getElementById( 'fragmentShader' ).textContent        
     });
 
     var planeGeo = new THREE.PlaneGeometry( 20, 20, 513, 513 );
     plane = new THREE.Mesh(	planeGeo, shaderMaterial );
     plane.rotation.x = -Math.PI / 2;
-    plane.position.y = 0;
-    gfxScene.add(plane);</code></pre>
+    gfxScene.add(plane);
+}</code></pre>
 
-<p>&nbsp;</p>
-<p>There are several ways this surface cover could be implemented but a simple and efficient way to do this is with a look-up table. The image we will be using is monochrome, but it has three 8-bit channels (all the same values of course) so we just use one of them. </p>
+<p>There are several ways this surface cover could be implemented but a simple and efficient way to do this is with a look-up table. The image we will be using is monochrome, but it has three 8-bit channels (each with the same values of course) so we just use the red channel. The channel is 8 bits so we need a 256 element look-up table. Building the LUT is easy. Here's the code:</p>
+
+<pre><code class="language-javascript">function buildLut() {
+
+    var SurfaceCover = [
+        { name: "border", r: 0, g: 0, b: 0, limit: 1 },
+        { name: "water", r: 0, g: 0, b: 128, limit: 1 },
+        { name: "grass", r: 230, g: 223, b: 115, limit: 37 },
+        { name: "chapparal", r: 196, g: 191, b: 110, limit: 74 },
+        { name: "hardwood", r: 89, g: 133, b: 39, limit: 112 },
+        { name: "conifer", r: 37, g: 130, b: 96, limit: 149 },
+        { name: "tundra", r: 185, g: 211, b: 156, limit: 186 },
+        { name: "rock", r: 196, g: 204, b: 204, limit: 224 },
+        { name: "snow", r: 248, g: 251, b: 252, limit: 256 }
+    ];
+
+    var k = 0;
+    var lut = [];
+    for (var n = 0; n < SurfaceCover.length; n++) {
+
+        while (k < SurfaceCover[n].limit) {
+            lut.push(new THREE.Vector3(
+                SurfaceCover[n].r / 255.0, 
+                SurfaceCover[n].g / 255.0, 
+                SurfaceCover[n].b / 255.0));
+            k++;
+       }
+    }
+
+    return lut;
+}</code></pre>
+
+<p>Note that we have an entry for water (at level 0), but we don't use it. Instead, the &quot;border&quot; color is used instead.  In an image editor, the original image was edited to put a 2 pixel wide block border. As black is zero, this means that the height map gets &quot;pulled&quot; down on all sides, then forming a &quot;side&quot; the height map which looks better (IMO).</p>
+<p>Once we have the lut, we then create the shader material, passing it the uniforms and the IDs of the two shaders. Here are the two shaders:</p>
+
+<pre><code class="language-javascript">&lt;script id="vertexShader" type="x-shader/x-vertex"&gt;
+    uniform sampler2D   uTexture;
+    uniform float       uScale;
+    uniform vec3        uLut[ 256 ];
+    varying vec3        vColor;
+    varying vec3        vNormal;
+
+    void main() {
+
+	      vec4 heightData = texture2D( uTexture, uv );
+
+	      float vAmount = heightData.r;
+
+        int index = int(heightData.r * 255.0);
+	      vColor = uLut[index];
+
+        vec3 newPosition = position + normal * uScale * vAmount;
+
+	      gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+
+               
+        /* 
+            commenting this out for now. Can't compile because WebGL 1.0 doesn't support
+            textureOffset.  Have to wait for WebGL 2.0
+	          const vec2  size = vec2(2.0, 0.0);
+            ivec3  off = ivec3(-1, 0, 1);
+            ivec2 off2 = ivec2(-1,0);
+
+            float s01 = textureOffset(uTexture, uv, ivec2(0,1)).x;
+            float s21 = textureOffset(uTexture, uv, off.zy).x;
+            float s10 = textureOffset(uTexture, uv, off.yx).x;
+            float s12 = textureOffset(uTexture, uv, off.yz).x;
+
+            vec3 va = normalize(vec3(size.xy, s21-s01));
+            vec3 vb = normalize(vec3(size.yx, s12-s10));
+            vNormal = cross(va,vb);
+        */
+                
+        vNormal = vec3(normal);
+    }
+&lt;/script&gt;
+
+&lt;script id="fragmentShader" type="x-shader/x-fragment"&gt;
+    uniform vec3    uDirLightPos;
+    uniform vec3    uDirLightColor;
+    varying vec3    vColor;
+    varying vec3    vNormal;
+
+    void main() {
+
+        /* 
+            Commenting all this now since still in WebGL 1.0 see comments in vertex shader above.
+            vec4 lDirection = viewMatrix * vec4( uDirLightPos, 0.0 );
+            vec3 lVector = normalize( lDirection.xyz );
+            float lDiffuse = dot(vNormal, lVector );
+            gl_FragColor = vec4(vColor * lDiffuse, 1.0);
+        */
+
+        gl_FragColor = vec4(vColor, 1.0);
+    }
+&lt;/script&gt;</code></pre>
+
+<p>These are pretty simple. We take the <span class="inline-code">uv</span> coordinates that are automatically set by three.js and use them to index into the texture (the height map image) we passed in. That gives us the &quot;height&quot; at those coordinates. The value returned by the WebGL method <span class="inline-code">texture2D</span> is in the range of 0..1. So we convert it back to the range 0..255, then fetch the color from the LUT, which we put in a varying variable so it gets passed to the fragment shader. It might be simpler to to this in the fragement shader, but you can't index into a uniform-array in the fragment - it requires that the index be a const int. So we do it in the vertex shader (where we can index with an int) and pass the color value to the fragment shader.</p>
+<p>Then we change the vertex's position by multiplying the coordinate by the &quot;height&quot; value and the normal. Since the plane was flat, the normal points straight up (in Y) and therefore we move the vertex upwards (along the Y-axis) by the scale amount. Finally, the <span class="inline-code">vColor</span> is passed to the fragment shader, where it is used as-is.</p>
+<p>By now you're probably wondering what's with the light info that got passed in and why are those lines of code there but commented out? The answer is that I was trying to get the height map properly lit with shadows so it looked more realistic. However, in order to do that, one has to re-calculate all the normals for each vertex. But to do that we need to know what the orientation of the faces which include the vertex. But to do that we need to know the values of the height map vertices for each face. Unfortunately, while there is built-in method in GL-ES (<span class="inline-code">textureOffset</span>) that does the trick, it isn't supported in WebGL 1.0, which is what three.js supports at the moment. It IS supported in WebGL 2.0 so when three.js supports WebGL 2.0 the code can be uncommented and it should all work fine. Three.js is already experimenting with WebGL 2.0 but it isn't ready for prime-time yet.</p>
 <p>And that's it!  Click on <a href="lesson34webgl.html" title="Lesson 32" target="_self">this link</a> to 
   see the actual rendered demo in all it's elevated glory!</p>
 		
