@@ -24,8 +24,334 @@
 <h3>Lesson 40 - Rope Physics</h3>
 
 <p>&nbsp;</p>
+<h4>Introduction</h4>
+<p>Like the <a href="../lesson39/lesson39.html" title="Physical Simulation" target="_self">previous lesson</a>, this lesson has more than just the graphics to it. However, also like the previous lesson, we won't delve too deeply into the actual physics. If you really want to dive into the physics of ropes, try Googling. Be warned this is the longest lesson of the whole NeHe set. So get a cup of coffee and settle down.</p>
+<p>Oddly, a rope is a lot like a spring or, more exactly, like a whole bunch springs attached to one another. In a spring, the end of the spring is always trying to get to the top of the spring. It can not though because of gravity or because it's running into another section of spring:</p>
+<p><a href="https://wiki.scratch.mit.edu/wiki/File:Spring.png"><img alt="Spring.png" src="https://wiki.scratch.mit.edu/w/images/Spring.png" width="300" height="224"></a></p>
+<p>Here, the top of the spring will be at (x1, y1) with the bottom being at (x2, y2). Since the bottom is trying to get to the top, the force that the bottom of the spring experiences becomes:</p>
+<p>Force along the x-axis = x2-x1 <br>
+  Force along the y-axis = y2-y1</p>
+<p>Since object's do not automatically go where they want to, some stiffness is at play:</p>
+<p>Force X = (x2-x1) * stiffness <br>
+  Force Y = (y2-y1) * stiffness</p>
+<p>Since energy needs to be distributed over an object's mass, that needs to be factored in:</p>
+<p>Force X = ((x2-x1) * stiffness) / mass <br>
+  Force Y = ((y2-y1) * stiffness) / mass</p>
+<p>That then is added to the bottom spring's velocity. The last factor that needs to be added is friction, which is done by:</p>
+<p>X Velocity = (X Velocity + Force X) * dampening <br>
+  Y Velocity = (Y Velocity + Force Y) * dampening</p>
+<p>There are two tricky parts to implementing a dangling rope. First is to simulate the actual physical behaviour (more or less, anyway). The other is graphically represent it.</p>
+<h4>The Simulation</h4>
+<p>The simulation is done by creating a set of 4 classes:</p>
+<ul>
+  <li><span class="inline-code">State</span> - which holds the velocity and position of an object at a given time</li>
+  <li><span class="inline-code">Particle</span> - the basic object which has previous and current state and a forces</li>
+  <li><span class="inline-code">Spring</span> - is basically a section of rope consisting of two particles</li>
+  <li><span class="inline-code">Rope</span> - a set of <span class="inline-code">Particles</span> organized as <span class="inline-code">Springs</span></li>
+</ul>
+<p>The <span class="inline-code">State</span> is pretty simple of course:</p>
+
+<pre><code class="language-javascript">GFX.State = function ( position, velocity ) {
+    this.pos = position;
+    this.vel = velocity;
+};</code></pre>
+
+<p>And it has only one method, copy(); The <span class="inline-code">Particle</span> isn't much more complex:</p>
+
+<pre><code class="language-javascript">GFX.Particle = function ( mass ) {
+
+    this.mass = mass;
+    this.curState  = new GFX.State(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0));
+    this.prevState = new GFX.State(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0));
+    this.forces = new THREE.Vector3(0, 0, 0);
+};
+
+GFX.Particle.prototype = {
+
+    applyForce: function( force ) {
+        this.forces.add(force);
+    },
+
+    acceleration: function( forces, mass ) {
+        var newForces = forces.clone();
+        return newForces.divideScalar( mass );
+    },
+
+    update: function( dt ) {
+        this.prevState.copy(this.curState);
+        var accel = this.acceleration(this.forces, this.mass);
+        this.curState.vel.add( accel.multiplyScalar(dt) );
+        var newVel = this.curState.vel.clone();
+        this.curState.pos.add( newVel.multiplyScalar(dt) );
+    }
+};</code></pre>
+
+<p>This is all pretty straightforward so far (you <em><strong>have</strong></em> read the <a href="http://gafferongames.com/game-physics/physics-in-3d/" title="Gaffer on Games" target="_blank">Gafffer on Games</a> articles, haven't you? If not, go do that now...)</p>
+<p>The <span class="inline-code">Spring</span> class is where it gets more interesting:</p>
+
+<pre><code class="language-javascript">GFX.Spring = function ( particle1, particle2, springConstant, springLen, friction ) {
+
+    this.particle1 = particle1;
+    this.particle2 = particle2;
+    this.springConstant = springConstant;
+    this.springLen = springLen;
+    this.friction = friction;
+};
+
+GFX.Spring.prototype = {
+
+    solve: function() {
+
+        var springVector = this.particle2.curState.pos.clone().sub(this.particle1.curState.pos);
+        var len = springVector.length();
+        var force = new THREE.Vector3(0, 0, 0);
+        if (len !== 0) {
+            springVector.normalize();
+            force.add(springVector.multiplyScalar(len - this.springLen).multiplyScalar(this.springConstant));
+        }
+
+        var newVel1 = this.particle1.curState.vel.clone().sub(this.particle2.curState.vel);
+        newVel1.multiplyScalar( -this.friction );
+        force.add( newVel1 );
+
+        if (this.particle1.head !== true) {
+            this.particle1.applyForce(force);
+        }
+
+        this.particle2.applyForce(force.multiplyScalar(-1));
+    }
+};</code></pre>
+
+
+<p>The constructor is straightforward. The <span class="inline-code">solve</span> method is where all the work gets done. Basically, it is calculating how the application of the forces (in the particles's state) alters the velocity and position of the two ends of the Spring (rope segment).</p>
+<p>Finally, the <span class="inline-code">Rope</span> constructor is pretty clear too. It's just setting some global parameters and initilizing the rops and its children objects. Then at the end are the variables that control the running of the simulation (you did read the Gaffer's <a href="http://gafferongames.com/game-physics/fix-your-timestep/" title="Fix Your Timestep" target="_blank">Fix Your Timestep</a>, right?):</p>
+
+<pre><code class="language-javascript">GFX.Rope = function ( args ) {
+
+    var i, particle, mass, numParticles;
+    var springConstant, springFriction, springLen;
+
+    numParticles = args.numOfParticles || 30;
+    mass = args.mass || 0.05;
+    springConstant = args.springConstant || 1000;
+    springLen = args.springLen || 0.05;
+    springFriction = args.springFriction || 0.5;
+    this.gravitation = args.gravitation || 9.82;
+    this.airFriction = args.airFriction || 0.04;
+    this.groundRepulsion = args.groundRepulsion || 100;
+    this.groundFriction = args.groundFriction || 0.2;
+    this.groundAbsorption = args.groundAbsorption || 2;
+
+    if (args.renderFunc !== undefined)
+      this.renderFunc = args.renderFunc;
+    else
+        console.error("No renderFunc supplied!");
+
+    this.particles = [];
+
+    for ( i = 0; i &lt; numParticles; i++ ) {
+        this.particles[i] = new GFX.Particle(mass);
+    }
+
+    for ( i = 0; i&lt;this.particles.length;  i++ ) {
+        particle = this.particles[i];
+        particle.curState.pos.x = i * springLen;
+        particle.curState.pos.y = this.particles.length * springLen * (2 / 3);
+    }
+
+    this.particles[0].head = true;
+    this.springs = [];
+
+    for ( i = 0; i&lt;numParticles - 1; i++ ) {
+        this.springs[i] = new GFX.Spring(this.particles[i], this.particles[i + 1], springConstant, springLen, springFriction);
+    }
+
+    // time step variables - should be local to the timestep?
+    this.MAX_RENDER_TIME = 33.3;
+    this.t = 0;
+    this.dt = 2;
+    this.currentTime = performance.now();
+    this.accumulator = 0;
+    this.count = 0;
+};</code></pre>
+
+
+<p>The <span class="inline-code">Rope's</span> update function is pretty straightforward as well as it is just calling the member functions in the children.</p>
+
+<pre><code class="language-javascript">update: function( dt ) {
+    var i, force, particle, vel;
+
+    for (i = 0; i&lt;this.particles.length; i++ ) {
+        this.particles[i].forces.set(0, 0, 0);
+    }
+
+    for ( i = 0; i&lt;this.springs.length; i++ ) {
+        this.springs[i].solve();
+    }
+
+    for ( i = 0; i&lt;this.particles.length; i++ ) {
+        if (i !== 0) {
+            var newGrav = this.gravitation.clone();
+            this.particles[i].applyForce(newGrav.multiplyScalar(this.particles[i].mass));
+            var newVel = this.particles[i].curState.vel.clone();
+            this.particles[i].applyForce( newVel.multiplyScalar(-this.airFriction) );
+        }
+    }
+
+    for ( i = 0; i&lt;this.particles.length; i++ ) {
+        particle = this.particles[i];
+        if (particle.curState.pos.y &lt; 0) {
+            vel = new THREE.Vector3(0, 0, 0);
+            vel.copy(particle.curState.vel);
+            vel.y = 0;
+            var vecFriction = vel.clone();
+            particle.applyForce(vecFriction.multiplyScalar(-this.groundFriction));
+            vel.y = particle.curState.vel.y;
+            vel.x = 0;
+            vel.z = 0;
+            if (vel.y &lt; 0) {
+                var vecGround = vel.clone();
+                particle.applyForce(vecGround.multiplyScalar(-this.groundAbsorption));
+            }
+
+            force = new THREE.Vector3(0, this.groundRepulsion, 0);
+            force.multiplyScalar(0 - particle.curState.pos.y);
+            particle.applyForce(force);
+        }
+    }
+
+    for ( i = 0; i&lt;this.particles.length; i++ ) {
+        this.particles[i].update(dt);
+    }
+
+    this.count++;
+}</code></pre>
+
+
+<p>Finally, there is the <span class="inline-code">timeStep</span> function itself:</p>
+
+<pre><code class="language-javascript">timeStep: function() {
+
+    var newTime = performance.now();
+    var deltaTime = Math.min(newTime - this.currentTime, this.MAX_RENDER_TIME);
+    this.currentTime = newTime;
+    this.accumulator += deltaTime;
+
+    while (this.accumulator >= this.dt) {
+        this.accumulator -= this.dt;
+
+        this.update( this.dt / 1000 );
+        this.t += this.dt;
+    }
+
+    var alpha = this.accumulator / this.dt;
+
+    this.renderFunc(this.particles, alpha);
+
+    return 0;
+}</code></pre>
+
+<p>Note that the function updates the state of the rope as fast as it can and then when it runs out of time, it calls the <span class="inline-code">renderFunc</span>() back in the main JS code.</p>
+<h4>Rendering the Rope</h4>
+<p>First off, in the <span class="inline-code">initializeDemo</span> method, we initialize the <span class="inline-code">Rope</span></p>
+
+<pre><code class="language-javascript">rope = new GFX.Rope({
+    numOfParticles: NUM_PARTICLES,
+    mass: 0.05,
+    springConstant: 12000,
+    springLen: SPRING_LEN,
+    springFriction: 0.25,
+    gravitation: new THREE.Vector3(0, -9.82, 0),
+    airFriction: 0.04,
+    groundRepulsion: 100,
+    groundFriction: 0.2,
+    groundAbsorption: 2,
+    renderFunc: renderFunc
+});</code></pre>
+
+<p>BTW, you can play with the rope parameters, but be warned that the simulation is fairly crude, so changing them significantly will destabilize the simullation.</p>
+<p>Then, in the animate function we call back to the <span class="inline-code">timeStep</span> method in the <span class="inline-code">Rope</span> object, which runs the simulation. </p>
+
+<pre><code class="language-javascript">function animateScene() {
+
+    requestAnimationFrame(animateScene);
+
+    rope.timeStep();
+
+    gfxScene.renderScene();
+}</code></pre>
+<p>Then when the <span class="inline-code">timeStep</span> is complete it calls back to the <span class="inline-code">renderFunc</span>, The <span class="inline-code">renderFunc</span> is pretty clear. </p>
+
+<pre><code class="language-javascript">function renderFunc( particles, blending ) {
+
+    if (cylinderUtil === undefined)
+        createRope( particles );
+
+    prevPos.lerpVectors(particles[0].prevState.pos, particles[0].curState.pos, blending);
+
+    for ( var i=1; i&lt;particles.length; i++ ) {
+        var particle = particles[i];
+
+        curPos.lerpVectors(particle.prevState.pos, particle.curState.pos, blending);
+
+        var mesh = ropeArray[i-1];
+        cylinderUtil.alignCylinder( prevPos, curPos, mesh );
+
+        prevPos.copy(curPos);
+    }
+}</code></pre>
+<p>The first time it is called, it creates the actual rope, comprised of three.js <span class="inline-code">CylinderMesh</span>.The <span class="inline-code">renderFunc</span> is passed the set of particles (<em>i.e.</em> that make up the rope) as well as the blending parameter (<em>i.e.</em> the proportion of time between steps). So it uses three.js' linear interpolation method to interpolate the position. Then comes the one tricky part. How to get the cylinders positioned properly? The answer is a little fancy geometry (thank you, StackOverflow!) encapsulated in yet another class, CylinderUtil.</p>
+
+<pre><code class="language-javascript">GFX.CylinderUtil = function () {
+    this.direction = new THREE.Vector3();
+    this.orientation = new THREE.Matrix4();
+    this.threeUp = new THREE.Object3D().up;
+    this.matrix = new THREE.Matrix4();
+};
+
+createCylinder: function ( point0, point1, diameter, material ) {
+    this.direction.subVectors(point1, point0);
+    this.orientation.lookAt(point0, point1, this.threeUp);
+
+    this.matrix.set( 1,  0, 0, 0,
+                     0,  0, 1, 0,
+                     0, -1, 0, 0,
+                     0,  0, 0, 1 );
+    this.orientation.multiply(this.matrix);
+    var cylinderGeom = new THREE.CylinderGeometry(diameter, diameter, this.direction.length(), 8, 1);
+    var cylinderMesh = new THREE.Mesh( cylinderGeom, material );
+    cylinderMesh.applyMatrix(this.orientation);
+
+    cylinderMesh.position.x = (point1.x + point0.x) / 2;
+    cylinderMesh.position.y = (point1.y + point0.y) / 2;
+    cylinderMesh.position.z = (point1.z + point0.z) / 2;
+
+    return cylinderMesh;
+},</code></pre>
+
+<p>Now this is all very well but we don't want to dispose and recreate the cylinders all the time - that would hurt performance and is wasteful since the rope doesn't really change. So we have one more method <span class="inline-code">alignCylinder</span> that does exactly that, it aligns the cylinder to match the the two particles.</p>
+
+<pre><code class="language-javascript">alignCylinder: function ( point0, point1, cylinderMesh ) {
+    this.direction.subVectors(point1, point0);
+    this.orientation.lookAt(point0, point1, this.threeUp);
+
+    this.matrix.set( 1,  0, 0, 0,
+      0,  0, 1, 0,
+      0, -1, 0, 0,
+      0,  0, 0, 1 );
+    this.orientation.multiply(this.matrix);
+    cylinderMesh.matrix.identity();
+    cylinderMesh.applyMatrix(this.orientation);
+
+    cylinderMesh.position.x = (point1.x + point0.x) / 2;
+    cylinderMesh.position.y = (point1.y + point0.y) / 2;
+    cylinderMesh.position.z = (point1.z + point0.z) / 2;
+
+    cylinderMesh.geometry.verticesNeedUpdate = true;
+}</code>
+</pre>
 <p>And that's it!  Click on <a href="lesson40webgl.html" title="Lesson 32" target="_self">this link</a> to 
-	see the actual rendered demo in all it's ropy glory!</p>
+  see the actual rendered demo in all it's ropy glory!</p>
 <p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
