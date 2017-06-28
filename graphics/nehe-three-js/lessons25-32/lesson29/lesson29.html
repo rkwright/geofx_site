@@ -100,6 +100,7 @@ textureLoader.load( "images/monitor.png", function( texture ) {
 
 <p>The vertex shader doesn't do much since the geometry is not being modified, only the shading. The first part of the fragment shader calls the texture2D method which fetches the appropriate pixel from each texture. Then the next line calculates how to blend the two textures together. The pixel from each texture is multiplied by the alpha (transparency) value, except that the monitor's pixel value is also multiplied by 1 minus the alpha value of the logo's pixel. The effect is that where the logo is not transparent, the monitor's contribution becomes zero. </p>
 <p>And that's it!  Click on <a href="lesson29webgl.html" title="Lesson 29" target="_self">this link</a> to see the actual rendered demo in all it's blended glory!</p>
+<p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
 <!--#include virtual="/includes/footer.shtml" -->
 

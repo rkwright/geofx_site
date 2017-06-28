@@ -106,6 +106,7 @@ var materialArray = [ shaderMaterialL, shaderMaterialW ];</code></pre>
 
 <p>Note the declaration of the <span class="inline-code">varying vec2</span> that we declared in the vertex shader. It contains the indices we need to figure out how to index into the texture passed in via our uniform. We then determine the <span class="inline-code">gl_fragColor</span> by calling a function, <span class="inline-code">texture2D</span>, which is a wrapper for the underlying low-level WebGL API. The other fragment shader is identical except that it's<span class="inline-code"> uniform sampler2D</span> is <span class="inline-code">leatherImage</span>.</p>
 <p>And that's it!  Click on <a href="lesson15webgl.html" title="Lesson 15" target="_self">this link</a> to see the actual rendered demo in all its texture filtered glory! Shazaam!</p>
+<p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
 <!--#include virtual="/includes/footer.shtml" -->
 

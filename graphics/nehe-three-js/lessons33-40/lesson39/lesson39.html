@@ -25,12 +25,128 @@
 
 <p>&nbsp;</p>
 <h4>Introduction</h4>
-<p>This lesson and the next one are a little different in that they are less about just three.js and WebGL, but also include material about pysical simulations. This lesson focuses on the physics of springs while the next looks into the physics of rope (which turns out to be rather spring-like as well).</p>
+<p>This lesson and the next one are a little different in that they are not just just three.js and WebGL, but also include material about pysical simulations. This lesson focuses on the physics of springs while the next looks into the physics of rope (which turns out to be rather spring-like as well).</p>
 <p>Spring physics can be quite complex if one takes into account all the possible variables, but if one simplifies the problem down to a simple inelastic spring then it becomes much simpler. The physics of springs was first elucidated in the 17th century by Robert Hooke. The following diagram summarizes the physics:</p>
 <p><img src="images/hooke_spring.gif" width="479" height="246" alt=""/></p>
-<p>But in a practical sense, how does the spring actually &quot;work&quot;? If we are going to simulate it in JavaScript, how does it work? Well. there are many levels at which we could try the simulation, b</p>
+<p>But in a practical sense, how does the spring actually &quot;work&quot;? If we are going to simulate it in JavaScript, how does it work? Well. there are many levels at which we could try the simulation, but will keep it very simple and just simulate a simple, 1-dimensional undamped spring. using Hooke's Law:</p>
+<p><strong> F = -kX</strong></p>
+<p>where <strong>X</strong> is vector describing the initial velocity, <strong>k</strong> is the resistance or tightness of the spring and <strong>F</strong> is the force needed to be applied to result in <strong>X.</strong></p>
+<p>Newton&rsquo;s third law says that every force has an equal and opposite force. If two objects a and b are connected together by a spring then the spring will apply one force which pulls object a towards object b, and an equal and opposite force pulling object b towards a. However, if you want to attach one object to a fixed point in space its you can apply the force of the object in one direction. This makes sense is you consider that a point which cannot move as having <em>infinite mass</em>. </p>
+<p>In our case, the &quot;infinite mass&quot; is the plate to which the spring is attached (as in the illustration above). We model the spring as an attractive force upwards. So the ball descends initially under the force of gravity, but slows to a stop and returns to its intial position, then falls again ad infinitum (since we aren't modeling a damped spring).</p>
+<p>For an excellent discussion of the physics of springs and modeling physical processes in general, please read Glen Fielder excellent series in the <a href="http://gafferongames.com/game-physics/spring-physics/" title="Gaffer on Games" target="_blank">Gaffer on Games</a>.</p>
+<h4>Implementation</h4>
+<p>We won't cover all the details of the implementation. Suffice it to say that the modeling is based on a port of the Gaffer's Runge-Kutta simulation library to JavaScript and three.js. The library is in Physics3D.js and State3D.js. It is a pretty complete implementation, including velocity, mass, spin and torque in 3D. It is implemented such that there are two callbacks required:</p>
+<ul>
+  <li>One that does the rendering of the system being modeled, based on the current state of the system</li>
+  <li>One that calculates the forces to be applied based on the current state of the system</li>
+  </ul>
+<p>This is the initialization:</p>
+
+<pre><code class="language-javascript">function initializeDemo() {
+
+    var initialPos = new THREE.Vector3(0, 5, 0);
+    var initialMom = new THREE.Vector3(0, 0, 0);
+    var mass = 1.0;
+    var size = 1.0;
+
+    physics3D = new GFX.Physics3D(render, forces, initialPos, initialMom, mass, size);
+
+    var ballGeometry = new THREE.SphereGeometry(1, 32, 32);
+    ballMesh = new THREE.Mesh(ballGeometry, new THREE.MeshLambertMaterial({color: 0xFF0000}));
+    ballMesh.position.set(0, 10, 0);
+    gfxScene.add(ballMesh);
+
+    var plateGeometry = new THREE.BoxGeometry(3, 0.25, 3);
+    plateMesh = new THREE.Mesh(plateGeometry, new THREE.MeshLambertMaterial({color: 0x888888}));
+    plateMesh.position.set(0, 5.5, 0);
+    gfxScene.add(plateMesh);
+
+    springMat = new THREE.MeshPhongMaterial({color: 0xc0c0c0, shininess:50});
+
+    createSpring( 5 );
+}</code></pre>
+
+<p>We intialize the system by passing in our rendering and forces callbacks, the intial position of the ball and its momentum, size and mass. Then we create the ball itself and the plate. Then call to createSpring to do that. The code in <span class="inline-code">createSpring</span> is this:</p>
+
+<pre><code class="language-javascript">function createSpring( posY ) {
+    var TWO_PI = Math.PI * 2.0;
+    var NTWISTS = 10;
+    var ANGLE_INCR = Math.PI / 6;
+
+    var height = 6 - posY;
+    var cylY = 5.5 - height * 0.5;
+
+    var x,z;
+    var y = height/2;
+    var radius = 0.25;
+    var n = 0;
+    var yIncr = height / (TWO_PI / ANGLE_INCR * NTWISTS );
+    var helix = [];
+
+    for( var phi=0; philt;=TWO_PI*NTWISTS; phi+=ANGLE_INCR ) {
+        x = Math.cos(phi) * radius;
+        y -= yIncr;
+        z = Math.sin(phi) * radius;
+
+        helix.push( new THREE.Vector3(x, y, z));
+          
+        n++;
+    }
+
+    var curve = new THREE.CatmullRomCurve3( helix );
+    var geometry = new THREE.TubeGeometry( curve, n, 0.05, 6, false );
+    
+    if (springMesh !== undefined) {
+        springMesh.geometry.dispose();
+        gfxScene.remove( springMesh );
+    }
+    
+    springMesh = new THREE.Mesh(geometry, springMat);
+    springMesh.position.set(0,cylY,0);
+    gfxScene.add( springMesh );
+}</code></pre>
+
+<p>This code is fairly straightforward. It simply iterates around a circle in X and Z to generate the coils and increments each step in Y to create the helix. The set of X,Y,Z points are then pushed into an array which is passed to a THREE.TubeGeometry to create spring.</p>
+<p>Note that the spring is disposed and recreated in each frame. This is a bit wasteful. However, experimenting with morphing the vertices created weird artifacts so went with this approach. Seems to perform acceptably on any modern platform including mobile phones.</p>
+<h4>The Callbacks</h4>
+<p>The two callbacks are pretty straightforward. The <span class="inline-code">render</span> callback is very simple:</p>
+
+<pre><code class="language-javascript">function render( state ) {
+
+    ballMesh.position.set(state.position.x, state.position.y - 1, state.position.z);
+           
+    createSpring( state.position.y );
+}</code></pre>
+
+<p>And the <span class="inline-code">forces</span> callback is also pretty simple (since the simulation is simple):</p>
+
+<pre><code class="language-javascript">function forces (state, t, derivative ) {
+    var FORCE_X = 0;
+    var FORCE_Y = 2;
+    var FORCE_Z = 0;
+    var FORCE_SCALE = -5.0;
+    var TORQUE_X = 0.0;
+    var TORQUE_Y = 0.0;
+    var TORQUE_Z = 0.0;
+
+    // attract towards origin
+    derivative.force.copy(state.position);
+    derivative.force.multiplyScalar(FORCE_SCALE);
+
+    // add forces to the calculated derivative
+    derivative.force.x += FORCE_X;
+    derivative.force.y += FORCE_Y;
+    derivative.force.z += FORCE_Z;
+
+    // add torque to the calculated derivative
+    derivative.torque.x = TORQUE_X;
+    derivative.torque.y = TORQUE_Y;
+    derivative.torque.z = TORQUE_Z;
+}</code></pre>
+<p>Note that this is all about the forces (linear) and torque (rotational force) because we are using Runge-Kutte. See the Gaffer's <a href="http://gafferongames.com/game-physics/physics-in-3d/" title="Gaffer on Games" target="_blank">article</a> for all the gory details.</p>
 <p>And that's it!  Click on <a href="lesson39webgl.html" title="Lesson 39" target="_self">this link</a> to 
   see the actual rendered demo in all it's springy glory!</p>
+<p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
     		  

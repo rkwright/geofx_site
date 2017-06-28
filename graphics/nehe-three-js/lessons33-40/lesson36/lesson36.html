@@ -109,6 +109,7 @@ composer.addPass( copyPass );</code></pre>
 
 <p>So all this is doing is calculating the normalized normal vector in the vertex shader and passing that vector to the fragment shader. In the fragment shader, it calculates the intensity of the glow as the square root of the dot product of the normal for the vertex and the Z-axis. Since the vectors are both normalized, this effectively means that it is the square root of the angle between the normal and the Z-axis. Thus the intensity is maximized in the X-Y plane, resulting in a halo around the knot.</p>
 <p>And that's it!  Click on <a href="lesson36webgl.html" title="Lesson 32" target="_self">this link</a> to see the actual rendered demo in all it's glowing glory!</p>
+<p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
     		  
