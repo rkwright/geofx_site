@@ -173,6 +173,7 @@ loader.load('images/terrain-edged.png', function ( texture ) {
 <p>By now you're probably wondering what's with the light info that got passed in and why are those lines of code there but commented out? The answer is that I was trying to get the height map properly lit with shadows so it looked more realistic. However, in order to do that, one has to re-calculate all the normals for each vertex. But to do that we need to know what the orientation of the faces which include the vertex. But to do that we need to know the values of the height map vertices for each face. Unfortunately, while there is built-in method in GL-ES (<span class="inline-code">textureOffset</span>) that does the trick, it isn't supported in WebGL 1.0, which is what three.js supports at the moment (June 2017). It IS supported in WebGL 2.0 so when three.js supports WebGL 2.0 the code can be uncommented and it should all work fine. Three.js is already experimenting with WebGL 2.0 but it isn't ready for prime-time yet.</p>
 <p>And that's it!  Click on <a href="lesson34webgl.html" title="Lesson 32" target="_self">this link</a> to 
   see the actual rendered demo in all it's elevated glory!</p>
+<p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
     		  
