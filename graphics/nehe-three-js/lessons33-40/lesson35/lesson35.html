@@ -24,8 +24,62 @@
 <h3>Lesson 35 - Playing Movie Files In WebGL</h3>
 
 <p>&nbsp;</p>
+<h4>Introducton</h4>
+<p>This lesson is pretty simple as three.js does virtually all of the work. Basically, the video is loaded into a standard HTML5 video element. From that element, three.js maps the rendered  image  onto a three.js Texture which is refreshed in each frame, thereby rendering the video.</p>
+<h4>Initializing The Video</h4>
+<p>The first step is to load the video.</p>
+
+<pre><code class="language-javascript">video = document.createElement( 'video' );
+// video.type = ' video/ogg; codecs="theora, vorbis" ';
+video.src = "videos/Big_Buck_Bunny_Trailer_400p.ogv";
+video.load();
+video.play();
+video.loop = true;</code></pre>
+
+<p>This simply creates the HTML5 video element and tells it to play. Of course, playing it could be delayed or triggered by some UI event, but for this demo we just start it. Note that the type of video is detected automatically so we don't have to set the type explicitly, but you can if you need to.</p>
+<p>Then we create a HTML5 canvas onto which we will render the video. Note that the size of the canvas has to match the video's aspect ration or distorion will occur.</p>
+
+<pre><code class="language-javascript">videoCanvas = document.createElement( 'canvas' );
+videoCanvas.width = 720;
+videoCanvas.height = 400;</code></pre>
+
+<p>Next we create the canvas onto which we will render the video. Just in case the video can't load, we set a background color. We could also have set the <span class="inline-code">poster</span> attribute instead or in addiion to the background color. See more info about the video element <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video" title="Video element details" target="_blank">here</a>.</p>
+
+<pre><code class="language-javascript">videoCanvasContext = videoImage.getContext( '2d' );
+videoCanvasContext.fillStyle = '#000000';
+videoCanvasContext.fillRect( 0, 0, videoImage.width, videoImage.height );</code></pre>
+
+<p>We then create the texture, passing the video &quot;canvas&quot; as the source for the texture. We then create the material using that texture. Note that we make the material double-sided, which wouldn't normally be needed, but we do it here just for amusement.</p>
+
+<pre><code class="language-javascript">videoTexture = new THREE.Texture( videoCanvas );
+videoTexture.minFilter = THREE.LinearFilter;
+videoTexture.magFilter = THREE.LinearFilter;
+
+var videoMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, side:THREE.DoubleSide } );</code></pre>
+
+
+<p>Finally, we create a <span class="inline-code">THREE.PlaneGeometry</span> onto which we map the material as our &quot;movie screen&quot;. Again, the dimensions of the &quot;screen&quot; have to match the aspect ratio of the video or it will naturally be distorted.</p>
+
+<pre><code class="language-javascript">var movieGeometry = new THREE.PlaneGeometry( 21.6, 12, 4, 4 );
+movieScreen = new THREE.Mesh( movieGeometry, videoMaterial );
+movieScreen.position.set(0,0,0);
+gfxScene.add(movieScreen);</code></pre>
+
+<h4>Rendering the Video</h4>
+<p>But wait! The video never got rendered? That happens in the animation handler:</p>
+
+<pre><code class="language-javascript">if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+    videoImageContext.drawImage( video, 0, 0 );
+    if ( videoTexture )
+        videoTexture.needsUpdate = true;
+}
+
+yRotation += 0.01;
+movieScreen.rotation.set(0, yRotation, 0);</code></pre>
+
+<p>Basically, we just keep copying the video &quot;image&quot; onto our video-canvas at each frame refresh. We have to check for enough data and that the videoTexture exists because our animation handler may be called before the video has completed loading.</p>
 <p>And that's it!  Click on <a href="lesson35webgl.html" title="Lesson 32" target="_self">this link</a> to 
-	see the actual rendered demo in all it's gaming glory!</p>
+  see the actual rendered demo in all it's moving glory!</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
     		  

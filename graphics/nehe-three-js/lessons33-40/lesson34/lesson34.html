@@ -105,7 +105,7 @@ loader.load('images/terrain-edged.png', function ( texture ) {
 <h4>The Shaders</h4>
 <p>Once we have the lut, we then create the shader material, passing it the uniforms and the IDs of the two shaders. Here are the two shaders:</p>
 
-<pre><code class="language-javascript">&lt;script id="vertexShader" type="x-shader/x-vertex"&gt;
+<pre><code class="language-clike">&lt;script id="vertexShader" type="x-shader/x-vertex"&gt;
     uniform sampler2D   uTexture;
     uniform float       uScale;
     uniform vec3        uLut[ 256 ];

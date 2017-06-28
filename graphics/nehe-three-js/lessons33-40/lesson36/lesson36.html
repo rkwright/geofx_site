@@ -22,10 +22,93 @@
 <div class="content-text">
 
 <h2>Lesson 36 - Shader Glow and Effect Composer</h2>
-
 <p>&nbsp;</p>
-<p>And that's it!  Click on <a href="lesson36webgl.html" title="Lesson 32" target="_self">this link</a> to 
-	see the actual rendered demo in all it's gaming glory!</p>
+
+<h4>Introduction</h4>
+<p>This lesson is a little different than some of the others as the original NeHe demo wasn't too interesting and used features in OpenGL that aren't exposed in WebGL. So this lesson followis the original in spirit rather than to the letter. The original (apparently) faked a radial blur. Apparently, because few if any of the original NeHe demos can be built and run anymore as-is since they rely on obsolete tools and libraries.</p>
+<p>So instead this lesson creates a halo effect using the  shader. It also uses the effect composer to composite several different passes.</p>
+<h4>Initialization</h4>
+<p>First step is to create the torus know which will be the geometry.</p>
+
+<pre><code class="language-javascript">var torusGeom = new THREE.TorusKnotGeometry(2.0, 0.5, 100, 16);
+var torusMat = new THREE.MeshPhongMaterial({ color: '#cccccc', specular: '#111111', shininess: 50 });
+knot = new THREE.Mesh(torusGeom, torusMat);
+gfxScene.add(knot);</code></pre>
+
+<p>Then we create another torus knot that will be the &quot;halo&quot;:</p>
+
+<pre><code class="language-javascript">var haloColor = new THREE.Vector3(212 / 255.0, 175 / 255.0, 55 / 255.0);
+var haloMat = new THREE.ShaderMaterial({
+    uniforms: { vColor: { type: "v3", value: haloColor } },
+    vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+    fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+    side: THREE.BackSide,
+    blending: THREE.AdditiveBlending,
+    transparent: true
+});
+
+var haloScale = 1.1;
+var haloGeom = new THREE.TorusKnotGeometry(2*haloScale, 0.5*haloScale, 100, 16);
+halo = new THREE.Mesh( haloGeom, haloMat );
+gfxScene.add( halo );</code></pre>
+
+<p>Note that the halo know if 10% bigger than the first one (else it wouldn't be a halo, eh?). The material is of course a shader-material. The only uniform we need to pass to the shader is the color of the halo (gold). The halo will be partially transparent so we set the transparent propety to true and set blending to additive. Also note that we tell three.js to render only the backside of the object. If we render on the front or both sides of halo-knot we get weird artifacts.</p>
+<h4>Effects Composer</h4>
+<p>Next we set up the<span class="inline-code"> EffectsComposer.</span> The three.js <span class="inline-code">EffectComposer</span> is a library that allows one to layer rendering &quot;passes&quot;. Normally, one sets up the scene and simply calls <span class="inline-code">render.scene() </span>whcih renders everything in one pass. However, sometimes one wants layer various effects one on top of the other. Othertimes you want to render in more than one pass.  This can be done serveral ways. In <a href="../../lessons17-24/lesson23/lesson23.html" title="Lesson 23" target="_self">Lesson 23</a>, we used two cameras to allow us to paint a background image on top of which we rendered the &quot;reflected&quot; image.  We could have done that here as well, but instead we'll use the <span class="inline-code">EffectComposer</span> instead, just for fun.</p>
+<p>The <span class="inline-code">EffectComposer</span> effectively renders to an off-screen buffer. So the sequence is to first clear the off-screen, then render the other passes, which will be rendered on top of each other in the buffer so anything in the &quot;back&quot; should be rendered first. So the set setup code is like this:</p>
+
+<pre><code class="language-javascript">var clearPass = new THREE.ClearPass();
+
+var texture = new THREE.TextureLoader().load( 'images/deathvalleysky.jpg' );
+var texturePass = new THREE.TexturePass( texture );
+
+var renderPass = new THREE.RenderPass(gfxScene.scene, gfxScene.camera);
+renderPass.clear = false;
+
+var copyPass = new THREE.ShaderPass(THREE.CopyShader);
+copyPass.renderToScreen = true;
+        
+composer = new THREE.EffectComposer(gfxScene.renderer);
+
+composer.addPass( clearPass );
+composer.addPass( texturePass );
+composer.addPass( renderPass );
+composer.addPass( copyPass );</code></pre>
+
+<p>First we allocate the clearPass, which does just that - clears the offscreen buffer. Then we create the backdrop for our scene by loading an image. The resulting texture will be rendered as the background for the scene. Then a &quot;render&quot; pass which is the equivalent of render.scene. Note that we set the clear property to false, because rendering normally clears the buffer when it renders - which we obviously don't want. Finally, we allocate a copy pass, which effectively copies the offscreen buffer to the actual 2D screen buffer so we see the result. Then we allocate the <span class="inline-code">EffectComposer</span> and add the passes to it. Thus the sequence is:</p>
+<ul>
+  <li>Clear the offscreen buffer</li>
+  <li>Render the backgound texture in the offscreen buffer</li>
+  <li>Render the scene objects (the two tori)</li>
+  <li>Copy the offscreen buffer to the on-screen buffer</li>
+  </ul>
+<p>A final note about the <span class="inline-code">EffectComposer</span>. Our usage here is pretty trivial. The <span class="inline-code">EffectComposer</span> is a complex and poweful library. Well worth investigation. A good starter article is <a href="http://luxiyalu.com/render-post-processing-with-three-js/" title="Effect Composer Article" target="_blank">here</a>.</p>
+<h4>&nbsp;</h4>
+<h4>The Halo</h4>
+<p>So how does the halo get generated? Just a little more shader magic. A very little. Here's the code:</p>
+
+<pre><code class="language-clike">&lt;script id="vertexShader" type="x-shader/x-vertex"&gt;
+    uniform vec3 uColor;
+    varying vec3 vNormal;
+
+    void main() {
+        vNormal = normalize( normalMatrix * normal );
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+&lt;/script&gt;
+
+&lt;script id="fragmentShader" type="x-shader/x-fragment"&gt;
+    uniform vec3 uColor;
+    varying vec3 vNormal;
+
+    void main() {
+	      float intensity = pow( 0.3 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 0.5 );
+        gl_FragColor = vec4( uColor, 0.5 ) * intensity;
+    }
+&lt;/script&gt;</code></pre>
+
+<p>So all this is doing is calculating the normalized normal vector in the vertex shader and passing that vector to the fragment shader. In the fragment shader, it calculates the intensity of the glow as the square root of the dot product of the normal for the vertex and the Z-axis. Since the vectors are both normalized, this effectively means that it is the square root of the angle between the normal and the Z-axis. Thus the intensity is maximized in the X-Y plane, resulting in a halo around the knot.</p>
+<p>And that's it!  Click on <a href="lesson36webgl.html" title="Lesson 32" target="_self">this link</a> to see the actual rendered demo in all it's glowing glory!</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
     		  
