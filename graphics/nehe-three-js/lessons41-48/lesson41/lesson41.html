@@ -24,8 +24,18 @@
 <h3>Lesson 41 - Volumetric Fog </h3>
 
 <p>&nbsp;</p>
+<h4>Introduction</h4>
+<p>This lesson is a little bit of a cheat in the sense that it is based largely on code that I neither wrote and barely understand the inner workings. But it looks pretty cool!</p>
+<h4>The Algorithm</h4>
+<p>The basic algorithm is rather simple: First, render the part of the light source geometry that is not occluded, then blur it from the center of the light source outwards to produce the characteristic light streaks. All this is done in 2D image space instead of the 3D world as computing how the light rays propagate in the medium would be way to expensive for realtime rendering. So the goal is to look cool, not be physically correct!<br>
+</p>
+<p>Inventing a new shader effect from scratch is quite a daunting task. Luckily, shader technology has been used on graphics cards for more than a decade now and there is an abundance of books and internet tutorials. So instead of trying to re-invent the wheel, we just hunt around to find an example in the three.js space. And voila, <a href="https://threejs.org/examples/webgl_postprocessing_godrays.html" title="Godray Example in three.js" target="_self">there</a> we are.</p>
+<h4>The Demo<br>
+</h4>
+<ul>
+All we have done here is adapt the three.js example to use a GFXScene and replace the original scene with a simple torus-knot that slowly rotates.<br>
 <p>And that's it!  Click on <a href="lesson41webgl.html" title="Lesson 41" target="_self">this link</a> to 
-	see the actual rendered demo in all it's crepuscular glory!</p>
+  see the actual rendered demo in all it's crepuscular glory!</p>
 <p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
