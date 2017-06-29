@@ -24,8 +24,78 @@
 <h3>Lesson 42 - Multiple Viewports</h3>
 
 <p>&nbsp;</p>
+<h4>Introduction</h4>
+<p>This lesson is fairly simple since three.js makes it easy too create multiple viewports. We enhance this one a little by creating two views of a single scene in different viewports with different cameras - one a perspective camera and one an orthographic camera.</p>
+<h4>Initialization</h4>
+<p>Initialization is pretty easy, we setup the scene with an orthographic camera and a checkerboard floor. We then add a second, perspective camera:</p>
+
+<pre><code class="language-javascript">var gfxScene = new GFX.Scene( {
+      cameraPos : [26,16,-2],
+      perspective:false,
+      orthoSize: FLOOR_REPEAT * 2,
+      autoClear: false,
+      controls:true,
+      floorRepeat : FLOOR_REPEAT,
+      floorX: FLOOR_SIZE,
+      floorZ: FLOOR_SIZE,
+      clearColor:0xc5e1e3
+  });
+
+var perspectiveCamera = gfxScene.addCamera({perspective:true, cameraPos:[12,6,8], fov : 90}); 
+
+var orthoCamera = gfxScene.getCamera(0);
+
+gfxScene.clearAllLights();
+gfxScene.addLight( 'ambient', { color:0xffffff, intensity : 0.75 });
+var dirLight = gfxScene.addLight( 'directional', { color:0xffffff, intensity:1,  position:[0,10,0] });</code></pre>
+
+<p>Note that turn off autoClear on the renderer.</p>
+<p>Then populate the scene with the usual suspects</p>
+<ul>
+  <li>spinning earth globe</li>
+  <li>piano</li>
+  <li>icosahedron</li>
+  <li>torus knot</li>
+  <li>the monolith</li>
+</ul> <br/>
+
+<h4>Rendering</h4>
+<p>The rendering step is where it gets interesting, though it is very simple, actually:</p>
+
+<pre><code class="language-javascript">function render() {
+    var SCREEN_WIDTH = window.innerWidth;
+    var SCREEN_HEIGHT = window.innerHeight;
+    var SCREEN_ASPECT =  SCREEN_WIDTH / SCREEN_HEIGHT * 0.5;
+
+    perspectiveCamera.aspect = SCREEN_ASPECT;
+    perspectiveCamera.updateProjectionMatrix();
+
+    orthoCamera.lookAt( new THREE.Vector3(0,0,-10) );
+    orthoCamera.aspect  = SCREEN_ASPECT;
+    orthoCamera.updateProjectionMatrix();
+
+    // setViewport parameters:
+    //  lower_left_x, lower_left_y, viewport_width, viewport_height
+
+    gfxScene.renderer.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+    gfxScene.renderer.clear();
+
+   // left side
+    gfxScene.renderer.setViewport( 1, 1,   0.5 * SCREEN_WIDTH - 2, SCREEN_HEIGHT - 2 );
+    gfxScene.renderScene( perspectiveCamera );
+
+    // right side
+    gfxScene.renderer.setViewport( 0.5 * SCREEN_WIDTH + 1, 1,   SCREEN_WIDTH - 2, SCREEN_HEIGHT - 2 );
+    gfxScene.renderScene( orthoCamera );
+}</code></pre>
+
+<p>We (virtually) divide the screen in half and calculate the new aspect ratio for each half. Then we update the aspect ration for each camera and update their projection matrices. Note also that we have to adjust the lookAt point of the orthographic camera as well, otherwise it is not centered in the viewport (not sure why - bug?). </p>
+<p>Then we set the viewport to the whole screen and clear it manually (since autoClear has to be off). We set the viewport to the left half of the screen then render that viewport using the perspective camera. Then the viewport is switched to the right side and rendered with the orthographic camera.</p>
+
+
+
 <p>And that's it!  Click on <a href="lesson42webgl.html" title="Lesson 42" target="_self">this link</a> to 
-	see the actual rendered demo in all it's multiple glory!</p>
+	see the actual rendered demo in all it's double-vision glory!</p>
 <p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->
