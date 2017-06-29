@@ -1,8 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Lesson 4 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
-  <meta name="description" content="NeHe Lesson 3 in three.js and WebGL, developed by Geo-F/X - GeoFX"/>
+  <title>Lesson 32 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
+  <meta name="description" content="NeHe Lesson 32 in three.js and WebGL, developed by Geo-F/X - GeoFX"/>
   <meta name="author" content="Richard K. Wright richardkylewright" />
   <meta name="keywords" content="NeHe WebGL three.js GIS 3D Digital Publishing EPUB eBooks Readium SVG Graphics Geo-F/X Consulting - GeoFX" />
   <meta charset="utf-8" /> 
@@ -12,7 +12,7 @@
   <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
   <script src="../../../../js/jquery-3.1.1.min.js"></script>
   <script src="../../../../js/flaunt.js"></script>
-  <script src="../../js/prism.js"></script>
+  <script src="../../../../js/prism.js"></script>
 </head>
 <body>
 <div class="wrapper">
@@ -20,50 +20,43 @@
 <!--#include virtual="/includes/banner_nav2.shtml" -->			
 <div class="content">
 <div class="content-text">
- 
-<h2>Lesson 4 - Let's Move It!</h2>
-<p>Now that we have covered creating polygons, let's give them some color. Most of the source code is identical
-    boilerplate to the second lesson so this lesson is much shorter.</p>
+
+<h2>Lesson 4 - Let's Get Moving!</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
+<p>Now that we have covered creating and coloring polygons, let's add some animation. Most of the source code is identical boilerplate
+    to the second and third lessons so this lesson is also quite short.</p>
 <p>Again, we instantiate a scene and call <span class="inline-code">initializeScene()</span>where all the work gets done.
-    Similarly, the creation of the triangle and the square is identical to the second lesson, with one exception -
-    how we specify the color.</p>
-<p>In the second lesson, we created the mesh like this</p>
+    Similarly, the creation of the triangle and the square is identical to the third lesson. </p>
+<p>The key difference in this lesson is that we don't call<span class="inline-code"> renderScene()</span> directly. Instead, 
+we call <span class="inline-code">animateScene()</span> which invokes a special behaviour in the browser that repeatedly 
+calls a callback function, which in turn calls <span class="inline-code">renderScene()</span>.</p>
 
-<pre><code class="language-javascript">var triangleMaterial = new THREE.MeshBasicMaterial({
-      color:0xFFFFFF,
-      side:THREE.DoubleSide
-      });</code></pre>
-      
-<p>This time, we want each vertex of the triangle to be a different color. Then those colors will be interpolated
-    across the surface of the triangle. First, we create the colors themselves by specifying the color of the three
-    vertexes in the one face that we created.</p>
-<pre><code class="language-javascript">triangleGeometry.faces[0].vertexColors[0] = new THREE.Color(0xFF0000);
-triangleGeometry.faces[0].vertexColors[1] = new THREE.Color(0x00FF00);
-triangleGeometry.faces[0].vertexColors[2] = new THREE.Color(0x0000FF);</code></pre>
-<p>In order for those colors to be used we have to tell three.js when we create the mesh to use those vertex-colors:</p>
-<pre><code class="language-javascript">var triangleMaterial = new THREE.MeshBasicMaterial({
-    vertexColors:THREE.VertexColors,
-    side:THREE.DoubleSide
-    });</code></pre>
-<p>BTW, notice the curly braces inside the call to the constructor THREE.MeshBasicMaterial. Three.js uses JSON syntax for
-    most  its function parameter lists. This is very handy and flexible. We'll use the same approach later
-    when we start refactoring the lessons.</p>
-<p>And that's how it is done. Note that under the covers, three.js creates a shader which handles the color interpolation.
-    A shader is a function written in OpenGL Shader language (which we'll touch on later on). The shader is passed to the
-    graphics hardware and it drives those thousands of GPU cores to iterate across the surface of the triangle to render
-    the color gradients.</p>
-<p>The square is similar to lesson 2 except that we specify a pale blue color.</p>
+<p>In the function, we first increase the y rotation of the triangle mesh and decrease the x rotation of the square mesh.</p>
+	
+<pre><code class="language-javascript">triangleMesh.rotation.y += 0.1;
+squareMesh.rotation.x -= 0.075;</code></pre>
 
-<pre><code class="language-javascript">var squareMaterial = new THREE.MeshBasicMaterial({
-      color:0x8080FF,
-      side:THREE.DoubleSide
-      });</code></pre>
+<h4>The Animation</h4>
+<p>Then we call a browser function, <span class="inline-code"><a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">
+  requestAnimationFrame</a></span>.  That method tells the browser that you wish to perform an
+  animation and requests that the browser call a specified function to update an animation before the next repaint. The
+  method takes as an argument a callback to be invoked before the repaint. In our case, the callback function we pass
+  in is <span class="inline-code">animateScene</span>. Note that if the container (i.e. the browser window) is not visible,
+  the animation is paused. </p>
 
-<p>And that's it!  Click on <a href="lesson04webgl.html" title="Lesson 4 demo" target="_self">this link</a> to see the actual rendered demo in all it's moving glory!</p>
-<p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<pre><code class="language-javascript">requestAnimationFrame(animateScene);</code></pre>
 
+ <p>Note also that our callback function effectively calls<span class="inline-code"> requestAnimationFrame()</span> every
+     time it is invoked - which is required - it's not a fire and forget sort of call.</p>
+ <p>Finally, we actually call <span class="inline-code">renderScene()</span> which then maps the 3D scene down to the
+     2D screen, just like the previous lessons</p>
+ 
+<pre><code class="language-javascript">renderScene();</code></pre>
+
+<p>And that's it!  Click on this <a href="lesson04webgl.html" title="Lesson 4 GL" target="_self">link</a> to see the actual rendered demo in all it's rainbow glory!</p>
 <!--#include virtual="/includes/footer.shtml" -->
-
-</div></div></div></div>
+    		  
+</div>	</div></div></div>
 </body>
 </html>

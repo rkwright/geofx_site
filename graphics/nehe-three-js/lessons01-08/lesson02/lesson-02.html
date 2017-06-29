@@ -22,6 +22,8 @@
 <div class="content-text">
 
 <h2>Lesson 2 - Your First Polygon</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>In the this second lesson, we'll cover pretty much all the source code.  In subsequent lessons we'll include only the sections that are new.</p>
 <p>The first line just tells the browser we are using HTML5.</p>
@@ -59,8 +61,10 @@ var canvasHeight = 1024;</code></pre>
     <p>Next we set up the scene by calling the scene initalization function then the renderScene function, the former populating the scene  with our polygons and the latter to tell three.js to render the &quot;3D&quot; objects onto a 2D canvas.</p>
  
 <pre><code class="language-javascript">initializeScene();
-renderScene();</code></pre>
+renderScene();</code>
+</pre>
 
+<h4>Initialization</h4>
 <p>So first comes the actual initialization of the scene.  This is boilerplate code that will be almost identical in each lesson.  In a later lesson, we'll refactor this code to create an object that hides all this and also provides a way to parameterize the setup.  But in these early versions we'll include it in the body of the document (though we won't include it in the text if the lessons themselves from now on).</p>
 <p> First, check whether the browser supports WebGL. If so, instantiate the three.js 3D renderer. If not, use the three.js "Canvas" renderer which doesn't use WebGL or the GPU.  This is shown in this first demo just to let you know it can be done that way.  But the non-WebGL renderer lacks many features, so from now on, we'll just skip this.  If you don't have hardware-asssisted rendering (which is very rare these days, see <a href="http://caniuse.com/#feat=webgl">here</a>) the demos just won't work. Note that we enable anti-aliasing which is not enabled by default.</p>
       
@@ -104,12 +108,14 @@ scene = new THREE.Scene();</code></pre>
 <pre><code class="language-javascript">camera = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 1, 100);
 camera.position.set(0, 0, 10);
 camera.lookAt(scene.position);
-scene.add(camera);</code></pre>
+scene.add(camera);</code>
+</pre>
 
+<h4>The Polygons</h4>
 <p>Now, we finally get to creating the polygons!  In this demo all we are doing is creating the world's simplest polygons.  THey are simple, flat 2D objects. THe process to create the triangle (or any arbitrary geometry) consists of:
-       1. Instantiate the geometry object
-       2. Add the vertices
-       3. Define the faces by setting the vertices indices</p>
+  1. Instantiate the geometry object
+  2. Add the vertices
+  3. Define the faces by setting the vertices indices</p>
        
 <pre><code class="language-javascript">var triangleGeometry = new THREE.Geometry();
 triangleGeometry.vertices.push(new THREE.Vector3( 0.0,  1.0, 0.0));

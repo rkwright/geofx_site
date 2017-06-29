@@ -15,3 +15,8 @@
 	font-family: Monospace;
 	color: white;
 }
+
+pre {
+    font-size:100%;
+    font-family: "Lucida Sans Typewriter", Monaco, monospace;
+}

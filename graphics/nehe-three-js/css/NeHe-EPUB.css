@@ -25,12 +25,13 @@ pre
     margin-left: 1%;
     margin-top: 1em;
     margin-bottom: 1em;
-    font-size:70%;
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, Monaco, monospace;
+    font-size:95%;
+		font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+    /*font-family: "Lucida Sans Typewriter","Lucide Console", Monaco, "Courier New", Courier, Monaco, monospace; */
 }
 
 .inline-code
 {
-    font-size:90%;
+    font-size:85%;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, Monaco, monospace;
 }

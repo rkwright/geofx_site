@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 5 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,9 +22,12 @@
 <div class="content-text">
 
 <h2>Lesson 5 - Add Some Depth!</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 <p>Now that we have created, colored and animated some rather dull flat polygons, let's add some depth. After all, we're not from Flatland, eh? We're going to create two 3D objects: a pyramid and a cube, then animate them. Most of the source code is identical boilerplate
     to the previous lessons, but there is a little more meat in this one. </p>
 <p>Again, we instantiate a scene and call <span class="inline-code">initializeScene()</span>where all the work gets done.    </p>
+<h4>Initialization</h4>
 <p>First we need to create the pyramid. We could create it from scratch by just specifying each face as a triangle and specifying each vertex explicitly.  Perfectly doable, but kind of tedious. Instead we can cheat and use a three.js construct, the CylinderGeometry. Wait, a cylinder? Yes, because the CylinderGeometry takes 5 parameters:</p>
 <ul>
   <li>radiusTop</li>
@@ -91,8 +94,10 @@ by 1.5 on the x axis and by 4 on the z axis and add the mesh to the scene.</p>
 
 <pre><code class="language-javascript">cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
 cubeMesh.position.set(1.5, 0.0, 4.0);
-scene.add(cubeMesh);</code></pre>
+scene.add(cubeMesh);</code>
+</pre>
   
+<h4>Animation</h4>
 <p>Again, we animate them in our animateScene function. It's very similar, but we add a little trick. The pyramid is just rotated around the Y axis, as before.</p>
 		
 <pre><code class="language-javascript">pyramidMesh.rotation.y += 0.1;</code></pre>

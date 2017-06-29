@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 3 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,6 +22,8 @@
 <div class="content-text">
  
 <h2>Lesson 3 - Color Your Polygons!</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 <p>Now that we have covered creating polygons, let's give them some color. Most of the source code is identical
     boilerplate to the second lesson so this lesson is much shorter.</p>
 <p>Again, we instantiate a scene and call <span class="inline-code">initializeScene()</span>where all the work gets done.
@@ -34,9 +36,10 @@
       side:THREE.DoubleSide
       });</code></pre>
       
+<h4>Adding Color</h4>
 <p>This time, we want each vertex of the triangle to be a different color. Then those colors will be interpolated
-    across the surface of the triangle. First, we create the colors themselves by specifying the color of the three
-    vertexes in the one face that we created.</p>
+  across the surface of the triangle. First, we create the colors themselves by specifying the color of the three
+  vertexes in the one face that we created.</p>
 <pre><code class="language-javascript">triangleGeometry.faces[0].vertexColors[0] = new THREE.Color(0xFF0000);
 triangleGeometry.faces[0].vertexColors[1] = new THREE.Color(0x00FF00);
 triangleGeometry.faces[0].vertexColors[2] = new THREE.Color(0x0000FF);</code></pre>

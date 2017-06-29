@@ -21,11 +21,67 @@
 <div class="content">
 <div class="content-text">
 
-<h3>Lesson 44 - 3D Lens Flare With Occlusion Testing</h3>
+<h3>Lesson 44 - 3D Lens Flare </h3>
 
-<p>&nbsp;</p>
+<h4>&nbsp;</h4>
+<h4>Introduction</h4>
+<p>This final lesson (the last 4 NeHe lessons, 45-48 are irrelevant to WebGL) covers lens flare, which three.js again makes very easy. The lens flares are created by compositing one or more flare-like images onto the scene. It's a little more complex than that, but not much.</p>
+<h4>Initialization</h4>
+<p>The setup is very simple. We create a scene, same as usual but there is one additonal variable. We must pass the alpha enabled flag (<span class="inline-code">alphaBuffer</span>) when the renderer is created:</p>
+
+<pre><code class="language-javascript">var gfxScene = new GFX.Scene( {
+    cameraPos : [-13, 10, 30],
+    alphaBuffer: true,
+    defaultLights: false,
+    controls:true,
+    clearColor:0x4444aa,
+    shadowMapEnabled:true,
+    displayStats: true
+});
+
+gfxScene.addLight( 'ambient', { color:0x1c1c1c, intensity : 1 });
+gfxScene.addLight( 'directional', { color:0xffffff, intensity:0.75,  position:[-40,60,10],
+    castShadow:true  });</code></pre>
+
+<p>In the <span class="inline-code">initDemo</span> function we simply allocate a large plane (and cover it with grass), add a mysterious black monolith with dancing icosahedrons. All the real work is done in <span class="inline-code">addFlare</span>.</p>
+<h4>The Flare</h4>
+<p>Using the Flare object is very simple. First one allocates the light which is supposed to be creating the flare on your lens:</p>
+
+<pre><code class="language-javascript">var flareLight = new THREE.DirectionalLight(0xffffff);
+flareLight.position.set(30, 20, -1000);
+flareLight.target = plane;
+flareLight.distance = 0;
+
+gfxScene.add(flareLight);</code></pre>
+<p>Then load the images which are going to be blended into the scene to simulate the lens flare and set the color of the flare.</p>
+
+<pre><code class="language-javascript">var textureFlare0 = THREE.ImageUtils.loadTexture("images/lensflare0.png");
+var textureFlare3 = THREE.ImageUtils.loadTexture("images/lensflare3.png");
+var flareColor = new THREE.Color(0xffaacc);</code></pre>
+
+<p>The first flare image looks like this:</p><br/>
+
+<p><img src="images/lensflare0.png" width="351" height="351" alt="lens flare"/></p><br/>
+<p>The other flare image looks pure black at first, but if you look very closely you'll see that it isn't.</p>
+<p>Then allocate the actual lens flare object using the first flare image as the texture.</p>
+<pre><code class="language-javascript">var lensFlare = new THREE.LensFlare(textureFlare0, 350, 0.0, THREE.AdditiveBlending, flareColor);</code></pre>
+
+<p>Note that the second parameter is the size of the resulting flare (inpixels) while the third is the apparent distance from the position of the lens flare. It is set to 0 so the flare image will be composited right on the spot of the lens flare - which we will set at the same spot as the flare light we added before.</p>
+<p>Then add some more flare images. The second parameter is the size of the flare and the third is the apparent distance from the flare's position.</p>
+
+<pre><code class="language-javascript">lensFlare.add(textureFlare3, 60, 0.6, THREE.AdditiveBlending);
+lensFlare.add(textureFlare3, 70, 0.7, THREE.AdditiveBlending);
+lensFlare.add(textureFlare3, 120, 0.9, THREE.AdditiveBlending);
+lensFlare.add(textureFlare3, 160, 1.1, THREE.AdditiveBlending)</code></pre>
+
+<p>Finally, we position the flare at the same location as the flare-light itself.</p>
+
+<pre><code class="language-javascript">lensFlare.position.copy(flareLight.position);
+gfxScene.add(lensFlare);</code></pre>
+
+<p>There's nothing new in the animate function, just animation of the dancing icosahedrons.</p>
 <p>And that's it!  Click on <a href="lesson44webgl.html" title="Lesson 44" target="_self">this link</a> to 
-	see the actual rendered demo in all it's flaring glory!</p>
+  see the actual rendered demo in all it's flaring glory!</p>
 <p>As always, the original sources are on github <a href="https://github.com/rkwright/nehe-three-js" target="_blank" rel="noopener noreferrer">here</a>.</p>
 		
 <!--#include virtual="/includes/footer.shtml" -->

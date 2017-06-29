@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 8 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,10 +22,14 @@
 <div class="content-text">
 
 <h2>Lesson 8 - Blending and Opacity</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 
 <p>This is a very simple lesson because again three.js does  all the heavy lifting. Still there are a couple of wrinkles to watch for. And, of course, this lesson just barely touches on the whole area of blending, color models, opacity and so on. We'll go a bit deeper later, but for now we'll just get our toes wet.</p>
 <p>However, this lesson has a little bit more to it since we are going to start refactoring the code by creating a JavaScript object, gfxScene, that encapsulates all that boilerplate about creating the scene, lights, etc. Let's take a look at the new scene object, then the actual blending.</p>
+<p>&nbsp;</p>
+<h4>The GFXScene Object</h4>
 <p>There are three major parts to the object:</p>
 <ul>
   <li>The constructor</li>
@@ -175,6 +179,7 @@ this.pointLight.position.set(15, -20, -12);
 this.scene.add(this.pointLight);</code>
 </pre>
 <p>And that's it. There's more in the gfxScene object but we'll get to that later. Now on to the lesson itself.</p>
+<h4>Initialization</h4>
 <p>The lesson is VERY similar to lesson 7 in that we are applying a texture to a cube and using the same keystroke commands for the texture filters and navigation. However, there is only one texture, <span class="inline-code">glass.jpg</span>. And one new command, 'B' which turns on and off the blending.</p>
 <p>First, allocate our <span class="inline-code">gfxScene</span> object.  We leave all the parameters of that object as their defaults except the camera-position. Note that since we have defined our XHTML file as fixed-layout, we just let the <span class="inline-code">gfxScene</span> object get the proper size from the &quot;container&quot;, i.e. the page.</p>
           

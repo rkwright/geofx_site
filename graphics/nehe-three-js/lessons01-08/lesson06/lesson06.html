@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 6 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -21,8 +21,11 @@
 <div class="content-text">
 
 <h2>Lesson 6 - Texture This!</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 <p>Now that we have added some depth, it's time to move on from simple colors to something a little more exciting. We're going to create a single cube again, but this time, instead of color, we'll apply a texture to it - where the texture is drawn from an image. Three.js does most of the heavy lifting here, so this is a fairly short lesson. </p>
 <p>Again, we instantiate a scene and call <span class="inline-code">initializeScene()</span>where all the work gets done.    </p>
+<h4>Initialization</h4>
 <p>First  we need to create the cube. This is easy to as three.js provides a BoxGeometry. which takes just the same three parameters:</p>
 
 <pre><code class="language-javascript">var cubeGeometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);</code></pre>
@@ -45,8 +48,10 @@ by  by 4 on the z axis and add the mesh to the scene.</p>
 
 <pre><code class="language-javascript">cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
 cubeMesh.position.set(1.5, 0.0, 4.0);
-scene.add(cubeMesh);</code></pre>
+scene.add(cubeMesh);</code>
+</pre>
   
+<h4>Animation</h4>
 <p>Again, we animate them in our animateScene function. This time we want the rotations to be different on each axis (just for fun), so we define 3 variables</p>
 		
 <pre><code class="language-javascript">var xRotation = 0.0;

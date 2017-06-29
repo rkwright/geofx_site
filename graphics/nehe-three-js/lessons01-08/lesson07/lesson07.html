@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 7 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,7 +22,10 @@
 <div class="content-text">
 
 <h2>Lesson 7 - Texture Filters and Input</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 <p>This lesson covers two aspects, texture filters and keyboard input. The keyboard input is rather trivial for anyone reasonably familiar with JavaScript, but texture filters are a bit more interesting. Again, three.js makes using them pretty easy, but there are a few tricks. And texture filters themselves are interesting.</p>
+<h4>Textures and Filters</h4>
 <p>Textures in OpenGL are made up of arrays of elements known as <em>texels</em>, which contain colour and alpha values. This corresponds with the display, which is made up of a bunch of pixels and displays a different colour at each point. In OpenGL, textures are applied to triangles and drawn on the screen, so these textures can be drawn in various sizes and orientation. The texture filtering options in OpenGL tell it how to map the texels onto the pixels of the device, depending on the scale of the mapping.</p>
 <p>There are three cases:</p>
 <ul>
@@ -37,7 +40,7 @@
   <li>Bilinear interpolation</li>
 </ul>
 <p>Nearest neighbor just finds the center of the texel nearest the center of the pixel and uses that value. The result is rather crude as the texels essentially get &quot;blown up&quot; and pixelated. Bilinear interpolation, on the other hand, does what the name says, it interpolates the value of the texel across the pixels according to the distance from the center of the texel to the center of each pixel. There is always some pixelization but the result is a smoother gradient of change.</p>
-<p>There strategy used in minification is a little different. OpenGL supports a method known as mipmapping. The term mipmap comes from the latin acronym of multum in parvo, or &quot;much in little&quot;. The goal is to try to minimize the loss of information as the number of texels per pixel increase. The way this is done is to take the original texture and use performance-intensive methods to map the texture down to smaller and smaller textures, retaining as much information as possible. Then the set of &quot;maps&quot; are cached by OpenGL and it uses the one that is closest to a one-to-one mapping onto the pixels. This results in the least amount of information loss while using per-processed maps and reducing the overhead of having to do the mapping on the fly.</p>
+<p>The strategy used in minification is a little different. OpenGL supports a method known as mipmapping. The term mipmap comes from the latin acronym of multum in parvo, or &quot;much in little&quot;. The goal is to try to minimize the loss of information as the number of texels per pixel increase. The way this is done is to take the original texture and use performance-intensive methods to map the texture down to smaller and smaller textures, retaining as much information as possible. Then the set of &quot;maps&quot; are cached by OpenGL and it uses the one that is closest to a one-to-one mapping onto the pixels. This results in the least amount of information loss while using per-processed maps and reducing the overhead of having to do the mapping on the fly.</p>
 <p>There are four types of mipmap filters supported by OpenGL</p>
 <ul>
   <li>GL_NEAREST_MIPMAP_NEAREST
@@ -62,6 +65,7 @@
   </li>
 </ul>
 <p>Whew. Lot of verbiage. The net net is that the first is the most performant and the last looks the best. Depending on the size and number of textures (and how patient you are) will determine which you will want to use.</p>
+<h4>User Input</h4>
 <p>As usual, almost all of the HTML is the same as previous lessons, as is most of the script. However, there is a small addition to the HTML of an absolutely-positioned div which contains some instructions for the user as well as a few elements we use to tell the user the size of the current texture as well as which filters are currently in use.</p>
 
 <pre><code class="language-html">&lt;div id="overlaytext" style="position: absolute; top: 10px; left: 10px"&gt;
@@ -75,6 +79,7 @@
         &lt;p id="textureSize"&gt;Texture Size: 1024&lt;/p&gt;
 &lt;/div&gt;</code></pre>
         
+<h4>Script Changes</h4>
 <p>In the script there are a number of changes this time. First, we declare some global variables to hold the various parameters:</p>
 
 <p>First, parameters to control the rate and direction of rotation:</p>
@@ -127,9 +132,10 @@ intensity. If only ambient light is used, no shading effects will occur.</p>
 directionalLight.position.set( 0, 0, 6 ).normalize();
 scene.add(directionalLight);</code></pre>
   
+<h4>Event Listener</h4>
 <p>Finally, we add a listener for 'keydown' events. By this listener, all key events will be
-   passed to the function 'onDocumentKeyDown'. There's another event type 'keypress', but it  reports only the visible characters like 'a', but not the function keys
-   like 'cursor up', which we wish to use.</p>
+  passed to the function 'onDocumentKeyDown'. There's another event type 'keypress', but it  reports only the visible characters like 'a', but not the function keys
+  like 'cursor up', which we wish to use.</p>
   
 <pre><code class="language-javascript">document.addEventListener("keydown", onDocumentKeyDown, false);</code></pre>
 
@@ -195,6 +201,7 @@ function updateFilter() {
 <p>The next block simply toggles the light by checking if the intensity is 0 or 1 then flips it to the opposite value. </p>
 <p>Then there are bunch of if/else statements that manage the rotation and z-value of the cube. The z-value is handy for effectively growing or shrinking the area the texture is mapped onto and hence altering whether minification or magnification is going on.</p>
 <p>The final block swaps out the current texture for the next one. Note that curMesh.material.needsUpdate() is also called to ensure the cache is updated. then the label is updated.</p>
+<h4>Animating It</h4>
 <p>Animate scene is pretty much unchanged except that we update the rotation and z-position of the cube:</p>
 
 <pre><code class="language-javascript">xRotation += xSpeed;

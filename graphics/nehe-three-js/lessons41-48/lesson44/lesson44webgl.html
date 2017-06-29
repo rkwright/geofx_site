@@ -3,19 +3,19 @@
 <head>
     <!-- -------------------------------------
     Roughly inspired by NeHe Tutorial 44
-	  Original:  http://nehe.gamedev.net/tutorial/3d_lens_flare_with_occlusion_testing/16007/
+	Original:  http://nehe.gamedev.net/tutorial/3d_lens_flare_with_occlusion_testing/16007/
 
     @author: rkwright@geofx.com
-	  -------------------------------------- -->
-	  <title>NEHE Lesson 44</title>
-	  <meta charset="UTF-8"/>
+	-------------------------------------- -->
+	<title>NEHE Lesson 44</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 
     <!-- Set the viewport size to the screen size, so it will be displayed maximized, but unscaled. -->
-	  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1"/>
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1"/>
     <link rel="stylesheet" type="text/css" href="../../css/NeHe.css" />
 
     <!-- Include several libraries from THREE.js and the Scene class  -->
-	  <script src="../../js/three.js" type="text/javascript"></script>
+	<script src="../../js/three.js" type="text/javascript"></script>
     <script src="../../js/Detector.js" type="text/javascript"></script>
     <script src="../../js/OrbitControls-Touch-Ortho.js" type="text/javascript"></script>
     <script src="../../js/stats.js" type="text/javascript"></script>
@@ -44,7 +44,8 @@
         });
 
         gfxScene.addLight( 'ambient', { color:0x1c1c1c, intensity : 1 });
-        gfxScene.addLight( 'directional', { color:0xffffff, intensity:0.75,  position:[-40,60,10],castShadow:true });
+        gfxScene.addLight( 'directional', { color:0xffffff, intensity:0.75,  position:[-40,60,10],
+            castShadow:true  });
 
         initializeDemo();
 
@@ -68,9 +69,6 @@
 
             // rotate and position the plane
             plane.rotation.x = -0.5 * Math.PI;
-            plane.position.x = 0;
-            plane.position.y = 0;
-            plane.position.z = 0;
             gfxScene.add(plane);
 
             var monolith = new THREE.BoxGeometry(4.0, 20.0, 1.0);
@@ -88,13 +86,11 @@
             icoMesh1 = THREE.SceneUtils.createMultiMaterialObject(
                 new THREE.IcosahedronGeometry( 1, 0 ), [ colorMaterial, wireMaterial ] );
             icoMesh1.position.set(2, 2, 2);
-						icoMesh1.castShadow = true;
             gfxScene.add(icoMesh1);
 
             icoMesh2 = THREE.SceneUtils.createMultiMaterialObject(
                 new THREE.IcosahedronGeometry( 1, 0 ), [ colorMaterial, wireMaterial ] );
             icoMesh2.position.set(-2, 2, -2);
-						icoMesh2.castShadow = true;
             gfxScene.add(icoMesh2);
 
             addFlare();
@@ -118,7 +114,7 @@
             lensFlare.add(textureFlare3, 60, 0.6, THREE.AdditiveBlending);
             lensFlare.add(textureFlare3, 70, 0.7, THREE.AdditiveBlending);
             lensFlare.add(textureFlare3, 120, 0.9, THREE.AdditiveBlending);
-            lensFlare.add(textureFlare3, 70, 1.0, THREE.AdditiveBlending);
+            lensFlare.add(textureFlare3, 160, 1.1, THREE.AdditiveBlending);
 
             lensFlare.position.copy(flareLight.position);
             gfxScene.add(lensFlare);
