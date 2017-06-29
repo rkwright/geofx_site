@@ -26,7 +26,7 @@ GFX.Scene = function ( parameters ) {
 	this.defaultCamera = true;
     this.cameras = [];
     // just a proxy for backwards compatibility
-    this.camera;
+    this.camera = undefined;
     // these are the default values that can be overridden by the user
     this.perspective = true;
     this.fov = 45;
@@ -349,7 +349,7 @@ GFX.Scene.prototype = {
     setDefaultLights: function () {
         // Ambient light has no direction, it illuminates every object with the same
         // intensity. If only ambient light is used, no shading effects will occur.
-        var ambLight = new THREE.AmbientLight(0xc0c0c0, 0.5);
+        var ambLight = new THREE.AmbientLight(0xc0c0c0, 0.75);
         this.scene.add( ambLight );
         this.ambientLights.push( ambLight);
 
@@ -360,7 +360,7 @@ GFX.Scene.prototype = {
         this.scene.add( dirLight );
         this.directionalLights.push( dirLight );
 
-        var pointLight = new THREE.PointLight(0xc0c0c0, 0.5);
+        var pointLight = new THREE.PointLight(0xc0c0c0, 0.5 );
         pointLight.position.set(-15, 20, 12);
         this.scene.add( pointLight );
         this.pointLights.push( pointLight );
@@ -508,7 +508,7 @@ GFX.Scene.prototype = {
         if (this.displayStats === true || this.displayStats.indexOf("fps") !== -1) {
             this.fpStats = new Stats();
             this.fpStats.showPanel(0);
-            this.fpStats.domElement.style.bottom = pos + 'px';
+            this.fpStats.dom.style.left = pos + 'px';
             pos += 80;
             container.appendChild( this.fpStats.dom );
         }
@@ -516,15 +516,18 @@ GFX.Scene.prototype = {
         if (typeof this.displayStats === 'string' && this.displayStats.indexOf("ms") !== -1) {
             this.msStats = new Stats();
             this.msStats.showPanel(1);
-            this.msStats.domElement.style.left = pos + 'px';
+            //this.msStats.domElement.style.position = 'absolute';
+            //this.msStats.domElement.style.bottom = '0px';
+            this.msStats.dom.style.left = pos + 'px';
             pos += 80;
+            //this.msStats.domElement.style.zIndex = 100;
             container.appendChild( this.msStats.dom );
         }
 
         if (typeof this.displayStats === 'string' && this.displayStats.indexOf("mb") !== -1) {
             this.mbStats = new Stats();
             this.mbStats.showPanel(2);
-            this.mbStats.domElement.style.left = pos + '80px';
+            this.mbStats.dom.style.left = pos + '80px';
             container.appendChild( this.mbStats.dom );
         }
     },
