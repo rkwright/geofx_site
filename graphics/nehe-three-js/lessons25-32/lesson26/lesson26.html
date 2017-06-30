@@ -22,8 +22,11 @@
 <div class="content-text">
 
 <h2>Lesson 26 - Reflection</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>This lesson is a little different in that it uses a separate three.js library written by Sylvain Hittelet<a href="http://slayvin.net" title="Sylvain Hittelet" target="_blank"> (http://slayvin.net</a>) to perform the reflection. The scene comprises a flat plane which has a mirror-like surface and reflects the other items (a ball, a bouncing icosahedron, etc.)  in the mirror. The reflection is implemented by instantiating another camera, which is located under the mirror's surface (plane) and pointed upwards. Then the rendered result of that camera is used as the material (texture) for the mirror.</p>
+<h4>Initialization</h4>
 <p>In the X-Z plane of the scene there is a <span class="inline-code">PlaneBuffferGeometry</span> which forms the geometry of the mirror. Then the <span class="inline-code">Mirror</span> object is instantiated.</p>
 
 <pre><code class="language-javascript">var planeGeo = new THREE.PlaneBufferGeometry( 20, 20 );
@@ -74,6 +77,7 @@ smallSphere = new THREE.Mesh( geometry, material );
 gfxScene.add(smallSphere);</code></pre>
 
 
+<h4>Animating the Scene</h4>
 <p>Finally, here is the animateScene function. Note that we have to explicitly call the <span class="inline-code">Mirror's</span> render function. Then we animate the icosahedron. It isn't really bouncing - it is following a circular path around the origin and it's vertical motion is simply a sinusoidal function.</p>
 
 <pre><code class="language-javascript">function animateScene() {

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 15 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,8 +22,11 @@
 <div class="content-text">
 
 <h2>Lesson 15 - Textured Vector Fonts</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>Lesson 15 is essentially a sequel to the previous lesson on vector fonts. The NeHe lesson was about how to apply texture to vector fonts. In OpenGL 1.1 that required a bit of work. In three.js it is actually pretty trivial as one can just create a material and specify a texture. However, that seems too easy, so we'll show you another way to do it - by writing your first shader program. The shader program is pretty trivial, but it introduces the concept. We'll encounter some more complex shaders later in the other lessons.</p>
+<h4>About Shaders</h4>
 <p>OpenGL Shading Language (<strong>GLSL</strong>), is a high-level shading language based on the syntax of the C programming language. It was created by the OpenGL Architecture Review Board to give developers more direct control of the graphics pipeline without writing in assembly language. When your JavaScript program is executed by the browser, three.js takes the objects you have created and added to your scene, pushes them into vertex buffers and passes them to the GPU. The default shaders of three.js as well as any shaders you have defined to are compiled and passed to the GPU as well, where they use the data in the vertex buffers to render the actual pixels.</p>
 <p>That rendering process is bit complex. A good article on it is <a href="http://webglfundamentals.org/webgl/lessons/webgl-how-it-works.html" title="WebGL Fundamentals" target="_blank">here</a>. But the gist is this. You define (via three.js meshes) a set of vertices. For each vertex a call is made to a <em>vertex shader</em>, which figures out where that vertex is mapped onto your display. Then WebGL takes the set of vertices as mapped to the display and iterates across the display and for each pixel calls the <em>fragment shader</em> to determine what color to make the pixel.</p>
 
@@ -74,6 +77,7 @@ var shaderMaterialL = new THREE.ShaderMaterial({
 var materialArray = [ shaderMaterialL, shaderMaterialW ];</code></pre>
 
 <p>The rest of the JavaScript is exactly the same as the previous lesson; we load the font, instantiate the <span class="inline-code">TextGeometry</span> and create the text-mesh, passing it the <span class="inline-code">TextGeometry</span> and our <span class="inline-code">materialArray</span>.</p>
+<h4>The Shaders</h4>
 <p>Finally, let's take a look at the shaders themselves. The vertex shader is always called first. Also note that the mimetype of the shader is &quot;x-shader/x-vertex&quot;. The browser doesn't know what to do with such a mimetype so it just ignores it. three.js takes care of fetching the script element, injecting some variables and then feeding it to the WebGL API.</p>
 
 <pre><code class="language-clike">&lt;script id="vertexShader" type="x-shader/x-vertex"&gt;

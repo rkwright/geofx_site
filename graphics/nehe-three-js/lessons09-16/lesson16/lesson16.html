@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 16 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,6 +22,8 @@
 <div class="content-text">
 
 <h2>Lesson 16 - Fog</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>This final lesson in the first 16 NeHe lessons is very simple. This is because the support for fog in three.js is very simple. There are two types of fog support:</p>
 <ul>
@@ -32,6 +34,7 @@
 <p>Linear fog seems less useful in general since the only real parameter one can set is the color of the fog. It is not very dense, either, so you need to create a large scene or the effects will be hard to discern. Exponential fog, on the other hand, has a density parameter so the density can be varied independent of the scale and position of objects.</p>
 <p>Both can be optimized slightly be setting the near and far parameters, which lowers the computing needs.</p>
 <p>Finally, fog must be set when the scene is created. the only way to change it would be to re-create the whole scene. And you cannot change the type of fog after it is created. However, if you use exponential fog, you can set the density to zero which effectively eliminates it.</p>
+<h4>Initialization</h4>
 <p>In this demo, we set exponential fog in the constructor of the scene. You can vary the density and color of the fog with the keyboard. So the call to create the scene in this demo is</p>
 
 <pre><code class="language-javascript">var gfxScene = new GFX.Scene( {

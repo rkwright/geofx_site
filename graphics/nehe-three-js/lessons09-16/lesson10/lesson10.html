@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 10 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,8 +22,11 @@
 <div class="content-text">
 
 <h2>Lesson 10 - Specifying 3D Structures</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>This lesson is very simple, almst trivial. It was written in the days when writing any simple 3D game that involved moving from place to place was new and different. Today, with the far more complex types of games and other 3D adventures, this example seems pretty trivial. Nonetheless, it is part of the NeHe demos, so we include it here.</p>
+<h4>The Model</h4>
 <p>The demo consists of the datafile which specifies a series of triangles that form a very simple structure that resembles nothing more than house of cards. Each of the &quot;walls&quot; and floor and ceiling consist of a pair of triangles, expressed as a JavaScript array. Here is the floor:</p>
 
 <pre><code class="language-javascript">var world = 	
@@ -43,6 +46,7 @@
 <pre><code class="language-javascript">var texture = new THREE.ImageUtils.loadTexture("Data/Sammy.jpg");
 var material = new THREE.MeshBasicMaterial( { map: texture, side:THREE.DoubleSide } );</code></pre>
 
+<h4>Loading the Model</h4>
 <p>The JS array is then simply read via a link and automatically instantiated. The number of triangles is computed from the length of the array. Then the code simply loops through the array fetching three rows at a time (being the three verticies) and creates a plain <span class="inline-code">Geometry</span> and pushes the verticies into it, creating a triangular mesh.</p>
 			
 <pre><code class="language-javascript">var i1 = i * 3;

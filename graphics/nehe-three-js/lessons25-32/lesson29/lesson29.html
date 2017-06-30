@@ -22,9 +22,12 @@
 <div class="content-text">
 
 <h2>Lesson 29 - Blending Images</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>This lesson is relatively short (we'll make up for that in the next lesson). The original NeHe tutorial was about blitting and blending images together. However, given the way WebGL and three.js are architected, there isn't really need or way to &quot;blit&quot; images since image management of that nature is taken care of at the GPU level. But we can cover how images can be blended together. We'll do a little more shader programming to achieve it.</p>
 
+<h4>Initialization</h4>
 <p>The lesson has two images: </p>
 
 <ul>
@@ -72,6 +75,7 @@ textureLoader.load( "images/monitor.png", function( texture ) {
     });
 });</code></pre>
 
+<h4>The Shaders</h4>
 <p>The shaders are pretty simple:</p>
 
 <pre><code class="language-clike">&lt;script id="fragment_shader" type="x-shader/x-fragment"&gt;

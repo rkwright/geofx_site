@@ -22,9 +22,12 @@
 <div class="content-text">
 
 <h2>Lesson 17 - Texture Atlases</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>In real-time computer graphics, a texture atlas (also called a tile map, tile engine, or sprite sheet) is a large image containing a collection, or &quot;atlas&quot;, of sub-images, each of which is a texture map for some part of a 2D or 3D model. The sub-textures can be rendered by modifying the texture coordinates of the object's uvmap on the atlas, essentially telling it which part of the image its texture is in. In an application where many small textures are used frequently, it is often more efficient to store the textures in a texture atlas which is treated as a single unit by the graphics hardware. This saves memory and because there are less rendering state changes by binding once, it can be faster to bind one large texture once than to bind many smaller textures as they are drawn.</p>
 <p>The NeHe demo (#17) used a texture map to hold all the glyphs for a bitmapped font. That's kind of superfluous in three.js, which has good support for outline fonts. But the concept is useful, so we'll cover it here, but simply use a 3x2 texture map of 6 different images to fill the faces of our old friend, the spinnable cube.</p>
+<h4>UV Coordinates Redux</h4>
 <p>We do this by employing a technique called UV mapping (remember we convered UV coordinates in Lesson 10).  First we initialize our scene then create a cube to spin (same as the previous demos). Then load our texture-atlas:</p>
 
 <pre><code class="language-javascript">var geometry = new THREE.BoxGeometry(2.0, 2.0, 2.0);
@@ -73,8 +76,7 @@ var wood = [
     new THREE.Vector2(.5, 0),
     new THREE.Vector2(1, 0),
     new THREE.Vector2(1, .333),
-    new THREE.Vector2(.5, .333)];
-</code></pre>
+    new THREE.Vector2(.5, .333)];</code></pre>
 
 <p>Then we assign those vectors to the faceVertex coordinates in the BoxGeometry we created.</p>
 
@@ -94,9 +96,9 @@ geometry.faceVertexUvs[0][8] = [ water[0], water[1], water[3] ];
 geometry.faceVertexUvs[0][9] = [ water[1], water[2], water[3] ];
 
 geometry.faceVertexUvs[0][10] = [ wood[0], wood[1], wood[3] ];
-geometry.faceVertexUvs[0][11] = [ wood[1], wood[2], wood[3] ];
-</code></pre>
+geometry.faceVertexUvs[0][11] = [ wood[1], wood[2], wood[3] ];</code></pre>
 
+<h4>Rendering the Cube</h4>
 <p>Then we just assign our texture-atlas material and the geometry to the cube mesh.</p>
 <pre><code class="language-javascript">cubeMesh = new THREE.Mesh(geometry,  material);
 cubeMesh.position.set(0.0, 0.0, zTranslation);

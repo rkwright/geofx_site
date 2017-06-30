@@ -22,6 +22,8 @@
 <div class="content-text">
 
 <h2>Lesson 30 - Collision Detection</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>For this lesson, get a cup of coffee or tea, because it's a long one. Collision detection is a complex subject and even though the treatment in this lesson is simplistic, it's still pretty involved. If one really wants to build a JavaScript app that handles physics, including collisions, you are best off to get one of the JS libraries intended for that purpose, such <a href="http://www.cannonjs.org/" title="cannon.js" target="_blank">cannon.js</a> or <a href="http://wellcaffeinated.net/PhysicsJS/" title="PhysicsJS" target="_blank">PhysicsJS</a>. What we'll cover here is simply the basic concepts using the tools in three.js.</p>
 <p>There are two basic approaches to collision detection:</p>
@@ -30,48 +32,50 @@
   <li>Ray-casting</li>
   </ul>
 <p>Each has advantages and disadvantages.In this lesson, we will actually use both.</p>
+<h4>Bounding Box Checks</h4>
 <p>The basics of the lesson are that we have a large, partially transparent cube and we want to have a number of objects (cubes, balls, cylinders) bouncing around inside, bouncing off the walls and each other. First, let's consider the collisions with the walls, as it is simpler.</p>
 <p>There are a couple of ways that we could perform this. One of these is to calculate what is called the &quot;axis-aligned bounding box&quot; (AABB) for each object for each frame and then see if the box overlaps any of the walls. The following diagram shows how the AABB is generated for various (2D) shapes:</p>
 <p><img src="images/AABB.png" width="143" height="148" alt=""/></p>
 <p>You can see that the boxes are aligned (parallel) to the X and Y axes. Of course, in our case, we also have to handle the Z axis. The following code would create such a AABB box using the three.js BoxHelper object. Now, this code works, but as you can see it is relatively complex and would have to be updated for each object for each frame (since the objects are not only moving but rotating too). </p>
 
-<pre><code class="language-javascript">            /**
-             *  Create a set of vertices that represent the AABB box from BoxHelper
-             *
-             *     5____4
-             *   1/___0/|
-             *   | 6__|_7
-             *   2/___3/
-             *
-             *  0: max.x, max.y, max.z
-             *  1: min.x, max.y, max.z
-             *  2: min.x, min.y, max.z
-             *  3: max.x, min.y, max.z
-             *  4: max.x, max.y, min.z
-             *  5: min.x, max.y, min.z
-             *  6: min.x, min.y, min.z
-             *  7: max.x, min.y, min.z
-             */
-            function createAABBVertices ( mesh ) {
-                var vertices = [];
-                var helper = new THREE.BoundingBoxHelper(mesh, 0xff0000);
-                helper.update();
-                var max = helper.box.max;
-                var min = helper.box.min;
+<pre><code class="language-javascript">/**
+ *  Create a set of vertices that represent the AABB box from BoxHelper
+ *
+ *     5____4
+ *   1/___0/|
+ *   | 6__|_7
+ *   2/___3/
+ *
+ *  0: max.x, max.y, max.z
+ *  1: min.x, max.y, max.z
+ *  2: min.x, min.y, max.z
+ *  3: max.x, min.y, max.z
+ *  4: max.x, max.y, min.z
+ *  5: min.x, max.y, min.z
+ *  6: min.x, min.y, min.z
+ *  7: max.x, min.y, min.z
+ */
+function createAABBVertices ( mesh ) {
+    var vertices = [];
+    var helper = new THREE.BoundingBoxHelper(mesh, 0xff0000);
+    helper.update();
+    var max = helper.box.max;
+    var min = helper.box.min;
 
-                vertices.push(new THREE.Vector3(max.x, max.y, max.z));
-                vertices.push(new THREE.Vector3(min.x, max.y, max.z));
-                vertices.push(new THREE.Vector3(min.x, min.y, max.z));
-                vertices.push(new THREE.Vector3(max.x, min.y, max.z));
-                vertices.push(new THREE.Vector3(max.x, max.y, min.z));
-                vertices.push(new THREE.Vector3(min.x, max.y, min.z));
-                vertices.push(new THREE.Vector3(min.x, min.y, min.z));
-                vertices.push(new THREE.Vector3(max.x, min.y, min.z));
+    vertices.push(new THREE.Vector3(max.x, max.y, max.z));
+    vertices.push(new THREE.Vector3(min.x, max.y, max.z));
+    vertices.push(new THREE.Vector3(min.x, min.y, max.z));
+    vertices.push(new THREE.Vector3(max.x, min.y, max.z));
+    vertices.push(new THREE.Vector3(max.x, max.y, min.z));
+    vertices.push(new THREE.Vector3(min.x, max.y, min.z));
+    vertices.push(new THREE.Vector3(min.x, min.y, min.z));
+    vertices.push(new THREE.Vector3(max.x, min.y, min.z));
 
-                return vertices;
-            }</code></pre>
+    return vertices;
+}</code></pre>
 
-<p>Consequently, we take a simpler path and simply comput the radius of a globe with encloses the object.</p>
+<h4>Bounding Sphere Checks and Wall Collisions</h4>
+<p>Consequently, we take a simpler path and simply compute the radius of a globe with encloses the object.</p>
 
 <pre><code class="language-javascript">var helper = new THREE.BoxHelper(cylinder, 0xff0000);
 cylinder.limit = WALL_LIMIT - helper.geometry.boundingSphere.radius;</code></pre>
@@ -99,6 +103,7 @@ cylinder.limit = WALL_LIMIT - helper.geometry.boundingSphere.radius;</code></pre
     }
 }</code></pre>
 
+<h4>Object to Object Collision</h4>
 <p>For object to object collisions, we could employ a similar approach, but it gets a little more complex and this approach allows us to introduce the <span class="inline-code">RayCaster</span> support provided by three.js (which we will use again in Lesson 32). The way this works is that there is an object called <span class="inline-code">THREE.RayCaster</span>. The RayCaster can be thought of as shooting a ray out and it checks if that ray intercepts one or more <span class="inline-code">THREE.Mesh</span> objects.</p>
 <p>Since we know the position and velocity in X,Y and Z, we initialize the raycaster as centered on the object and the ray's direction is that from the center of the object through each vertex of the mesh.  We have the collection of all objects bouncing around and those are the targets for the RayCaster. The RayCaster object then conceptually projects the ray out along the path from center through each vertex and returns a collection of the objects which are intercepted. We don't actually have to do this for each vertex though, only those that are within HALF_PI of the angle between the vertex and the direction the object is travelling. No need to check for collisions with objects behind us.</p>
 <p>This diagram demonstrates this, where the blue arrows are the rays from the RayCaster and the red arrow is the distance from the center to the vertex.  If the RayCaster returns an object whose distance is less than the length of the red arrow, then we have a collision.</p>
@@ -128,6 +133,7 @@ cylinder.limit = WALL_LIMIT - helper.geometry.boundingSphere.radius;</code></pre
 }</code></pre>
 
 
+<h4>The Result of Collisions</h4>
 <p>So having found a collision, how do we calulate the result of the collision? Basically, we apply some &quot;simple&quot; physics. We assume that is an inelastic collision, meaning the objects bounce off each other without absorbing any of the energy (which wouldn't happen in the real world, of course, but this is just a demo, after all). We won't go into all the details - there are many good tutorials about the physics, such as <a href="https://gamedevelopment.tutsplus.com/tutorials/when-worlds-collide-simulating-circle-circle-collisions--gamedev-769" title="Collision Handling" target="_blank">this one</a>.</p>
 <pre><code class="language-javascript">function handleObjectsCollision( meshA, collisionResult ) {
 

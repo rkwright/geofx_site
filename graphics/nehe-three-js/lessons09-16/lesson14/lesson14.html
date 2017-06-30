@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 14 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,12 +22,16 @@
 <div class="content-text">
 
 <h2>Lesson 14 - Vector Fonts</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>Lesson 14 in NeHe is about using actual vector fonts - unlike 13 where the fonts were used to generate bitmaps. Instead, the lesson is about using the wgl functions to generate actual 3D fonts with depth and lighting. The wgl functions are gone of course, but three.js does support vector fonts. It's pretty straightforward, but there are a few wrinkles that need to be covered, so let's dive in.</p>
+<h4>Creating Fonts</h4>
 <p>First, the vector font support in three.js is based on JavaScript fonts as generated from <a href="http://gero3.github.io/facetype.js/" title="FaceType.js" target="_blank">facetype.js</a>, which is an open-source effort hosted on github. the format is not a standard, but it is pretty straightforward. It is apparently specific to three.js, which means it may or may not have continuity, but that's open-source for you!  The internals of the format are not documented anywhere obvious but opening up a font in an editor shows that they are basically like SVG fonts with some metadata about each glyph and then a series of data indicating the moves, quadratic curves, etc.</p>
 <p>Each font in a family (e.g. bold, italic, bold-italic, etc.) is a separate JS file. three.js comes with a number of &quot;standard&quot; fonts corresponding to Helvetica and Times-Roman (i.e. san-serif and serif). You can convert your own fonts at the facetype.js site. However, be warned that it is NOT legal to simply take any font on your computer and convert it. The major font foundries (Monotype, Adobe, etc.) have spent an immense out of money creating the fonts and they are the intellectual property of those firms. Having them installed on your computer (by the OS or an application) is done under strict licensing. The <a href="https://designshack.net/articles/typography/what-is-a-font-license-and-do-i-need-one/" title="Font Licensing" target="_blank">licensing</a> is a relatively complex area (and we don't want to go there) but the net-net is that, in general, you are allowed to view them on your computer, print from them and even create PDFs with them but you cannot <em>legally</em> convert them to some other format, such as JavaScript.</p>
 <p>However, there are lots of open-source fonts available. Check out <a href="https://www.google.com/fonts#" title="Google Fonts" target="_blank">Google fonts</a> (all of which are free of licensing) or  <a href="http://www.fonts101.com/" title="Fonts 101" target="_blank">Fonts101.com.</a> Fonts101 will even  send you a daily font created by an amateur. Almost all of those are free to use as you wish. Some of them are pretty strange though... </p>
 <p>Once you have a font that you can convert, you can navigate to facetype.js and convert it to JavaScript. Choose &quot;JavaScript&quot;, not JSON. Most fonts get converted correctly and work fairly well, but the more complex the font, the more likely that there might be problems when it is rendered. More on this later.</p>
+<h4>Using the Fonts</h4>
 <p>Actually using the fonts is pretty easy. Let's take a look at the code.</p>
 
 

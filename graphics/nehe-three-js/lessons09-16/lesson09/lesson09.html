@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 9 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,8 +22,12 @@
 <div class="content-text">
 
 <h2>Lesson 9 - Masks and Texture Coordinates</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
-<p>This lesson is pretty simple. It uses a simple black and white image as a mask to render the &quot;star&quot;. Here is the image:</p>
+<p>This lesson is pretty simple.  It demonstrates how to use a simple image as a mask, coloring the result and a simple animation.</p>
+<h4>Setup</h4>
+<p>It uses a simple black and white image as a mask to render the &quot;star&quot;. Here is the image:</p>
 <blockquote>
   <blockquote>
     <blockquote>
@@ -46,6 +50,7 @@ squareGeometry.faces.push(new THREE.Face3(0, 2, 3));</code></pre>
         
 
                     
+					<h4>Mask (uv) Coordinates</h4>
 					<p>Since we are going to use the image as mask, we need to load it as texture, as before. However, since we are creating our own mesh, we need to tell three.js how to map the coordinates of the mask-image onto the mesh. Basically, we simply specify which corners of the image correspond to the vertices that we specified as the verticies of the two triangles.</p>
 					<p>Here is an illustration of how the mapping works. The figures in red are the UV coordinates. UV coordinates are just the coordinates in the image-space, where they vary from 0..1 in both X and Y in the image. If you're wondering what UV stands for the answer is nothing - it's just that X, Y and Z were already used for the geometric axes in 3D space. So the previous two letters in the alphabet were chosen. &#9786;</p>
 					<blockquote>
@@ -85,6 +90,7 @@ color of each to white, but that gets changed when we animate the stars.</p>
     color:0xFFFFFF
 });</code></pre>
 
+<h4>The Animation</h4>
 <p>We do this for all 32 of the stars. The colors and animation of the spiral happen in the animateFrame function.  We want the stars to spin as they spiral in, so we just increment the spin value and clamp it to 2*&#928;. At each pass, we decrement the distance outward by a small amount. Note that when the value is decremented to less than zero, we re-cycle the star, setting its distance back to the original distance and set a new color.</p>
 <pre><code class="language-javascript">spin += Math.PI * 2 / num;
 if (spin > (Math.PI*2))

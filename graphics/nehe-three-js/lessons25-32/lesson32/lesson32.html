@@ -22,10 +22,13 @@
 <div class="content-text">
 
 <h2>Lesson 32 - Picking and Testing</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>This lesson is very similar to lesson 30. We once again use the RayCaster, but this time we use it to test what objects may intersect a given spot on the screen in 2D space. The basic set-up and intialization is exactly the same as lesson 30, creating a partially transparent cube with a wooden floor, populated with a number of bouncing objects. All the setup and collision handling is the same as before, so we needn't cover it.</p>
 <p>The goal of the user is to click on the screen and &quot;hit&quot; one of the objects. When the user successfully touches one of the objects, it turns white and slowly fades away. Once wholly transparent it is removed from the scene. When all the objects are gone, a congratulatory phrase appears and the &quot;game&quot; is over.</p>
-<p>In this lesson, we set up two RayCasters, one for calculating collisions, the other, pointCaster, we use to look for clicks on the objects. </p>
+<h4>Two 'Casters</h4>
+<p>In this lesson, we set up two <span class="inline-code">RayCasters</span>, one for calculating collisions, the other, pointCaster, we use to look for clicks on the objects. </p>
 
 <pre><code class="language-javascript">var rayCaster   = new THREE.Raycaster();
 var pointCaster = new THREE.Raycaster();</code></pre>
@@ -52,9 +55,9 @@ var pointCaster = new THREE.Raycaster();</code></pre>
         intersects[0].object.material.transparent = true;
     }
 }</code></pre>
-<p>The routine receives the event, which has the coordinates the user clicked on. These are converted to the range -1..1 (as expected by three.js). The pointCaster is then initialized by passing the converted coordinate-vector and the camera (which is used to determine the direction of the view). The pointCaster method intersectsObjects() is called and returns a collection of the objects which are intersected.</p>
+<p>The routine receives the event, which has the coordinates the user clicked on. These are converted to the range <span class="inline-code">-1..1</span> (as expected by three.js). The <span class="inline-code">pointCaster</span> is then initialized by passing the converted coordinate-vector and the camera (which is used to determine the direction of the view). The <span class="inline-code">pointCaster</span> method <span class="inline-code">intersectsObjects</span>() is called and returns a collection of the objects which are intersected.</p>
 <p>If there are objects, then, as before, the first object in the collection is the closest.  So that object's material is set to which and it's transparency is decremented by 0.025.</p>
-<p>Subsequently, at each call to animate(), a call is made to fadeObjects:</p>
+<p>Subsequently, at each call to <span class="inline-code">animate()</span>, a call is made to <span class="inline-code">fadeObjects</span>:</p>
 
 <pre><code class="language-javascript">function fadeObjects() {
     for ( var i = objects.children.length - 1; i >= 0; i-- ) {

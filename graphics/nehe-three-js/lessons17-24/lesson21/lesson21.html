@@ -22,6 +22,8 @@
 <div class="content-text">
 
 <h2>Lesson 21 - Orthographic Projections</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 
 <p>This lesson is about orthographic projections. Orthographic projection is a means of representing a three-dimensional object in two dimensions. It is a form of parallel projection, where all the projection lines are orthogonal to the projection plane, resulting in every plane of the scene appearing in an <a href="https://en.wikipedia.org/wiki/Affine_transformation" title="Affine transformation" target="_blank"><em>affine transformation</em></a> on the viewing surface.</p>
@@ -31,13 +33,14 @@
 <p><img src="images/persp_ortho_proj.png" width="500" height="241" alt=""/></p>
 <br/>
 
-<p>Note that in both &quot;scenes&quot; the red and yellow balls are the same size, but in the perspective projection, the red ball is distinctly smaller. This seems natural to us, as our vision is essentially a perspective projection onto the back of our eyeball. Things in the distance are smaller, are they not? But note that in the right hand figure, the red ball is still the same size as the yellow ball.</p>
+<p>Note that in both &quot;scenes&quot; the red and yellow balls are actually the same size, but in the perspective projection, the red ball is distinctly smaller. This seems natural to us, as our vision is essentially a perspective projection onto the back of our eyeball. Things in the distance are smaller, are they not? But note that in the right hand figure, the red ball is still the same size as the yellow ball.</p>
 <p>Orthographic projection is widely used in the engineering industry, as depicted in this diagram:</p>
 <br/>
 <p><img src="images/Eng_Drawing.png" width="452" height="240" alt=""/></p>
 <br/>
 
 <p>Note that the left-hand 3D representation is also an orthographic projection. Most often, an orthographic projection is in 2D (<em>e.g.</em> architectural drawings, <em>etc.</em>) but orthographic projections can also be in 3D, which is the subject of this lesson. So let's look at the lesson.</p>
+<h4>Perspective and Orthographic Projections</h4>
 <p>Most of this lesson is actually about changes made in GFXScene to support both perspective and orthographic projections. Let's first review perspective projections.</p>
 <p>A perspective camera (the default) is intialized like this:</p>
 
@@ -54,6 +57,7 @@ this.camera = new THREE.OrthographicCamera( -w2, w2, h2, -h2, 0.01, 1000);</code
 
 
 <p>Where orthoSize is the height of the viewport in user-units, i.e. in the units we want to draw in, as opposed to screen coordinates. So we're just setting up a rectangle in user-units that the projection will be mapped into. Again, pretty straightforward (ignoring all that gnarly matrix math :-). Let's see how it is used in practice.</p>
+<h4>Initialization</h4>
 <p>Our instantiation of the scene is this:</p>
 
 <pre><code class="language-javascript">var gfxScene = new GFX.Scene( {
@@ -96,6 +100,7 @@ else if (keyChar === 'o')
     gfxScene.setCamera({ perspective:false, cameraPos:[15,10,10] });</code></pre>
                     
 <p>Note that we set a <span class="inline-code">fov</span> for the perspective camera of 90 degrees. This is pretty extreme, but it serves to exaggerate (for the demo) the difference between orthographic and perspective transformations.</p>
+<h4>The setCamera Method</h4>
 <p>Now, in GFXScene, we have a new method, <span class="inline-code">setCamera()</span>:</p>
 <pre><code class="language-javascript">setCamera: function ( jsonObj ) {
     if (jsonObj !== null)
@@ -126,6 +131,7 @@ else if (keyChar === 'o')
 },</code></pre>
 <p></p>
 <p>The first block checks if the user passed in parameters (as do above in the keyhandler) and parses the parameters out and stores them in the <span class="inline-code">GFXScene</span> object. If perspective is true (the default) we set up the camera as we have done before. But if the camera is orthographic we have to calculate the bounds of the sides of the camera, which is just <span class="inline-code">orthoSize</span> adjusted for the aspect ratio of the window.  We then telll three.js to update the projection matrix, then set the camera's position and what it is looking at. Last but not least, note that we have to update the <span class="inline-code">orbitControls</span> since we have changed the camera.</p>
+<h4>Handling Window Resizing</h4>
 <p>Finally, it's worth noting that handling of the resizing of the window has to take into account what type of projection is being used:</p>
 
 <pre><code class="language-javascript">var _self = this;

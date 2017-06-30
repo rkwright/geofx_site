@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Lesson 13 - NeHe, three.js and WebGL - Tutorial - GeoFX</title>
@@ -22,6 +22,8 @@
 <div class="content-text">
 
 <h2>Lesson 13 - Bitmap Fonts and  Canvas 2d</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 
 <p>Lesson 13 in NeHe is about using bitmapped fonts. This was important in the old days because support for vector fonts was very limited. For a long time, only Windows supported vector fonts (via the infamous &quot;wgl&quot; functions, so named because they were all prefixed with <em>wgl</em>). So being able to render text via bitmap fonts was actually important. Lesson 13 showed how to paint text on the screen via function glPrint, whch wrapped the wgl functions.</p>
@@ -32,7 +34,7 @@
   <li>Create a raster image on the fly with the text passed in </li>
   <li>Render it at the specified location</li>
 </ul>
-<p>The wgl fucntions (as well as the Apple agl and Linux glx functions) no longer exist. Three.js supports vector fonts (lesssons 14 and 15) so being able to render bitmap fonts <em>per se</em> isn't that interesting. Instead, this lesson will show how to combine three.js' support for creating textures from HTML5's Canvas2D and three.js sprites to generate &quot;text sprites&quot;.  Sprites are a special type of geometry where the face of the geometry is always directly facing the camera. This can be handy if you are displaying some explanatory material or other info that isn't really intended to be part of the scene or SHOULD always be facing the camera.</p>
+<p>The wgl fucntions (as well as the Apple agl and Linux glx functions) no longer exist. Three.js supports vector fonts (lesssons <a href="../lesson14/lesson14.html" title="Lesson 14" target="_self">14 </a>and <a href="../lesson15/lesson15.html" title="Lesson 15" target="_self">15</a>) so being able to render bitmap fonts <em>per se</em> isn't that interesting. Instead, this lesson will show how to combine three.js' support for creating textures from HTML5's Canvas2D and three.js sprites to generate &quot;text sprites&quot;.  Sprites are a special type of geometry where the face of the geometry is always directly facing the camera. This can be handy if you are displaying some explanatory material or other info that isn't really intended to be part of the scene or SHOULD always be facing the camera.</p>
 <p>So this lesson's content are some functions that allow you to render a sprite with specified text at a specified location. In additon, you can specify:</p>
 <ul>
   <li>Font family, size, weight, etc.</li>
@@ -40,7 +42,8 @@
   <li>Alignment of the sprite</li>
   <li>Color of the sprite's background (including transparency)</li>
   <li>Rounded corners</li>
-</ul>
+</ul><br/>
+<h4>Introduction to  the Sprites</h4>
 <p>So let's walk through the code and see how it works.</p>
 <p>The demo creates a wireframe cube just to provide some reference (as well as the usual axes):</p>
 
@@ -73,6 +76,7 @@ gfxScene.add( txSprite1 );</code></pre>
 <p>A word about the alignment flags. The flags indicate which part of the text string is aligned to the specified position. <span class="inline-code">bottom</span> aligns the baseline of the string to the position. <span class="inline-code">top</span> aligns top of the character cell to the point. <span class="inline-code">right</span> aligns the end of bounding box for the string to the point, while <span class="inline-code">left</span> aligns the beginning of the bounding box. <span class="inline-code">center</span> for horizontal alignment uses the center of the string's bounding box. <span class="inline-code">center</span> for vertical alignment uses the midpoint between the baseline and top of the character cell. Note that the descenders of the string (e.g. 'g', 'p' and other characters whose lower part extend below the baseline aren't taken into account. So here is what the above call would result in:</p>
 <p><img src="images/BottomRight.png" width="486" height="289" alt=""/></p>
 <p>The crosshairs and little red dot are simply debug references, they aren't normally drawn.</p>
+<h4>Creating the Sprites</h4>
 <p>So let's take a look at how the sprite is created. The first step is to create a canvas-2d context. </p>
 
 <pre><code class="language-javascript">var canvas = document.createElement('canvas');

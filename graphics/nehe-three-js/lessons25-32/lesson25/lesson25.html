@@ -22,6 +22,8 @@
 <div class="content-text">
 
 <h2>Lesson 25 - Loading and Morphing Objects</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>This lesson is a rather simplistic &quot;morphing&quot; demo. Not to exciting and there is nothing new vis a 
 	vis three.js or WebGL, but it is part of the NeHe demos, so I have included it. Basically, the demo consists 
@@ -29,7 +31,9 @@
   shape, it simply linearly interpolates between the position of each coordinate <span class="inline-code">n</span>
   in one set of vertexes to the coordinates of vertex <span class="inline-code">n</span> in the next shape.
  </p>
+<p><em>In theory one could use the morphing capbilities of three.js geometries to implement this, but it was more work than I wanted to get in for this. Perhaps in the future.</em></p>
  
+<h4>Creating the Mesh</h4>
 <p>The actual mesh to be displayed is a simple THREE.Geometry whose vertices are the coordinates, either one of the final shapes or the intervening steps. The material for the mesh is a THREE.PointsMaterial where each point is simply a small disk image, colored red. The first shape is the points arranged as a sphere:</p>
 
 <pre><code class="language-javascript">function createVertMesh() {
@@ -62,6 +66,7 @@
 }</code></pre>
 
 
+<h4>Morphing the Mesh</h4>
 <p>Then when the user chooses a new shape, the incremental delta-step for each of 486 vertices in X, Y, and Z is calculated and put in the <span class="inline-code">detlaVec</span> vector:</p>
 
 <pre><code class="language-javascript">function calcDeltas( newVertType ) {

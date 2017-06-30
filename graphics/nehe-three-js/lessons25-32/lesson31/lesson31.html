@@ -22,6 +22,8 @@
 <div class="content-text">
 
 <h2>Lesson 31 - Loading 3D Models</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>This lesson is pretty straightforward since three.js does all the heavy lifting. For each type of model, there is a different loader. They all have the same pattern of usage, but there are some little quirks, so we'll go over them briefly.</p>
 <p>The basic pattern is like the image-loader. Here is a stylize pseudo-code view of the pattern for the imaginary model type ZOT:</p>
@@ -50,6 +52,7 @@ function onLoadZOT (object) {
 <p>The first function is always much the same, initializing the LoadingManager, then telling it the path to the model to be loaded and providing a function that will be called when the model has been loaded. That function is passed the object created in the loading process. That object is always based on an THREE.Object3D, but may be a THREE.Mesh but sometimes is an entire THREE.Scene. It depends on the Loader. The function then traverses the object passed in. The travers method looks for children of the object and for each child calls back the function. Sometimes that function does something, sometimes not, again it depends on the particular model-loader.</p>
 <p>Finally, the onLoad function opetinally scales, rotates, and moves the object then adds it to the scene.</p>
 <p>That's the general approach. We'll now briefly look at some of the models. We won't cover the load* function as it always the same. Only the callback is of interest.</p>
+<h4>The Models</h4>
 <p><strong>OBJ</strong> (or .OBJ) is a geometry definition file format first developed by <a href="https://en.wikipedia.org/wiki/Wavefront_Technologies" title="Wavefront Technologies">Wavefront Technologies</a> for its <a href="https://en.wikipedia.org/wiki/The_Advanced_Visualizer" title="The Advanced Visualizer">Advanced Visualizer</a> animation package. The file format is open and has been adopted by other 3D graphics application vendors. The callback for is:</p>
 <pre><code class="language-javascript">function onLoadOBJ (object) {
     var bbs = getBoundingSphere( object );

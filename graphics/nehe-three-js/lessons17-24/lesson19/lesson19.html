@@ -22,6 +22,8 @@
 <div class="content-text">
 
 <h2>Lesson 19 - Particle Engines</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
 <p>A particle system is a technique in game physics, motion graphics,
 and computer graphics that uses a large number of very small sprites,
@@ -44,6 +46,7 @@ demonstrate the basic principles. The tradeoff is that while the
 three.js particle system can handle a huge number of particles and
 still be performant, our own particle engine will bog down with a far
 smaller number of particles.</p>
+<h4>Initialization</h4>
 <p>We initialize the gfxScene object same as always. We also declare some global vars:</p>
 
 <pre><code class="language-javascript">var ELEV         = 25;
@@ -74,6 +77,7 @@ cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
 cube.position.set(0,0,0);
 gfxScene.add(cube);</code></pre>
 
+<h4>Setting up the three.js Particle System</h4>
 <p>First, we instantiate the three.js particle system by calling <span class="inline-code">createParticleSystem</span>, which returns the particle system "mesh" which we add to the scene.</p>
 
 <pre><code class="language-javascript">particleSystem = createParticleSystem();
@@ -121,9 +125,10 @@ create the particle system and return it to be added to the scene.</p>
 
 <pre><code class="language-javascript">particleSystem = new THREE.Points(particles, particleMaterial);return particleSystem;</code></pre>
 
+<h4>Animating the three.js Particle System</h4>
 <p>Before we look at the other particle system, let's take a brief look
-at how the three.js particle system gets animated. the work gets done
-in <span class="inline-code">animateParticles</span>.</p>
+  at how the three.js particle system gets animated. the work gets done
+  in <span class="inline-code">animateParticles</span>.</p>
 
 <pre><code class="language-javascript">function animateParticles() {
     var deltaTime = clock.getDelta();            
@@ -159,13 +164,14 @@ vertex just cycles up and down in straight line.</p>
 <p>Finally, we notify three.js that we have adjust the vertex
 positions. Otherwise the mesh would not get updated. And that's it for
 the three.js particle system.</p>
+<h4>Our Own Particle System: The Balls</h4>
 <p>So now, let's take a look at the significantly more complex
-home-brewed particle system. This one consists of a "cannon" poking up
-through the checkerboard floor. It fires a steady stream of colored
-spheres into the air, randomly altering the speed and direction of the
-launched "beach balls". Once launched, the balls are subject to gravity
-and fall down to bounce across the floor until they fall off, plunging
-into the nether regions.</p>
+  home-brewed particle system. This one consists of a "cannon" poking up
+  through the checkerboard floor. It fires a steady stream of colored
+  spheres into the air, randomly altering the speed and direction of the
+  launched "beach balls". Once launched, the balls are subject to gravity
+  and fall down to bounce across the floor until they fall off, plunging
+  into the nether regions.</p>
 <p>So let's go through the code - there's a fair amount of it. First,
 let's take a look at the beach-balls, as they are quite simple. All the
 beach-balls consist of  a three.js Sphere, it's radius, and two
@@ -204,10 +210,12 @@ floor. So the bouncing looks like this:</p>
 
 <p>&nbsp;</p>
 
-<p>The update function for the beach-ball is pretty sim<img alt="beachball restitution" src="images/Restitution.svg" width="400"/>ple since all it
+<p>The update function for the beach-ball is pretty simple since all it
 does is update the location using the current velocity then update the
 velocity with the gravitational pull and finally updates the mesh's
 position:</p>
+
+<img alt="beachball restitution" src="images/Restitution.svg" width="400"/>
 
 <pre><code class="language-javascript">update: function() {
     this.loc.add( this.vel );
@@ -215,6 +223,7 @@ position:</p>
     this.mesh.position.set(this.loc.x, this.loc.y, this.loc.z);
 }</code></pre>
     
+<h4>The Cannon</h4>
 <p>The cannon is more complex since it both launches and manages all the beach-balls. First, we instantiate the cannon itself:</p>
 
 <pre><code class="language-javascript">cannon = new CANNON.Cannon( {
@@ -344,9 +353,10 @@ variation. The geometry of this looks like this:</p>
     <span class="inline-code">Theta</span> determines the direction of the ball. Note that <span class="inline-code">deltaRho</span>
     is less than 45 degrees. Otherwise too many of the balls go more or less vertical and end up rolling too slowly
     towards the edge of the floor. Finally, we push the newly fired beach ball into the <span class="inline-code">active</span> array.</p>
+<h4>Updating the Particle System</h4>
 <p>In <span class="inline-code">updateBalls</span>, we walk through the array of active balls. For each ball, we first
-    check if the ball is now completely transparent. If so it has fallen off the floor and disappeared. So we move it from
-    the <span class="inline-code">active</span> array to the <span class="inline-code">magazine</span> to be re-used. </p>
+  check if the ball is now completely transparent. If so it has fallen off the floor and disappeared. So we move it from
+  the <span class="inline-code">active</span> array to the <span class="inline-code">magazine</span> to be re-used. </p>
 <p>If it is not transparent, we update the ball's velocity and position by calling the ball's <span class="inline-code">update</span>
     method. If the ball's height above the floor is less than the radius, we check if the ball is still on the floor.
     If it is we bounce it by inverting the vertical (y) velocity less the ball's restitution. Then we place the ball

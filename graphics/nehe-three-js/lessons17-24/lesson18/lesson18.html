@@ -22,8 +22,11 @@
 <div class="content-text">
 
 <h2>Lesson 18 - Quadrics</h2>
+<p>&nbsp;</p>
+<h4>Introduction</h4>
 
-<p>The quadrics example is very easy since three.jsprovides built-in quadrics support. However, as always, there are a couple of wrinkles so let's go over it briefly.</p>
+<p>The quadrics example is very easy since three.js provides built-in quadrics support. However, as always, there are a couple of wrinkles so let's go over it briefly.</p>
+<h4>Initialization</h4>
 <p>We initialize the gfxScene object same as always. We also declare some global vars:</p>
 
 <pre><code class="language-javascript">var quadTexture;
@@ -43,6 +46,7 @@ quadric = makeQuad('0');
 
 window.addEventListener("keydown", onDocumentKeyDown, false);</code></pre>
 
+<h4>Changing Quadrics and Materials</h4>
 <p>Here's the code that creates the material for the quadric. We do it this way because we have to create a new material each time we change the type of quadric (though not vice-versa).</p>
 
 <pre><code class="language-javascript">function makeMaterial ( matType ) {
@@ -111,6 +115,7 @@ window.addEventListener("keydown", onDocumentKeyDown, false);</code></pre>
 	return quad;
 }</code></pre>
             
+ <h4>Keyboard Handling</h4>
  <p>Finally, we handle the keystrokes and create the material and geometry:</p>
  
 <pre><code class="language-javascript">function onDocumentKeyDown(event) {			

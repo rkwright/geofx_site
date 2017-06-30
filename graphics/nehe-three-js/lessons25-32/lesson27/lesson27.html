@@ -24,10 +24,12 @@
 <h2>Lesson 27 - Rendering Shadows</h2>
 
 <p>&nbsp;</p>
+<h4>Introduction</h4>
 <p>Rendering shadows in three.js is pretty easy - the renderer does all the heavy lifting. All the developer has to do is set some parameters. However, to make a nice demo, a couple of changes had to be made to GFXScene, so we'll cover those too.</p>
+<h4>Setting Up the Scene</h4>
 <p>First. we set up the scene, which consists of a &quot;back&quot; wall and a floor. The wall is a brick texture and the floor is hardwood. Both of them have both bump maps and roughness maps associated with them </p>
 <p>In an earlier lesson, we covered bump maps, which use a monchromatic image to simulate a 3D surface topography by altering the normal vectors of the surface even if the actual surfaces is flat. Roughness maps, on the other hand, simulate the microscopic characteristics of the surface. The rougher a surface, the more it will reflect light as scattered (diffuse) light i.e. not specular. It's a complicated subject, so won't go into it here, but there is an excellent article <a href="https://www.marmoset.co/posts/basic-theory-of-physically-based-rendering/" title="Physically Based Rendering" target="_blank">here</a>.</p>
-<p>In three.js using roughness map is as easy as a bump map. One just loads the image that is the roughness map. Here is the code for floor mesh roughness map (omitting the laoding of the image and bump maps:</p>
+<p>In three.js using a roughness map is as easy as a bump map. One just loads the image that is the roughness map. Here is the code for floor mesh roughness map (omitting the loading of the image and bump maps:</p>
 
 <pre><code class="language-javascript">floorMat = new THREE.MeshStandardMaterial( {
     roughness: 0.8,
@@ -85,6 +87,7 @@ gfxScene.add(knotMesh);</code></pre>
 
 <p>The key aspect is that we set the castShadow flag to true.</p>
 
+<h4>Shadow Support in GFXScene</h4>
 <p>Finally, to make the shadows more interesting we want the directional light (ambient lights don't cast shadows) to move around. However, in its previous form, the lights in the GFXScene object are set up in the object and then are fixed. So we'll need to modify the GFXScene object to make that possible.</p>
 <p>First, instead of a single directional light, a single point light and a single ambient light, we declare that each of the light types. directional, point, spot, ambient and hemispehre lights are arrays: </p>
 
@@ -138,6 +141,7 @@ var sphereLightMaterial = new THREE.MeshBasicMaterial({color: 0xac6c25});
 sphereLightMesh = new THREE.Mesh(sphereLight, sphereLightMaterial);
 sphereLightMesh.castShadow = true;
 gfxScene.add(sphereLightMesh);</code></pre>
+<h4>Animating the Shadows</h4>
 <p>In the animateScene method we then have this code:</p>
 
 <pre><code class="language-javascript">var timer = Date.now() * 0.01;
