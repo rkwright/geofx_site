@@ -43,7 +43,7 @@ gfxScene.addLight( 'ambient', { color:0x1c1c1c, intensity : 1 });
 gfxScene.addLight( 'directional', { color:0xffffff, intensity:0.75,  position:[-40,60,10],
     castShadow:true  });</code></pre>
 
-<p>In the <span class="inline-code">initDemo</span> function we simply allocate a large plane (and cover it with grass), add a mysterious black monolith with dancing icosahedrons. All the real work is done in <span class="inline-code">addFlare</span>.</p>
+<p>In the <span class="inline-code">initDemo</span> function we simply allocate a large plane (and cover it with grass), add a mysterious black monolith with dancing icosahedrons. All the real work is done in <span class="inline-code">addFlare.</span></p>
 <h4>The Flare</h4>
 <p>Using the Flare object is very simple. First one allocates the light which is supposed to be creating the flare on your lens:</p>
 
@@ -62,11 +62,11 @@ var flareColor = new THREE.Color(0xffaacc);</code></pre>
 <p>The first flare image looks like this:</p><br/>
 
 <p><img src="images/lensflare0.png" width="351" height="351" alt="lens flare"/></p><br/>
-<p>The other flare image looks pure black at first, but if you look very closely you'll see that it isn't.</p>
+<p>The other flare image looks pure black at first, but if you look very closely you'll see that it isn't, threre is a very faint circular area of non-quite-black.</p>
 <p>Then allocate the actual lens flare object using the first flare image as the texture.</p>
 <pre><code class="language-javascript">var lensFlare = new THREE.LensFlare(textureFlare0, 350, 0.0, THREE.AdditiveBlending, flareColor);</code></pre>
 
-<p>Note that the second parameter is the size of the resulting flare (inpixels) while the third is the apparent distance from the position of the lens flare. It is set to 0 so the flare image will be composited right on the spot of the lens flare - which we will set at the same spot as the flare light we added before.</p>
+<p>Note that the second parameter is the size of the resulting flare (in pixels) while the third is the apparent distance from the position of the lens flare. It is set to 0 so the flare image will be composited right on the spot of the lens flare - which we will set at the same spot as the flare light we added before.</p>
 <p>Then add some more flare images. The second parameter is the size of the flare and the third is the apparent distance from the flare's position.</p>
 
 <pre><code class="language-javascript">lensFlare.add(textureFlare3, 60, 0.6, THREE.AdditiveBlending);
