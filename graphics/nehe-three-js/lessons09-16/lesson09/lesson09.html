@@ -53,15 +53,9 @@ squareGeometry.faces.push(new THREE.Face3(0, 2, 3));</code></pre>
 					<h4>Mask (uv) Coordinates</h4>
 					<p>Since we are going to use the image as mask, we need to load it as texture, as before. However, since we are creating our own mesh, we need to tell three.js how to map the coordinates of the mask-image onto the mesh. Basically, we simply specify which corners of the image correspond to the vertices that we specified as the verticies of the two triangles.</p>
 					<p>Here is an illustration of how the mapping works. The figures in red are the UV coordinates. UV coordinates are just the coordinates in the image-space, where they vary from 0..1 in both X and Y in the image. If you're wondering what UV stands for the answer is nothing - it's just that X, Y and Z were already used for the geometric axes in 3D space. So the previous two letters in the alphabet were chosen. &#9786;</p>
-					<blockquote>
-					  <blockquote>
-					    <blockquote>
-					      <blockquote>
-					        <p><img src="images/TriGeomMask.png" width="350" height="350" alt="Triangle Mask Geometry"/></p>
-				          </blockquote>
-				        </blockquote>
-				      </blockquote>
-</blockquote>
+
+	<p><img src="images/TriGeomMask.svg" width="350" height="350" alt="Triangle Mask Geometry"/></p>
+	
 <p>So we just push the three coordinates, in the image's coordinate space, that correspond to the vertexes of each triangle. Note that the order is critical, the coordinates have to have the same order as the triangles.</p>
 <pre><code class="language-javascript">squareGeometry.faceVertexUvs[0].push([
     new THREE.Vector2(0.0, 0.0),
