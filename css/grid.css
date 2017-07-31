@@ -228,6 +228,7 @@
     padding: 2px 0;
 		margin-left:3em;
 		margin-bottom:3em;
+		pointer-events:none;
     
     
 		position: absolute;
