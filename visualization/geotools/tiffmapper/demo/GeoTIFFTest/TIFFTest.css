@@ -1,0 +1,17 @@
+body {
+    font-family: Verdana,sans-serif;
+}
+
+table, th, td {
+    border: 1px solid black;
+    width: 100px;
+    border-spacing:0;
+}
+
+th, td {
+    padding: 15px;
+}
+th {
+    font-weight: bold;
+    background-color:#EEEEEE;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>TIFF Mapper - Geo-F/X</title>
+  <meta name="description" content="3D TIFF Mapper tool developed by Geo-F/X - GeoFX"/>
+  <meta name="author" content="Richard K. Wright richardkylewright" />
+  <meta name="keywords" content="TIFF 3D Maps DEM GLOBE Digital Publishing EPUB, eBooks Readium WebGL SVG Graphics Geo-F/X Consulting - GeoFX" />
+  <meta charset="utf-8" />
+  <link href="../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../../images/favicon.png" rel="shortcut icon" type="image/png" />
+  <script src="../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../js/flaunt.js"></script>
+</head>
+<body>
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->
+<div class="content">
+<div class="content-text">
+	
+	<h2>TIFF Mapper</h2>
+	<p>TIFF Mapper is a relatively simple tool that uses the TIFF Reader to open and load a file, then loads the data (16-bit integers) from the file one line at a time. The data is then used to build a three.js Geometry by explicitly creating all the Vector3, Face3 and FaceVertex UVs.</p>
+	<p><em>More  details of this are coming soon.</em></p>
+	<p>One can also optionally load an image which can be draped onto the mesh.</p>
+	<p>A fully functional demo (assuming your browser supports JavaScript and WebGL) is <a href="demo/GeoTIFFTest/TIFFMapper-Test.html" title="TIFFF Mapper demo" target="_blank">here</a>. Be patient, it takes a few seconds (depending on your hardware) to load and render the model. You can zoom in and out with your mouse (or trackpad). The exaggeration is 100x.</p>
+	<p>Here is a sample view with the elevations exaggerated 100x. If you don't exaggerate the elevations the earth is almost a smooth as a ping-pong ball. See additional discussion <a href="../projections/projections.html" title="Projections page" target="_self">here</a>.
+	<br/><br/>
+	</p>
+	<p><img src="images/geotiffglobe_100x.jpg" width="644" height="644" alt=""/></p>
+  <br/>
+  
+	<p>Here is another sample, with the same exaggeration as used on the bronze earth sculpture Geo-F/X helped construct currently on display at the New York Museum of Natural History. See <a href="../../sculpture/bronze-sculptures.html" title="Bronze Sculpture" target="_self">here</a> for more details.</p>
+  <br/>
+	<p><img src="images/geotiffglobe_22x.jpg" width="644" height="644" alt=""/></p>
+  <br/>
+	<p>Finally, here is a sample with no exaggeration at all. At this scale, the height of Mount Everest on a 12&quot; (30 cm) globe would be just over 0.01&quot; (0.4 mm). With no exaggeration one might as well use a smooth sphere.</p>
+  <br/>
+	<p><img src="images/geotiffglobe_1x.jpg" width="641" height="641" alt=""/></p>
+	<br/>
+	<p>The GeoTIFF data was obtained from the <a href="https://www.ngdc.noaa.gov/mgg/topo/globe.html" title="GLOBE Project" target="_blank">GLOBE project</a>. The high-res earth images were obtained from JHT'S <a href="http://planetpixelemporium.com/earth.html" title="Planetary Pixel Emporium" target="_blank">Planetary Pixel Emporium</a>. The TIFFReader is based on the <a href="https://github.com/constantinius/geotiff.js" title="GeoTIFF library" target="_blank">geotiff.js</a> library of Fabian Schindler (<a href="https://github.com/constantinius" title="Fabian Schindler at github" target="_blank">constantinius</a>). The sources for both the TIFF Reader and TIFF Mapper are freely available under the BSD License via <a href="https://github.com/rkwright/geotools" title="rkwright@github" target="_blank">rkwright at github</a>. Feel free to contact me directly at <a href="mailto:rkwright@geofx.com">rkwright@geofx.com</a></p>
+		    
+  
+     
+<!--#include virtual="/includes/footer.shtml" -->
+
+</div></div></div></div>
+
+</body>
+</html>

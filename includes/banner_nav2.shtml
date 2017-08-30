@@ -42,19 +42,19 @@
 			</ul>
 		</li>
 		<li class="nav-item">
-			<a href="/gis/contouring/contouring.html">Visualization</a>
+			<a href="/visualization/geotools/tiffmapper.html">Visualization</a>
 			<ul class="nav-submenu">
 			  <li class="nav-submenu-item">
-					<a href="/gis/contouring/contouring.html">Contouring</a>
+					<a href="/visualization/geotools/geotools.html">GeoTools</a>
+				</li>
+			  <li class="nav-submenu-item">
+					<a href="/visualization/simulations/simulations.html">Simulations</a>
 				</li>
 				<li class="nav-submenu-item">
-					<a href="/gis/projections/projections.html">Projections</a>
+					<a href="/visualization/contouring/contouring.html">Contouring</a>
 				</li>
 				<li class="nav-submenu-item">
-					<a href="/gis/simulations/simulations.html">Simulations</a>
-				</li>
-				<li class="nav-submenu-item">
-					<a href="/gis/sculpture/bronze-sculptures.html">Sculpture</a>
+					<a href="/visualization/sculpture/bronze-sculptures.html">Sculpture</a>
 				</li>
 			</ul>
 		</li>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>GeoTIFF Reader - GeoFX</title>
+  <meta name="description" content="GeoTIFF Reader developed by Geo-F/X - GeoFX"/>
+  <meta name="author" content="Richard K. Wright richardkylewright" />
+  <meta name="keywords" content="GeoTIFF Reader GLOBE 3D Digital Publishing EPUB, eBooks Readium WebGL SVG Graphics Geo-F/X Consulting - GeoFX" />
+  <meta charset="utf-8" />
+  <link href="../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../../images/favicon.png" rel="shortcut icon" type="image/png" />
+  <script src="../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../js/flaunt.js"></script>
+  <style>
+	body {
+    font-family: Verdana,sans-serif;
+		}
+		
+		table, th, td {
+				border: 1px solid black;
+				width: 100px;
+				border-spacing:0;
+		}
+		
+		th, td {
+				padding: 15px;
+		}
+		th {
+				font-weight: bold;
+				background-color:#EEEEEE;
+		}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->
+<div class="content">
+<div class="content-text">
+	
+	<h2>TIFF Reader</h2>
+	<p>TIFF Reader is a simple library that uses the geotiff.js library toopen and load a GeoTIFF file. It also can optionally dump the IFD(s) to a table, like this:</p>
+	
+ <br/><br/>
+		    
+<table>
+<tr>
+<th style='text-align:right;'>Name</th>
+<th style='text-align:left;'>Value</th>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>ImageWidth</td>
+<td style='text-align:left; background-color: white; '>217</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>ImageLength</td>
+<td style='text-align:left; background-color: white; '>109</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>BitsPerSample</td>
+<td style='text-align:left; background-color: white; '>16</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>Compression</td>
+<td style='text-align:left; background-color: white; '>1</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>PhotometricInterpretation</td>
+<td style='text-align:left; background-color: white; '>1</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>StripOffsets</td>
+<td style='text-align:left; background-color: white; '>1118,8930,16742,24554,32366,40178,47990</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>SamplesPerPixel</td>
+<td style='text-align:left; background-color: white; '>1</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>RowsPerStrip</td>
+<td style='text-align:left; background-color: white; '>18</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>StripByteCounts</td>
+<td style='text-align:left; background-color: white; '>7812,7812,7812,7812,7812,7812,434</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>PlanarConfiguration</td>
+<td style='text-align:left; background-color: white; '>1</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>SampleFormat</td>
+<td style='text-align:left; background-color: white; '>2</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>ModelPixelScale</td>
+<td style='text-align:left; background-color: white; '>1.659062980030722,1.6515290519877674,0</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>ModelTiepoint</td>
+<td style='text-align:left; background-color: white; '>0,0,0,-180.00833333333333,90.00833333333334,0</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>GDAL_METADATA</td>
+<td style='text-align:left; background-color: #EEEEEE; '></td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>NC_GLOBAL#Conventions</td>
+<td style='text-align:left; background-color: #EEEEEE; '>COARDS/CF-1.0</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>NC_GLOBAL#GMT_version</td>
+<td style='text-align:left; background-color: #EEEEEE; '>4.4.0</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>NC_GLOBAL#history</td>
+<td style='text-align:left; background-color: #EEEEEE; '>grdreformat ETOPO1_Ice_g_gdal.grd ETOPO1_Ice_g_gmt4.grd=ni</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>NC_GLOBAL#node_offset</td>
+<td style='text-align:left; background-color: #EEEEEE; '>0</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>NC_GLOBAL#title</td>
+<td style='text-align:left; background-color: #EEEEEE; '>ETOPO1_Ice_g_gmt4.grd</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>x#actual_range</td>
+<td style='text-align:left; background-color: #EEEEEE; '>-180, 180</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>x#long_name</td>
+<td style='text-align:left; background-color: #EEEEEE; '>Longitude</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>x#units</td>
+<td style='text-align:left; background-color: #EEEEEE; '>degrees</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>y#actual_range</td>
+<td style='text-align:left; background-color: #EEEEEE; '>-90, 90</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>y#long_name</td>
+<td style='text-align:left; background-color: #EEEEEE; '>Latitude</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>y#units</td>
+<td style='text-align:left; background-color: #EEEEEE; '>degrees</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>z#actual_range</td>
+<td style='text-align:left; background-color: #EEEEEE; '>-10898, 8271</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>z#long_name</td>
+<td style='text-align:left; background-color: #EEEEEE; '>z</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>z#_FillValue</td>
+<td style='text-align:left; background-color: #EEEEEE; '>-2147483648</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: #EEEEEE;  '>NETCDF_VARNAME</td>
+<td style='text-align:left; background-color: #EEEEEE; '>z</td>
+</tr>
+<tr>
+<td style='text-align:right; background-color: white;  '>GDAL_NODATA</td>
+<td style='text-align:left; background-color: white; '>-2147483648
+</tr>
+</table>
+
+<p>&nbsp;</p>
+<p>The TIFFReader is based on the <a href="https://github.com/constantinius/geotiff.js" title="GeoTIFF library" target="_blank">geotiff.js</a> library of Fabian Schindler (<a href="https://github.com/constantinius" title="Fabian Schindler at github" target="_blank">constantinius</a>). The sources for  the TIFF Reader  are freely available under the BSD License via <a href="https://github.com/rkwright/geotools" title="rkwright@github" target="_blank">rkwright at github</a>. Feel free to contact me directly at <a href="mailto:rkwright@geofx.com">rkwright@geofx.com</a></p>
+     
+<!--#include virtual="/includes/footer.shtml" -->
+
+</div></div></div></div>
+
+</body>
+</html>
