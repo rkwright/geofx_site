@@ -8,9 +8,12 @@
   <meta charset="utf-8" />
   <link href="../../../css/styles.css" rel="stylesheet" type="text/css" />
   <link href="../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../../css/prism.css" rel="stylesheet" type="text/css" />
   <link href="../../../images/favicon.png" rel="shortcut icon" type="image/png" />
   <script src="../../../js/jquery-3.1.1.min.js"></script>
   <script src="../../../js/flaunt.js"></script>
+  <script src="../../../js/prism.js" type="text/javascript"></script>
+
 </head>
 <body>
 <div class="wrapper">
@@ -20,12 +23,14 @@
 <div class="content-text">
 	
 	<h2>TIFF Mapper</h2>
-	<p>TIFF Mapper is a relatively simple tool that uses the TIFF Reader to open and load a file, then loads the data (16-bit integers) from the file one line at a time. The data is then used to build a three.js Geometry by explicitly creating all the Vector3, Face3 and FaceVertex UVs.</p>
-	<p><em>More  details of this are coming soon.</em></p>
+	<p>&nbsp;</p>
+	<h4>Introduction</h4>
+	<p>TIFF Mapper is a relatively simple tool that uses the <a href="../tiffreader/tiffreader.html" title="TIFF Reader" target="_self">TIFF Reader</a> to open and load a file, then loads the data (16-bit integers) from the file one line at a time. The data is then used to build a three.js Geometry by explicitly creating all the Vector3, Face3 and FaceVertex UVs. Let's look at some samples, then cover how it was done.</p>
+	<h4>&nbsp;</h4>
+	<h4>Sample Images</h4>
 	<p>One can also optionally load an image which can be draped onto the mesh.</p>
 	<p>A fully functional demo (assuming your browser supports JavaScript and WebGL) is <a href="demo/GeoTIFFTest/TIFFMapper-Test.html" title="TIFFF Mapper demo" target="_blank">here</a>. Be patient, it takes a few seconds (depending on your hardware) to load and render the model. You can zoom in and out with your mouse (or trackpad). The exaggeration is 100x.</p>
-	<p>Here is a sample view with the elevations exaggerated 100x. If you don't exaggerate the elevations the earth is almost a smooth as a ping-pong ball. See additional discussion <a href="../projections/projections.html" title="Projections page" target="_self">here</a>.
-	<br/><br/>
+	<p>Here is a sample view with the elevations exaggerated 100x. If you don't exaggerate the elevations the earth is almost a smooth as a ping-pong ball. See additional discussion <a href="../../sculpture/bronze-sculptures.html" title="Bronze Sculpture details" target="_blank">here</a>. <br/><br/>
 	</p>
 	<p><img src="images/geotiffglobe_100x.jpg" width="644" height="644" alt=""/></p>
   <br/>
@@ -37,7 +42,140 @@
 	<p>Finally, here is a sample with no exaggeration at all. At this scale, the height of Mount Everest on a 12&quot; (30 cm) globe would be just over 0.01&quot; (0.4 mm). With no exaggeration one might as well use a smooth sphere.</p>
   <br/>
 	<p><img src="images/geotiffglobe_1x.jpg" width="641" height="641" alt=""/></p>
-	<br/>
+	<p>&nbsp;</p>
+	<h3>How The Demo Was Made</h3>
+	<h4>Getting The Data</h4>
+  <p>First off, we need to get a data set. The source is the <a href="https://www.ngdc.noaa.gov/mgg/topo/globe.html" title="GLOBE Project" target="_blank">GLOBE project</a>. The 5-minute GeoTIFF is a complete DEM (digital elevation model) of the entire earth, including the ocean bathymetry and the ice caps on Antarctica and Greenland. The resulting data set is 21601x10801 data points - a whopping 233 million data points or over 466 MB uncompressed! A little large to load into three.js in JavaScript, so we need to resample it down to something a little smaller. I used to have my own tools, written in C++ with LibTIFF and GeoTIFF to do this but nowadays I use <a href="http://www.qgis.org/en/site/" title="QGIS website" target="_blank">QGIS</a>, which does a good job.</p>
+  <p>After a little experimentation, I found that a file about 1/15 that size - 1440x720 data points gave good results and didn't crash the browser :-)</p>
+  <h4>Rendering the GeoTIFF</h4>
+  <p>The first step is initializing the scene (<span class="inline-code">GFXScene</span>) and setting up our lights:</p>
+  <pre><code class="language-javascript">var gfxScene = new GFX.Scene( {
+        cameraPos : [4, 3, 4],
+        controls:true,
+        defaultLights:false,
+        displayStats:true});
+
+    gfxScene.addLight( 'ambient', { color:0xffffff, intensity : 0.75 });
+    gfxScene.addLight( 'directional', { color:0xffffff, intensity:0.25,  position:[30,0,0]});</code></pre>
+  <p>Then we instantiate the TIFF Reader, passing in the GeoTIFF file to be opened.</p>
+  <pre><code class="language-javascript">function initializeDemo() {
+
+    tiffReader = new TIFFX.TIFFReader("../data/ETOPO_15.tif", tiffReady);
+}
+
+/**
+ * Called when the TIFF is loaded and ready to be used
+ */
+function tiffReady() {
+
+    tiffMapper = new TIFFX.TIFFMapper( gfxScene, tiffReader );
+    tiffMapper.createGlobe(</code>&#32;"../data/8081-earthmap8k.jpg"<code class="language-javascript">);
+}</code></pre>
+  <p>Note that we pass the function <span class="inline-code">tiffReady</span> to the <span class="inline-code">TIFFReader</span>. That will be called when the TIFF is loaded. It has to be done that way because the loading of resources is done asynchronously. Then, in <span class="inline-code">tiffReady</span> we instantiate the <span class="inline-code">TIFFMapper</span> to which we pass the <span class="inline-code">GFXScene</span> object and the <span class="inline-code">TIFFReader</span>. Then we call <span class="inline-code">createGlobe</span> where all the heavy lifting is done.</p>
+  <p>The first step is to build all the vertices.</p>
+  
+<pre><code class="language-javascript">var lat = 90 * Math.PI / 180.0;
+var vec;
+for (var i=0; i &lt height; i++ ) {
+    var rasterWindow = [0, i, width - 0, i+1];    // left, top, right, bottom
+    rasterData = image.readRasters({window: rasterWindow});
+
+    var lon = 0;
+    for ( var j=0; j&lt;rasterData[0].length; j++ ) {
+
+        // instead of using the last *real* value, use the first again so it meshes
+        if ( j === 0 )
+            k = rasterData[0].length-1;
+        else
+            k = j;
+
+        var radius = SCALE_FACTOR *
+                    (rasterData[0][k] / 1000.0 * EXAGGERATION + EARTH_DIAMETER) / EARTH_DIAMETER;
+
+        // this trasform from https://stackoverflow.com/questions/28365948/javascript-\
+        // latitude-longitude-to-xyz-position-on-earth-threejs
+        var phi   = Math.PI/2 - lat;
+        var theta = Math.PI + lon;
+
+        x = -(radius * Math.sin(phi) * Math.cos(theta));
+        z = (radius * Math.sin(phi) * Math.sin(theta));
+        y = (radius * Math.cos(phi));
+
+        this.globeGeom.vertices.push(new THREE.Vector3(x, y, z));
+
+        max = Math.max(max, rasterData[0][j]);
+        min = Math.min(min, rasterData[0][j]);
+
+        lon += deltaLon;
+    }
+
+    lat -= deltaLat;
+}</code>
+</pre>
+  
+  
+  <p>This is pretty straightforward, it just walks through the GeoTIFF, reading one line at a time and converting each data point to a Vector3 and push the vertex into the geometry. However, there are two aspects wothr noting.</p>
+  <p>First, the transform has two parts. The first two lines convert latitude and longitude to spherical coordinates (<span class="inline-code">theta</span> and <span class="inline-code">phi</span>). The radius is computed from the earth's radius plus the altitude of the data point. This is not strictly speaking completely accurate as we should probably project the point on to the WGS84 ellipsoid. But the difference between that ellipsoid and a sphere is very small (&lt;0.02%) so we just neglect it. The the speherical coordinates are converted to an XYZ position in 3D space.</p>
+  <p>Second, when we reach the last data point in each row, we discard that value and use the first value again. This way the mesh is perfectly matched. Otherwise there will be a small but perceptible &quot;rip&quot; in the mesh. Note that this also could be fixed by generating another Face when we generate the Faces, but that is a bit more complicated. Perhaps later.</p>
+  <p>Then, the <span class="inline-code">Faces</span> and the <span class="inline-code">FaceVertexUvs</span> have to be generated:</p>
+  
+<pre><code class="language-javascript">for (var i = 0; i &lt; height - 1; i++ ) {
+    var i0 = width * i;
+    var i1 = width * (i + 1);
+
+	  // note that they y-coord (i.e. the 'v' of uv) must start at coordinate 1.0 and descend
+    // since the UV coordinate system has the origin at the lower-left, not upper-left
+    var i0v = 1 - i / height;
+    var i1v = 1 - (i+1) / height;
+
+    for (var j = 0; j &lt; width - 1; j++) {
+        var v0 = i0 + j;
+        var v1 = i0 + j+1;
+        var v2 = i1 + j+1;
+        var v3 = i1 + j;
+
+        // note that the faces MUST be in CCW winding order!
+        this.globeGeom.faces.push(new THREE.Face3(v0, v2, v1));
+        this.globeGeom.faces.push(new THREE.Face3(v0, v3, v2));
+
+        var j0u = j /width;
+        var j1u = (j+1) / width;
+
+        var v0uv = new THREE.Vector2( j0u, i0v );
+        var v1uv = new THREE.Vector2( j1u, i0v );
+        var v2uv = new THREE.Vector2( j1u, i1v );
+        var v3uv = new THREE.Vector2( j0u, i1v );
+
+        this.globeGeom.faceVertexUvs[0].push([v0uv, v2uv, v1uv]);
+        this.globeGeom.faceVertexUvs[0].push([v0uv, v3uv, v2uv]);
+    }
+}
+
+this.globeGeom.computeFaceNormals();
+this.globeGeom.computeVertexNormals();</code></pre>
+  
+  <p>Two aspects to note:</p>
+  <ul>
+    <li>The y-coordinate of the uv coordinates must start at 1 since the origin of the uv coordinate system is at the lower-left, not the upper-left as the GeoTIFF data is</li>
+    <li>When the faces are constructed, the winding order of the face must counter-clockwise.</li>
+    </ul>
+  <p>Finally, the image to drape on the model is loaded:</p>
+  
+  <pre><code class="language-javascript">this.globeMat = new THREE.MeshPhongMaterial({color: '#eeeeee'});
+
+if (this.globeImage !== undefined ) {
+    var textureLoader = new THREE.TextureLoader();
+    var pThis = this;
+    textureLoader.load(this.globeImage, function (texture) {
+        pThis.globeMat.map = texture;
+        pThis.globeMat.needsUpdate = true;
+    });
+}</code></pre>
+  
+  <p>Note the use of <span class="inline-code">pThis</span>. This is needed since inside the load function 'this' points to the window object.</p>
+  <p>And that's it. You can see a working example of the demo by clicking on <a href="demo/GeoTIFFTest/TIFFMapper-Test.html" title="GeoTIFF demo" target="_blank">this link.</a></p>
+  <h4>Acknowledgements<br/>
+</h4>
 	<p>The GeoTIFF data was obtained from the <a href="https://www.ngdc.noaa.gov/mgg/topo/globe.html" title="GLOBE Project" target="_blank">GLOBE project</a>. The high-res earth images were obtained from JHT'S <a href="http://planetpixelemporium.com/earth.html" title="Planetary Pixel Emporium" target="_blank">Planetary Pixel Emporium</a>. The TIFFReader is based on the <a href="https://github.com/constantinius/geotiff.js" title="GeoTIFF library" target="_blank">geotiff.js</a> library of Fabian Schindler (<a href="https://github.com/constantinius" title="Fabian Schindler at github" target="_blank">constantinius</a>). The sources for both the TIFF Reader and TIFF Mapper are freely available under the BSD License via <a href="https://github.com/rkwright/geotools" title="rkwright@github" target="_blank">rkwright at github</a>. Feel free to contact me directly at <a href="mailto:rkwright@geofx.com">rkwright@geofx.com</a></p>
 		    
   
