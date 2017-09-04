@@ -55,7 +55,7 @@ a img {
 
 .code-example {
 	font-size: small;
-	font-family: "Lucida Console", "Courier New", Courier, Monaco, monospace;
+	font-family: "Courier New", Courier, Monaco, monospace;
 	background-color: #FFFFCC;
 	padding: 10 px;
 	border: solid 1px #000;
@@ -63,6 +63,12 @@ a img {
 	border-spacing: 10 px;
 	padding: 1em;
 	margin-left: 2em;
+}
+
+.inline-code
+{
+    font-size:100%;
+    font-family: "Courier New", Courier, Monaco, monospace;
 }
 
 .warning {

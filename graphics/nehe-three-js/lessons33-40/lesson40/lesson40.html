@@ -9,6 +9,7 @@
   <link href="../../../../css/styles.css" rel="stylesheet" type="text/css" />
   <link href="../../../../css/nav.css" rel="stylesheet" type="text/css" />
   <link href="../../css/NeHe-EPUB.css" rel="stylesheet" type="text/css"/>
+  <link href="../../css/prism.css" rel="stylesheet" type="text/css"/>
   <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
   <script src="../../../../js/jquery-3.1.1.min.js"></script>
   <script src="../../../../js/flaunt.js"></script>
@@ -29,16 +30,16 @@
 <p>Oddly, a rope is a lot like a spring or, more accurately, like a whole bunch springs attached to one another. In a spring, the end of the spring is always trying to get to the top of the spring. It can not though because of gravity or because it's running into another section of spring:</p>
 <p><a href="https://wiki.scratch.mit.edu/wiki/File:Spring.png"><img alt="Spring.png" src="https://wiki.scratch.mit.edu/w/images/Spring.png" width="300" height="224"></a></p>
 <p>Here, the top of the spring will be at (x1, y1) with the bottom being at (x2, y2). Since the bottom is trying to get to the top, the force that the bottom of the spring experiences becomes:</p>
-<p>Force along the x-axis = x2-x1 <br>
+<p class="inline-code">Force along the x-axis = x2-x1 <br>
   Force along the y-axis = y2-y1</p>
 <p>Since object's do not automatically go where they want to, some stiffness is at play:</p>
-<p>Force X = (x2-x1) * stiffness <br>
+<p class="inline-code">Force X = (x2-x1) * stiffness <br>
   Force Y = (y2-y1) * stiffness</p>
 <p>Since energy needs to be distributed over an object's mass, that needs to be factored in:</p>
-<p>Force X = ((x2-x1) * stiffness) / mass <br>
+<p class="inline-code">Force X = ((x2-x1) * stiffness) / mass <br>
   Force Y = ((y2-y1) * stiffness) / mass</p>
 <p>That then is added to the bottom spring's velocity. The last factor that needs to be added is friction, which is done by:</p>
-<p>X Velocity = (X Velocity + Force X) * dampening <br>
+<p class="inline-code">X Velocity = (X Velocity + Force X) * dampening <br>
   Y Velocity = (Y Velocity + Force Y) * dampening</p>
 <p>There are two tricky parts to implementing a dangling rope. First is to simulate the actual physical behaviour (more or less, anyway). The other is to graphically represent it.</p>
 <h4>The Simulation</h4>
