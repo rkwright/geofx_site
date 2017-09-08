@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>EPUB, three.js and WebGL - Tools and Tutorial - GeoFX</title>
+  <meta name="description" content="How to use three.js and WebGL in EPUB eBooks, developed by Geo-F/X - GeoFX"/>
+  <meta name="author" content="Richard K. Wright richardkylewright" />
+  <meta name="keywords" content="WebGL EPUB three.js GIS 3D Digital Publishing eBooks Readium  SVG Graphics Geo-F/X Consulting - GeoFX" />
+  <meta charset="utf-8" /> 
+  <link href="../../../css/styles.css" rel="stylesheet" type="text/css" />
+  <link href="../../../css/nav.css" rel="stylesheet" type="text/css" />
+  <link href="../../../css/prism.css" type="text/css" rel="stylesheet"/>
+  <link href="../../../images/favicon.png" rel="shortcut icon" type="image/png" />
+  <script src="../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../js/flaunt.js"></script>
+  <script src="../../../js/prism.js"></script>
+</head>
+<body>
+<div class="wrapper">
+<div class="main">
+<!--#include virtual="/includes/banner_nav2.shtml" -->
+<div class="content">
+<div class="content-text">
+    
+<h2>Creating An EPUB WIth SVG Animation</h2>
+
+<h4>The Workflow</h4>
+<p>Creating an EPUB with embedded SVG Animation is relatively easy, once you have worked out a reasonable workflow. It is very similar (for obvious reasons) to <a href="../../epub-webgl/epub-webgl.html" title="EPUB with WebGL" target="_self">creating an EPUB withe embedded WebGL</a>. For more infrormation follow that link. There are, however, a few differences.</p>
+<h4>Page Layout</h4>
+<p>All the pages are reflowable, but since SVG isn't, the outermost (root) SVG<a href="https://github.com/IDPF/epubcheck"></a> element has to have a viewBox attribute that will control how the SVG is scaled when the page is resized. For example, here is the &lt;svg&gt; element from the Bouncing Tiger demo:</p>
+<pre><code class="language-svg">&lt;svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                   viewBox="0 0 720 960" preserveAspectRatio="xMinYMin meet"&gt;</code></pre>
+
+<p>The biggest problem with this approach is that not all the browser engines handle the viewBox attribute correctly or consistently. But it works pretty well for the most part.</p>
+<p>Also, like the WebGL EPUBs, each &quot;chapter&quot; consists of two files, both XHTML. One is the explanatory content while the other is just a simple wrapper that loads</p>
+<h4>Loading the SVG</h4>
+<p>The SVG content is separate files from the XHTML which embeds it. In theory, you can embed SVG content directly in the spine. This <em>does</em> work in some reading systems (e.g. Readium, of course) but even in the ones that it does work in, the handling of changes in page size are often spectacularly wrong. So it was simpler and more consistent to embed the SVG within XHTML. </p>
+<p>It would have also been possible to embed the SVG inline within the XHTML but for code-maintenance reasons, it was simpler to have the SVG as separate files and load them via the object tag. Again, from the Bouncing Tiger demo:</p>
+
+<pre><code class="language-html">&lt;object type="image/svg+xml" data="../svg/bouncingtiger.svg" >
+        &lt;p&gt;Unable to load the bouncingtiger.svg file&lt;/p&gt;
+&lt;/object&gt;</code>
+</pre>
+<h4>Formatting</h4>
+<p>Like in the WebGL EPUBs,  PrismJS is ised to colorize the HTML, JavaScript and SVG code for better readability. This requires
+  that each block of code to be colorized be wrapped in a &lt;code&gt; element and the language specified as part a
+  CSS style, e.g. </p>
+<pre>&lt;code&#32;class="language-svg"&gt;</pre>
+<p>Finally, all the illegal HTML characters need to be escaped (<em>e.g.</em> &amp;lt; <em>etc.</em>). This is a bit of a pain, especially where there is more HTML and SVG code than in the WebGL EPUBs since a fair amount of escaping has to be done.</p>
+<h4>Example</h4>
+<p>Clicking <a href="SVG_Animation.epub" title="SVG Animation in EPUB" target="_blank">this link</a> will download an EPUB with the SVG animations shown on this site.</p>
+
+<!--#include virtual="/includes/footer.shtml" -->
+
+</div></div></div></div>
+
+</body>
+</html>

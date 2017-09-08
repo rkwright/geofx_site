@@ -88,7 +88,7 @@
         }
     &lt;/style&gt;</code></pre>
 
-<p>Not as concise a clear as the equivalent SMIL, but it does work. </p>
+<p>Not as concise or as clear as the equivalent SMIL, but it does work. </p>
 <p>If you go and try the animation you'll find the tiger and King Tut bouncing happily around the page. Unfortunately, they are such complex drawings that the animation isn't smooth. Wouldn't it be nice if we could offload the work on the GPU? In theory, you can. If you specify a GPU-specific property, some browsers (e.g. Chrome) will create a &quot;layer&quot; and essentially rasterize the specified HTML element and load it into the GPU as GL texture where it will be animated as a whole. This is why you see the<span class="inline-code"> transform:translateZ(0)</span> property in the kingTut rules. Unfortunately, it doesn't work. Apparently this support doesn't work for SVG.</p>
 <p>And that's it!  Click on <a href="bouncingtiger.svg" title="Bounncing Tiger and Tut" target="_self">this link</a> to see the actual rendered demo in all its bouncing glory!!!</p>
 
