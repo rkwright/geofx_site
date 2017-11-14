@@ -14,41 +14,36 @@
     <!-- Set the viewport size to the screen size, so it will be displayed maximized, but unscaled. -->
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1"/>
     <link rel="stylesheet" type="text/css" href="../../css/NeHe.css" />
+    <link href="../../../../images/favicon.png"  rel="shortcut icon" type="image/png" />
 
     <!-- Include several libraries from THREE.js and the Scene class  -->
     <script src="../../js/three.js" type="text/javascript"></script>
     <script src="../../js/Detector.js" type="text/javascript"></script>
     <script src="../../js/OrbitControls-Touch-Ortho.js" type="text/javascript"></script>
     <script src="../../js/stats.js" type="text/javascript"></script>
+    <script src="../../js/dat.gui.min.js" type="text/javascript"></script>
     <script src="../../js/gfx-scene.js" type="text/javascript"></script>
     <script src="../../js/loaders/VTKLoader.js" type="text/javascript"></script>
 
     <script src="js/TeapotBufferGeometry.js" type="text/javascript"></script>
 
-    <script id="vertexShader" type="x-shader/x-vertex">
+   <script id="vertexShader" type="x-shader/x-vertex">
         varying vec3 vNormal;
-        varying vec3 vViewPosition;
 
         void main() {
 
             gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
             vNormal = normalize( normalMatrix * normal );
-            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-            vViewPosition = -mvPosition.xyz;
         }
     </script>
 
     <script id="fragmentShader" type="x-shader/x-fragment">
         uniform vec3 uMaterialColor;
 
-        uniform vec3 uDirLightPos;
-        uniform vec3 uDirLightColor;
-
-        uniform float uKd;
-        uniform float uBorder;
-        uniform float uLevels;
-        varying vec3 vNormal;
-        varying vec3 vViewPosition;
+        uniform vec3    uDirLightPos;
+        uniform vec3    uDirLightColor;
+        uniform float   uLevels;
+        varying vec3    vNormal;
 
         void main() {
             // compute direction to light
@@ -66,7 +61,7 @@
                 diffuse = (floor((abs(diffuse) + 0.001) * uLevels ) / uLevels) * sign + (1.0 / (uLevels * 2.0));
             }
 
-            gl_FragColor = vec4( uKd * uMaterialColor * uDirLightColor * diffuse, 1.0 );
+            gl_FragColor = vec4( uMaterialColor * uDirLightColor * diffuse, 1.0 );
         }
     </script>
 </head>
@@ -86,8 +81,10 @@
     });
 
     // we can't use the default lights because we need to pass the directional light to the shader
-    gfxScene.addLight( 'ambient', { color:0x333333, intensity : 1 });
+    //gfxScene.addLight( 'ambient', { color:0x333333, intensity : 1 });
     var dirLight = gfxScene.addLight( 'directional', { color:0xffffff, intensity:1.0,  position:[-10,10,20]});
+
+    setupDatGUI();
 
     initializeDemo();
 
@@ -97,17 +94,10 @@
      * Initialize the Demo.
      */
     function initializeDemo() {
-        var materialColor = new THREE.Color();
-        materialColor.setRGB(1.0, 0.8, 0.6);
 
         phongMaterial = createShaderMaterial( dirLight );
 
-        phongMaterial.uniforms.uMaterialColor.value.copy(materialColor);
-        phongMaterial.side = THREE.DoubleSide;
-
         loadTeapot();
-
-        document.addEventListener("keypress", onDocumentKeyPress, false);
     }
 
     /**
@@ -119,11 +109,7 @@
 
             uDirLightPos: { type: "v3", value: light.position },
             uDirLightColor: { type: "c", value: light.color },
-
-            uMaterialColor: { type: "c", value: new THREE.Color( 0xFFFFFF ) },
-
-            uKd:     { type: "f", value: 0.9 },
-            uBorder: { type: "f", value: 0.4 },
+            uMaterialColor: { type: "c", value: new THREE.Color( 1.0, 0.8, 0.6 ) },
             uLevels: { type: "f", value: nLevels }
        };
 
@@ -179,32 +165,40 @@
         gfxScene.remove(modelMesh);
 
         switch (type) {
-            case 't':
+            case 0:
                 loadTeapot();
                 break;
-            case 'r':
+            case 1:
                 loadRabbit();
                 break;
-            case 'k':
+            case 2:
                 loadKnot();
                 break;
         }
     }
 
-    function onDocumentKeyPress(event) {
-        // Get the key code of the pressed key
-        var keyChar = String.fromCharCode(event.which).toLowerCase();
+    /**
+     * Set up the parameters and interface
+     */
+    function setupDatGUI() {
+        var modelList = ["Teapot", "Rabbit", "Knot"];
+        var options = [];
 
-        var levelString = "0123456789";
-        var modelString = "trk";
+        options.levels = 4;
+        options.model = modelList[0];
 
-        if ( modelString.indexOf(keyChar) !== -1) {
-             switchModel(keyChar);
-        }
-        else if (levelString.indexOf(keyChar) !== -1) {
-            nLevels = keyChar - '0';
-        }
+        gui = new dat.GUI();
+
+        gui.add(options, "levels").min(0).max(9).step(1).onChange(function() {
+            nLevels = options.levels;
+        });
+
+        gui.add(options, "model", [ modelList[0], modelList[1], modelList[2] ]).onChange(function() {
+            var model = modelList.indexOf( options.model );
+            switchModel(model);
+        });
     }
+
     /**
      * Animate the scene and call rendering.
      */
@@ -224,10 +218,5 @@
     }
 
 </script>
-    <!-- Create a DIV element, which will be shown over the WebGL canvas. -->
-    <div style="position: absolute; top: 10px; left: 10px">
-        Choose model, t,r,k <br/>
-        Number of levels: 0..9
-    </div>
 </body>
 </html>

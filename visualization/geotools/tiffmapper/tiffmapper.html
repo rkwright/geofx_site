@@ -92,7 +92,7 @@ for (var i=0; i &lt height; i++ ) {
         var radius = SCALE_FACTOR *
                     (rasterData[0][k] / 1000.0 * EXAGGERATION + EARTH_DIAMETER) / EARTH_DIAMETER;
 
-        // this trasform from https://stackoverflow.com/questions/28365948/javascript-\
+        // this transform from https://stackoverflow.com/questions/28365948/javascript-\
         // latitude-longitude-to-xyz-position-on-earth-threejs
         var phi   = Math.PI/2 - lat;
         var theta = Math.PI + lon;
@@ -115,7 +115,7 @@ for (var i=0; i &lt height; i++ ) {
   
   
   <p>This is pretty straightforward, it just walks through the GeoTIFF, reading one line at a time and converting each data point to a Vector3 and push the vertex into the geometry. However, there are two aspects wothr noting.</p>
-  <p>First, the transform has two parts. The first two lines convert latitude and longitude to spherical coordinates (<span class="inline-code">theta</span> and <span class="inline-code">phi</span>). The radius is computed from the earth's radius plus the altitude of the data point. This is not strictly speaking completely accurate as we should probably project the point on to the WGS84 ellipsoid. But the difference between that ellipsoid and a sphere is very small (&lt;0.02%) so we just neglect it. The the speherical coordinates are converted to an XYZ position in 3D space.</p>
+  <p>First, the transform has two parts. The first two lines convert latitude and longitude to spherical coordinates (<span class="inline-code">theta</span> and <span class="inline-code">phi</span>). The radius is computed from the earth's radius plus the altitude of the data point. This is not strictly speaking completely accurate as we should probably project the point on to the WGS84 ellipsoid. But the difference between that ellipsoid and a sphere is very small (&lt;0.02%) so we just neglect it. Then the speherical coordinates are converted to an XYZ position in 3D space.</p>
   <p>Second, when we reach the last data point in each row, we discard that value and use the first value again. This way the mesh is perfectly matched. Otherwise there will be a small but perceptible &quot;rip&quot; in the mesh. Note that this also could be fixed by generating another Face when we generate the Faces, but that is a bit more complicated. Perhaps later.</p>
   <p>Then, the <span class="inline-code">Faces</span> and the <span class="inline-code">FaceVertexUvs</span> have to be generated:</p>
   
@@ -159,6 +159,14 @@ this.globeGeom.computeVertexNormals();</code></pre>
     <li>The y-coordinate of the uv coordinates must start at 1 since the origin of the uv coordinate system is at the lower-left, not the upper-left as the GeoTIFF data is</li>
     <li>When the faces are constructed, the winding order of the face must counter-clockwise.</li>
     </ul>
+  <p>Here is an image I put together to help myself understand how all the geometry of mapping the image to a globe (or any other shape) should work:</p>
+  <p>
+  <a href="images/FaceVertexes.png" alt="Face Vertex mapping" target="_blank">
+  	<img src="images/FaceVertexes.png" width="445" height="343" alt="Face Vertex mapping"/>
+  </a>
+  <br/>
+  <em>Click on the image for a full-size version.</em></p>
+    
   <p>Finally, the image to drape on the model is loaded:</p>
   
   <pre><code class="language-javascript">this.globeMat = new THREE.MeshPhongMaterial({color: '#eeeeee'});
