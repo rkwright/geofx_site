@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--
+  			@author: rkwright@geofx.com
+		-->
+		<title>Basin 3D</title>
+		<meta charset="UTF-8"/>
+
+		<!-- Set the viewport size to the screen size, so it will be displayed maximized, but unscaled. -->
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1"/>
+
+		<!-- Include several libraries from THREE.js and the Scene class  -->
+		<script src="../three-js/three.js" type="text/javascript"></script>
+		<script src="../three-js/Detector.js" type="text/javascript"></script>
+		<script src="../three-js/stats.js" type="text/javascript"></script>
+		<script src="../gfx/OrbitControls-Touch-Ortho.js" type="text/javascript"></script>
+		<script src="../three-js/dat.gui.min.js" type="text/javascript"></script>
+		<script src="../gfx/gfx-scene.js" type="text/javascript"></script>
+        <script src="../gfx/CylinderUtil.js" type="text/javascript"></script>
+        <script src="../maze/Maze.js"></script>
+        <script src="../maze/MazeRat.js"></script>
+        <script src="Basin.js"></script>
+		<script src="Basin3D.js"></script>
+	</head>
+	<body style="margin:0;padding:0;border:0">
+    <script type="text/javascript">
+        var nCells = 64;
+        var MIN_CELLS = 4;
+        var MAX_CELLS = 512;
+        var basin3D;
+
+        var gfxScene = new GFX.Scene( {
+            cameraPos : [-9, 7, -9],
+			cameraInfo: true,
+            controls:true,
+            displayStats:true,
+            datgui:true
+        });
+
+        setupDatGUI();
+
+        initializeDemo();
+
+        animateScene();
+
+        /**
+         * Initialize the Demo.
+         */
+        function initializeDemo() {
+
+            var startTime = performance.now();
+
+            //drawCylinders();
+
+            buildBasin( nCells );
+
+            var elapsed = (performance.now() - startTime)/1000.0;
+            console.log("Basin complete! elapsed: " +  elapsed.toFixed(3)  );
+       }
+
+        function buildBasin( ncells ) {
+
+            basin3D = new BASIN3D.Basin3D(ncells);
+        }
+
+        function drawLines() {
+            var mat =  new THREE.LineBasicMaterial({color: 0xff0000});
+            var NLINES = 200;
+
+            var geometry = new THREE.Geometry();
+
+            for (var n=0; n<NLINES; n++ ) {
+                geometry.vertices.push( new THREE.Vector3( Math.random(), Math.random(), Math.random()) );
+                geometry.vertices.push( new THREE.Vector3( Math.random(), Math.random(), Math.random()) );
+
+            }
+
+            var line = new THREE.LineSegments(geometry, mat);
+            gfxScene.add(line);
+        }
+
+        function drawCylinders() {
+            var mat =  new THREE.MeshBasicMaterial({color: 0xff0000});
+            var group = new THREE.Group();
+
+            var NLINES = 5000;
+            cylinderUtil = new GFX.CylinderUtil();
+
+            for (var n=0; n<NLINES; n++ ) {
+                var cylMesh = cylinderUtil.createCylinder(
+                    new THREE.Vector3( Math.random(), Math.random(), Math.random()),
+                    new THREE.Vector3( Math.random(), Math.random(), Math.random()),
+                    //new THREE.Vector3( 1,2,3),
+                    //new THREE.Vector3( 3,2,1),
+                    0.1,
+                    3,
+                    mat);
+
+                group.add(cylMesh);
+           }
+
+           gfxScene.add(group);
+        }
+
+        /**
+         * Initialize the dat.gui library and the options elements
+         */
+        function setupDatGUI() {
+            var options = [];
+
+            options.ncells = nCells;
+
+            gfxScene.gui.add(options, 'ncells', MIN_CELLS, MAX_CELLS).step(4).onFinishChange(function() {
+
+                if (options.ncells !== nCells) {
+
+                    nCells = options.ncells;
+
+                    basin3D.deleteBasin();
+                    buildBasin(nCells);
+                }
+            });
+
+            return options;
+        }
+
+        /**
+         * Animate the scene and call rendering.
+         */
+        function animateScene() {
+
+            requestAnimationFrame(animateScene);
+
+            gfxScene.renderScene();
+        }
+
+    </script>
+
+	</body>
+</html>

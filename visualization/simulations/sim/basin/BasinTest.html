@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MazeTest</title>
+    <meta charset="UTF8">
+    <script src="../maze/Maze.js"></script>
+    <script src="../maze/MazeRat.js"></script>
+    <script src="Basin.js"></script>
+</head>
+<body>
+    <canvas id="myCanvas" width="840" height="840" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script>
+
+</script>
+
+</body>
+</html>
+<script>
+
+    var startTime = performance.now();
+
+    var	basin = new BASIN.Basin();
+
+    basin.construct();
+
+    var elapsed = (performance.now() - startTime)/1000.0;
+    console.log("Basin complete! elapsed: " +  elapsed.toFixed(3)  );
+</script>
+

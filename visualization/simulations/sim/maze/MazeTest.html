@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MazeTest</title>
+    <meta charset="UTF8">
+    <script src="Maze.js"></script>
+    <script src="MazeRat.js"></script>
+</head>
+<body>
+    <canvas id="myCanvas" width="840" height="840" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.</canvas>
+
+</body>
+</html>
+<script>
+    var	NCELLS = 32;
+
+    var startTime = performance.now();
+
+    var	maze = new MAZE.Maze( NCELLS, NCELLS, 0, 0 );
+
+    maze.build();
+
+    var elapsed = (performance.now() - startTime)/1000.0;
+
+
+    console.log("Maze complete! elapsed: " +  elapsed.toFixed(3) + " seconds. maxNeighbors: " +
+            maze.maxNeighbors.toFixed(0));
+
+    drawMaze( maze );
+
+    console.log("Maze drawn");
+
+    //maze.dumpEdges(NCELLS, NCELLS);
+
+    startTime = performance.now();
+
+    var rat = new MAZE.MazeRat( maze );
+
+    bPath = true;
+    rat.initSolveObj(0x80, false, mazeEvent);
+
+    var bSuccess = rat.findSolution( -1, -1 );
+
+    elapsed = (performance.now() - startTime)/1000.0;
+
+    console.log("Maze solved? " + bSuccess + "  elapsed: " +  elapsed.toFixed(3) + " seconds. maxNeighbors: " +
+            maze.maxNeighbors.toFixed(0));
+
+    bSuccess = rat.retraceSteps();
+
+    bPath = false;
+    startTime = performance.now();
+
+    rat.initSolveObj(0x80, true, mazeEvent);
+
+    bSuccess = rat.findSolution( -1, -1 );
+
+    elapsed = (performance.now() - startTime)/1000.0;
+
+    console.log("Maze solved? " + bSuccess + "  elapsed: " +  elapsed.toFixed(3) + " seconds. maxNeighbors: " +
+        maze.maxNeighbors.toFixed(0));
+
+    /**
+     * Callback function that gets the path of the rat
+     */
+    function mazeEvent( label, rat,  i,  j, nexi, nexj, pathlen, bsac ) {
+        //console.log(label + " i,j: " + i.toFixed(0) + " " + j.toFixed(0)
+        //             + " nexi,j: " + nexi.toFixed(0) + " " + nexj.toFixed(0)
+        //             + " pathlen: " + pathlen.toFixed(0) + " bsac: " + bsac );
+
+        if (rat.bSingleHit === false)
+            drawPath( rat.maze, j, i, nexj, nexi);
+    }
+
+    function drawMaze( maze ) {
+        var cellSize = 800 / maze.row;
+        var c = document.getElementById("myCanvas");
+        var ctx = c.getContext("2d");
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 1;
+
+        var x = 20;
+        var y = 820;
+        var sKnt = 0;
+        for ( var  i=0; i<maze.row; i++ ) {
+            for ( var j = 0; j < maze.col; j++ ) {
+                var mz = maze.cells[i * maze.row + j];
+
+                //console.log(i.toFixed(0) + " " + j.toFixed(0) +
+                //    " S: " + (mz & MAZE.SOUTH_BIT) + " W: " + (mz & MAZE.WEST_BIT) +
+                //    " N: " + (mz & MAZE.NORTH_BIT) + " E: " + (mz & MAZE.EAST_BIT)  );
+
+                if  ((mz & MAZE.SOUTH_BIT) !== 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(x,y);
+                    ctx.lineTo(x + cellSize, y);
+                    ctx.stroke();
+                    sKnt += 2;
+                }
+
+                if  ((mz & MAZE.WEST_BIT) !== 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(x,y);
+                    ctx.lineTo(x, y - cellSize);
+                    ctx.stroke();
+                    sKnt += 2;
+                }
+
+                if  ((mz & MAZE.NORTH_BIT) !== 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, y - cellSize);
+                    ctx.lineTo(x + cellSize, y - cellSize);
+                    ctx.stroke();
+                    sKnt += 2;
+                }
+
+                if  ((mz & MAZE.EAST_BIT) !== 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + cellSize, y);
+                    ctx.lineTo(x + cellSize, y - cellSize);
+                    ctx.stroke();
+                    sKnt += 2;
+                }
+
+                x += cellSize;
+            }
+
+            x = 20;
+            y -= cellSize;
+        }
+        console.log("Drawmaze done! sKnt: " + sKnt.toFixed(0));
+    }
+
+    function drawPath ( maze, x1, y1, x2, y2 ) {
+        var cellSize = 800 / maze.row;
+        var c = document.getElementById("myCanvas");
+        var ctx = c.getContext("2d");
+
+        var px1 = 20 + (x1 + 0.5) * cellSize;
+        var py1 = 820 - (y1 + 0.5) * cellSize;
+        var px2 = 20 + (x2 + 0.5) * cellSize;
+        var py2 = 820 - (y2 + 0.5) * cellSize;
+
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'blue';
+
+        ctx.beginPath();
+        ctx.moveTo(px1, py1);
+        ctx.lineTo(px2, py2);
+        ctx.stroke();
+    }
+</script>
+

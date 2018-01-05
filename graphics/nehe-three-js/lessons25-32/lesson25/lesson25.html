@@ -75,7 +75,7 @@
     vertType = newVertType;
     destRay = vertArray[vertType];
 
-    for ( var n = 0; n < destRay.length; n++ ) {
+    for ( var n = 0; n &lt; destRay.length; n++ ) {
        deltaVec[n].x = destRay[n][0] - srcRay[n][0];
        deltaVec[n].y = destRay[n][1] - srcRay[n][1];
        deltaVec[n].z = destRay[n][2] - srcRay[n][2];
@@ -101,7 +101,7 @@
 <pre><code class="language-javascript">function morphStep() {
     var verts = vertMesh.geometry.vertices;
 
-    for ( var n = 0; n < destRay.length; n++ ) {
+    for ( var n = 0; n &lt; destRay.length; n++ ) {
         verts[n].x = destRay[n][0] - deltaVec[n].x *  (curStep / nStep);
         verts[n].y = destRay[n][1] - deltaVec[n].y *  (curStep / nStep);
         verts[n].z = destRay[n][2] - deltaVec[n].z *  (curStep / nStep);

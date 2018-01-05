@@ -1,0 +1,195 @@
+<html>
+<head>
+    <title>Channel Slope vs. Area</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        var BASIN = {
+            QNUMER   : 1.0,	    // numerator of slope f(Q) eqn.
+            QEXPON   : -0.85,     // exponent of slope f(Q) eqn
+            QINTCP   : 1.0,     // offset for slope f(Q) eqn
+            RUGOSITY : 0.5     // degree of rugosity (channel interfluve height)
+        };
+
+        var     slopeData;
+        var     expSlider;
+        var     numAmount;
+        var     intcpAmount;
+        var     qNumer = BASIN.QNUMER;
+        var     qExpon = BASIN.QEXPON;
+        var     qIntcp = BASIN.QINTCP;
+        var     linearChart;
+        var     logChart;
+        var     linearOptions;
+        var     logOptions;
+        var     lengths = [1,2,3,4,5,6,7,8, 9, 10, 11, 12, 13, 14,15, 16, 17, 18];
+
+        function onload() {
+            expSlider = document.getElementById("expSlider");
+            expSlider.onchange = expSliderChange;
+            expAmount = document.getElementById("expAmount");
+            numSlider = document.getElementById("numSlider");
+            numSlider.onchange = numSliderChange;
+            numAmount = document.getElementById("numAmount");
+            intcpSlider = document.getElementById("intcpSlider");
+            intcpSlider.onchange = intcpSliderChange;
+            intcpAmount = document.getElementById("intcpAmount");
+        }
+
+        function expSliderChange() {
+            expAmount.innerHTML = this.value;
+            qExpon = parseFloat(this.value);
+            updateSlopeData();
+        }
+
+        function numSliderChange() {
+            numAmount.innerHTML = this.value;
+            qNumer = parseFloat(this.value);
+            updateSlopeData();
+        }
+
+        function intcpSliderChange() {
+            intcpAmount.innerHTML = this.value;
+            qIntcp = parseFloat(this.value);
+            updateSlopeData();
+        }
+
+        function updateSlopeData() {
+
+            if (slopeData.getNumberOfRows() > 0) {
+                for (var i = 0; i<lengths.length; i++ ) {
+                    slopeData.setValue(i, 1, calcSlope(lengths[i]));
+                }
+            }
+            else {
+                slopeData.addRows([
+                    [1, calcSlope(1)],
+                    [2, calcSlope(2)],
+                    [3, calcSlope(3)],
+                    [4, calcSlope(4)],
+                    [5, calcSlope(5)],
+                    [6, calcSlope(6)],
+                    [7, calcSlope(7)],
+                    [8, calcSlope(8)],
+                    [9, calcSlope(9)],
+                    [10, calcSlope(10)],
+                    [11, calcSlope(11)],
+                    [12, calcSlope(12)],
+                    [13, calcSlope(13)],
+                    [14, calcSlope(14)],
+                    [15, calcSlope(15)],
+                    [16, calcSlope(16)],
+                    [17, calcSlope(17)],
+                    [18, calcSlope(18)]
+                ]);
+                /*
+                slopeData.addRows([
+                    [1, calcSlope(1)],
+                    [5, calcSlope(5)],
+                    [10, calcSlope(10)],
+                    [20, calcSlope(20)],
+                    [30, calcSlope(30)],
+                    [40, calcSlope(40)],
+                    [50, calcSlope(50)],
+                    [60, calcSlope(60)],
+                    [70, calcSlope(70)],
+                    [80, calcSlope(80)],
+                    [90, calcSlope(90)],
+                    [100, calcSlope(100)],
+                    [110, calcSlope(110)],
+                    [120, calcSlope(120)],
+                    [130, calcSlope(130)],
+                    [140, calcSlope(140)],
+                    [150, calcSlope(150)],
+                    [160, calcSlope(160)],
+                    [170, calcSlope(170)],
+                    [180, calcSlope(180)]
+                ]);
+                */
+            }
+
+            linearChart.clearChart();
+            logChart.clearChart();
+            linearChart.draw(slopeData, linearOptions);
+            logChart.draw(slopeData, logOptions);
+        }
+
+        /**
+         * @returns {number}
+         */
+        function calcSlope( length ) {
+            var val =  Math.pow( length/18, qExpon);
+            console.log("Val = " + val.toFixed(3));
+            return val;
+        }
+
+        function drawChart() {
+            slopeData = new google.visualization.DataTable();
+            slopeData.addColumn('number', 'Length');
+            slopeData.addColumn('number', 'Slope');
+
+            linearOptions = {
+                title: 'Channel Slope vs. Length',
+                legend: 'none',
+                width: 450,
+                height: 500,
+                hAxis: {
+                    title: 'Area',
+                    ticks: [32, 64, 96, 128, 160, 192, 224, 256]
+                },
+                vAxis: {
+                    title: 'Slope'
+                }
+            };
+
+            logOptions = {
+                title: 'Channel Slope vs. Area',
+                legend: 'none',
+                width: 450,
+                height: 500,
+                hAxis: {
+                    title: 'Area',
+                    scaleType: 'log',
+                    ticks: [1, 2, 4, 8, 16, 32, 64, 128, 256]
+                },
+                vAxis: {
+                    title: 'Slope'
+
+                }
+            };
+
+            linearChart = new google.visualization.LineChart(document.getElementById('linear_div'));
+            logChart = new google.visualization.LineChart(document.getElementById('log_div'));
+
+            updateSlopeData();
+        }
+
+    </script>
+</head>
+<body onload="onload()">
+
+    <div>
+        <label for="expSlider">Exponent</label>
+        <input id="expSlider" type="range" min="-1.0" max="1.0" step="0.01" value="-0.85">
+        <div id="expAmount">0.5</div>
+        <label for="numSlider">Numerator</label>
+        <input id="numSlider" type="range" min="0.1" max="2.0" step="0.1" value="1.0">
+        <div id="numAmount">1.0</div>
+        <label for="intcpSlider">Intercept</label>
+        <input id="intcpSlider" type="range" min="0.1" max="2.0" step="0.1" value="1.0">
+        <div id="intcpAmount">1.0</div>
+    </div>
+    <table style="width: 900px; height: 500px">
+        <tr>
+            <th>Linear Scale</th>
+            <th>Log Scale</th>
+        </tr>
+        <tr>
+            <td><div id="linear_div"></div></td>
+            <td><div id="log_div"></div></td>
+        </tr>
+    </table>
+</body>
+</html>
