@@ -25,10 +25,20 @@
     height="449" />
   </p>
   
-  <p>One of the simulations written lo these many years was a C++ implementation using OpenGL to depict the output of a relatively simple hurricane model (originally written by Michael Drayton based on the work of Holland et al, 1990). This post attempts to outline the steps to porting the simulation to JavaScript/WebGL/three.js.</p>
-  <p>First, let's look at the model.</p>
-
-  <!--#include virtual="/includes/footer.shtml" -->
+  <p>One of the simulations written lo these many years was a C++ implementation using OpenGL to depict the output of a relatively simple hurricane model (originally written by Michael Drayton based on the work of Holland et al, 1990). This post attempts to outline the steps to porting the simulation to JavaScript/WebGL/three.js.  </p>
+  <h3>Models</h3>
+  <p>The models in this case is one of two hurricane models which take as their input the central pressure and calculate the windfield for the hurricane from that single input (as well as known atmospheric properties such as Coriolis, air density, etc.):</p>
+  <ul>
+    <li>NWS 23 (1979): <a href="http://www.nws.noaa.gov/oh/hdsc/Technical_reports/TR23.pdf" title="Meteorological Criteria" target="_blank">Meteorological Criteria for Standard Project Hurricane and Probable Maximum Hurricane Windfields, Gulf and East Coasts of the United States </a></li>
+    <li>Holland et. al (1980):<a href="Holland_Model_1980.pdf" title="Holland et al: 1980" target="_blank"> An Analytic Model of the WInd and Pressure Profiles in Hurricanes</a> </li>
+    </ul>
+  <p>Both of these models are data-step dependent models in that they accept as input discrete data-step inputs, i.e. pressure in millibars of the eye at specified coordinates at specified points in time. Then the models calculate the windfield of the hurricane at discrete distances and angles from the eye of the hurricane.</p>
+  <p>This particular implementation provides as input the set of observed central pressures at specied location at regular intervals (typically every siz hours) for the specified hurricane. These data are then  interpolated  over shorter time frames to provide a more continuous simulation over time and distance. At periodic points in time the data are accumulated to provide statistical descriptions of the windfields over time and space.</p>
+  <h3>Rendering  </h3>
+  <p>The rendering of the windfields is done using a variable time-step approach (see<a href="https://gafferongames.com/post/fix_your_timestep/" title="Fix Yer Time Step" target="_blank"> Fix Yer Time Step by Glen Fiedler</a>). In this approach, the state of the model (in this case the calculation of the windfield) is done as frequently as possible while the windfield itself is rendered as close to 60 frames per second (FPS) as possible. This isn't strictly needed for this modeling effort since state of the model is invariant - the pressure and location of the eye of the hurricane is known in discete steps, so updating the state of the model really only needs to be done at render time.</p>
+  <h3>Storm Data</h3>
+  <p>The database of storms used in these simulations are the set of storms compiled by NOAA as the <a href="www.nhc.noaa.gov/data/hurdat/hurdat2-format-atlantic.pdf" title="HurrDat2 database" target="_blank">hurrdat2 database</a>. This is over 1800 storms from 1861 through 2016. The early storms only have the hurricane track, or set of locations, no pressure data is available. So it is only after WWII that more or less complete prssure data is available and the storms can be used for the simulations.</p>
+<!--#include virtual="/includes/footer.shtml" -->
 
 </div></div></div></div>
 
